@@ -7,7 +7,7 @@ def get_image_base64(filename):
         data = base64.b64encode(f.read()).decode("utf-8")
     return data
 
-bg_data = get_image_base64(r"C:\Users\scars\Desktop\HBDBG.jpeg")
+bg_data = get_image_base64("HBDBG.jpeg")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
