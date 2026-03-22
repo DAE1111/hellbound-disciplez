@@ -120,7 +120,7 @@ elif menu == "The Cult (Members)":
 
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.image("New folder/pic5.jpg", width=150)
+        st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
         st.markdown("MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.")
@@ -129,7 +129,7 @@ elif menu == "The Cult (Members)":
 
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.image("New folder/img12.jpg", width=150)
+        st.image("img12.jpg", width=150)
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
         st.markdown("MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.")
@@ -138,7 +138,7 @@ elif menu == "The Cult (Members)":
 
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.image("New folder/img11.jpg", width=150)
+        st.image("img11.jpg", width=150)
     with col2:
         st.subheader("🔥 Osomane")
         st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
@@ -148,56 +148,56 @@ elif menu == "The Catacombs (Photos)":
     st.markdown("---")
 
     photos = [
-        "New folder/pic1.png",
-        "New folder/pic2.png",
-        "New folder/pic3.png",
-        "New folder/pic4.png",
-        "New folder/pic5.jpg",
-        "New folder/pic6.png",
-        "New folder/pic7.jpg",
-        "New folder/pic8.jpeg",
-        "New folder/pic9.jpeg",
-        "New folder/pic10.png",
-        "New folder/pic11.jpeg",
-        "New folder/pic12.jpeg",
-        "New folder/pic13.jpeg",
-        "New folder/pic14.jpeg",
-        "New folder/pic15.jpeg",
-        "New folder/pic16.jpeg",
-        "New folder/pic17.jpeg",
-        "New folder/pic18.jpeg",
-        "New folder/pic20.png",
-        "New folder/pic21.png",
-        "New folder/pic22.png",
-        "New folder/pic23.jpg",
-        "New folder/pic24.png",
-        "New folder/pic25.jpg",
-        "New folder/pic26.jpg",
-        "New folder/pic27.jpg",
-        "New folder/pic28.jpg",
-        "New folder/pic29.jpg",
-        "New folder/pic30.jpg",
-        "New folder/pic31.jpg",
-        "New folder/pic32.jpg",
-        "New folder/pic33.jpg",
-        "New folder/pic34.jpg",
-        "New folder/pic35.jpg",
-        "New folder/pic36.jpg",
-        "New folder/pic37.jpg",
-        "New folder/pic39.jpg",
-        "New folder/pic40.jpg",
-        "New folder/pic41.jpg",
-        "New folder/img1.jpg",
-        "New folder/img2.jpg",
-        "New folder/img3.jpg",
-        "New folder/img4.jpg",
-        "New folder/img5.jpg",
-        "New folder/img6.jpg",
-        "New folder/img7.jpg",
-        "New folder/img8.jpg",
-        "New folder/img9.jpg",
-        "New folder/img10.jpg",
-        "New folder/img11.jpg",
+        "pic1.png",
+        "pic2.png",
+        "pic3.png",
+        "pic4.png",
+        "pic5.jpg",
+        "pic6.png",
+        "pic7.jpg",
+        "pic8.jpeg",
+        "pic9.jpeg",
+        "pic10.png",
+        "pic11.jpeg",
+        "pic12.jpeg",
+        "pic13.jpeg",
+        "pic14.jpeg",
+        "pic15.jpeg",
+        "pic16.jpeg",
+        "pic17.jpeg",
+        "pic18.jpeg",
+        "pic20.png",
+        "pic21.png",
+        "pic22.png",
+        "pic23.jpg",
+        "pic24.png",
+        "pic25.jpg",
+        "pic26.jpg",
+        "pic27.jpg",
+        "pic28.jpg",
+        "pic29.jpg",
+        "pic30.jpg",
+        "pic31.jpg",
+        "pic32.jpg",
+        "pic33.jpg",
+        "pic34.jpg",
+        "pic35.jpg",
+        "pic36.jpg",
+        "pic37.jpg",
+        "pic39.jpg",
+        "pic40.jpg",
+        "pic41.jpg",
+        "img1.jpg",
+        "img2.jpg",
+        "img3.jpg",
+        "img4.jpg",
+        "img5.jpg",
+        "img6.jpg",
+        "img7.jpg",
+        "img8.jpg",
+        "img9.jpg",
+        "img10.jpg",
+        "img11.jpg",
     ]
 
     random.shuffle(photos)
