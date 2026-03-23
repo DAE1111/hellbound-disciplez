@@ -11,6 +11,14 @@ bg_data = get_image_base64("HBDBG.jpeg")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
+st.markdown("""
+    <meta property="og:title" content="HELLBOUND DISCIPLEZ" />
+    <meta property="og:description" content="Official Underground Hub" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/dae1111/hellbound-disciplez/main/HBDLOGO1.png" />
+    <meta property="og:url" content="https://hellbounddisciplez.com" />
+    <meta property="og:type" content="website" />
+""", unsafe_allow_html=True)
+
 st.markdown(f"""
     <style>
         .stApp {{
