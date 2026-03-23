@@ -2,14 +2,26 @@ import streamlit as st
 import base64
 import random
 
+# --- Helper function for background image ---
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
 bg_data = get_image_base64("HBDBG.jpeg")
 
+# --- Page config ---
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
+# --- Open Graph metadata ---
+st.markdown("""
+<meta property="og:title" content="HELLBOUND DISCIPLEZ" />
+<meta property="og:description" content="Official Underground Hub" />
+<meta property="og:image" content="https://raw.githubusercontent.com/dae1111/hellbound-disciplez/main/HBDLOGO1.png" />
+<meta property="og:url" content="https://hellbounddisciplez.com" />
+<meta property="og:type" content="website" />
+""", unsafe_allow_html=True)
+
+# --- Styles ---
 st.markdown(f"""
 <style>
 .stApp {{
@@ -40,9 +52,17 @@ img {{
     display: block;
     margin: auto;
 }}
+.announcement {{
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff2200;
+    text-align: center;
+    margin-top: 20px;
+}}
 </style>
 """, unsafe_allow_html=True)
 
+# --- Logo centered ---
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("HBDLOGO1.png", width=490)
@@ -50,10 +70,12 @@ with col2:
 st.subheader("Official Underground Hub")
 st.markdown("---")
 
+# --- Sidebar menu ---
 with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
 
+# --- Home page ---
 if menu == "The Ritual (Home)":
     st.header("☠️ WHO WE ARE ☠️")
     st.markdown("""
@@ -64,34 +86,36 @@ they paint vivid portraits of America's dark underbelly - exploring themes of th
 life, and true crime. Fueled by the collaborative production of Osomane and Crazy8 The Snap Case,
 and the raw lyricism of the whole crew, their music is a haunting reflection of the shadows that
 lurk just beyond the edge of society. Get ready to descend into the abyss with Hellbound Disciplez.
-    """)
+""")
     st.markdown("---")
     st.subheader("🔥 Deep South, United States 🔥")
-    st.markdown("---")
-    st.subheader("⚡ Glitch Tape Vol. 2 — Coming Soon ⚡")
 
+    # --- Announcement ---
+    st.markdown('<br><br>', unsafe_allow_html=True)  # spacing from bio
+    st.markdown(
+        '<div class="announcement">⚡ Glitch Tape Vol. 2 — In Progress, Coming Soon ⚡</div>',
+        unsafe_allow_html=True
+    )
+
+# --- Discography page ---
 elif menu == "The Discography":
     st.header("💀 THE DISCOGRAPHY 💀")
     st.markdown("---")
-
     st.subheader("📀 Albums")
     st.markdown("""
 - **Tales From The Swamp** (2025) — 8 tracks
 - **Hellbound Disciplez (Self Titled)** (2023) — 15 tracks
 - **21 Grams Lighter** (2022) — 10 tracks
-    """)
-
+""")
     st.subheader("📼 Mixtapes")
     st.markdown("""
 - **The Godless Mixtape Vol. 1** (2022) — 11 tracks
 - **Glitch Tape Volume 1** (2023) — 7 tracks
-    """)
-
+""")
     st.subheader("🎵 EPs")
     st.markdown("""
 - **Pumpkin Patch Massacre EP** (2023) — 5 tracks (with Con-Crete)
-    """)
-
+""")
     st.subheader("🔥 Singles")
     st.markdown("""
 - **COUNTERFEIT** (2025)
@@ -110,44 +134,39 @@ elif menu == "The Discography":
 - **2 Pillar's** (2023)
 - **Reign Terror** (2023)
 - **Steppers ft. Psychologik** (2023)
-    """)
-
+""")
     st.markdown("---")
     st.markdown("🎧 [Listen on Spotify](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)")
 
+# --- Cult Members page ---
 elif menu == "The Cult (Members)":
     st.header("💀 THE CULT 💀")
     st.markdown("---")
-
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
         st.markdown("MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.")
-
     st.markdown("---")
-
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img12.jpg", width=150)
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
-        st.markdown("MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.")
-
+        st.markdown("MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable.")
     st.markdown("---")
-
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img11.jpg", width=150)
     with col2:
         st.subheader("🔥 Osomane")
-        st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
+        st.markdown("Producer | Member — The architect of the sound.")
 
+# --- Catacombs page ---
 elif menu == "The Catacombs (Photos)":
     st.header("💀 THE CATACOMBS 💀")
     st.markdown("---")
-
     photos = [
         "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
         "pic9.jpeg","pic10.png","pic11.jpeg","pic12.jpeg","pic13.jpeg","pic14.jpeg","pic15.jpeg",
@@ -157,9 +176,7 @@ elif menu == "The Catacombs (Photos)":
         "pic39.jpg","pic40.jpg","pic41.jpg","img1.jpg","img2.jpg","img3.jpg","img4.jpg",
         "img5.jpg","img6.jpg","img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg",
     ]
-
     random.shuffle(photos)
-
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
