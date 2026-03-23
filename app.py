@@ -70,6 +70,7 @@ with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
 
+# --- Home Page ---
 if menu == "The Ritual (Home)":
     st.header("☠️ WHO WE ARE ☠️")
     st.markdown("""
@@ -84,10 +85,9 @@ if menu == "The Ritual (Home)":
     st.markdown("---")
     st.subheader("🔥 Deep South, United States 🔥")
 
-    # New album announcement
-    st.markdown("---")
+    # --- Album Announcement ---
     st.markdown(
-        "<div style='text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:20px;'>"
+        "<div style='text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:20px; margin-top:30px;'>"
         "<strong>⚡ Incoming Ritual ⚡</strong><br>"
         "Glitch Tape Vol. 2 — currently brewing in the shadows, <em>in progress & coming soon</em>.<br>"
         "Brace yourselves for another descent into the abyss..."
@@ -95,6 +95,7 @@ if menu == "The Ritual (Home)":
         unsafe_allow_html=True
     )
 
+# --- Discography ---
 elif menu == "The Discography":
     st.header("💀 THE DISCOGRAPHY 💀")
     st.markdown("---")
@@ -140,6 +141,7 @@ elif menu == "The Discography":
     st.markdown("---")
     st.markdown("🎧 [Listen on Spotify](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)")
 
+# --- Cult Members ---
 elif menu == "The Cult (Members)":
     st.header("💀 THE CULT 💀")
     st.markdown("---")
@@ -169,6 +171,7 @@ elif menu == "The Cult (Members)":
         st.subheader("🔥 Osomane")
         st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
 
+# --- Photos Catacombs ---
 elif menu == "The Catacombs (Photos)":
     st.header("💀 THE CATACOMBS 💀")
     st.markdown("---")
