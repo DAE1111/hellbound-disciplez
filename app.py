@@ -2,15 +2,19 @@ import streamlit as st
 import base64
 import random
 
+# Helper function to get base64 image data
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         data = base64.b64encode(f.read()).decode("utf-8")
     return data
 
+# Background image
 bg_data = get_image_base64("HBDBG.jpeg")
 
+# Page config
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
+# Open Graph meta tags for social previews
 st.markdown("""
     <meta property="og:title" content="HELLBOUND DISCIPLEZ" />
     <meta property="og:description" content="Official Underground Hub" />
@@ -19,6 +23,7 @@ st.markdown("""
     <meta property="og:type" content="website" />
 """, unsafe_allow_html=True)
 
+# Styling
 st.markdown(f"""
     <style>
         .stApp {{
@@ -52,10 +57,12 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
+# Logo at the top center
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("HBDLOGO1.png", width=490)
 
+# Home page bio and location
 st.subheader("Official Underground Hub")
 st.markdown("---")
 
@@ -76,6 +83,17 @@ if menu == "The Ritual (Home)":
     """)
     st.markdown("---")
     st.subheader("🔥 Deep South, United States 🔥")
+
+    # New album announcement
+    st.markdown("---")
+    st.markdown(
+        "<div style='text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:20px;'>"
+        "<strong>⚡ Incoming Ritual ⚡</strong><br>"
+        "Glitch Tape Vol. 2 — currently brewing in the shadows, <em>in progress & coming soon</em>.<br>"
+        "Brace yourselves for another descent into the abyss..."
+        "</div>",
+        unsafe_allow_html=True
+    )
 
 elif menu == "The Discography":
     st.header("💀 THE DISCOGRAPHY 💀")
@@ -156,56 +174,14 @@ elif menu == "The Catacombs (Photos)":
     st.markdown("---")
 
     photos = [
-        "pic1.png",
-        "pic2.png",
-        "pic3.png",
-        "pic4.png",
-        "pic5.jpg",
-        "pic6.png",
-        "pic7.jpg",
-        "pic8.jpeg",
-        "pic9.jpeg",
-        "pic10.png",
-        "pic11.jpeg",
-        "pic12.jpeg",
-        "pic13.jpeg",
-        "pic14.jpeg",
-        "pic15.jpeg",
-        "pic16.jpeg",
-        "pic17.jpeg",
-        "pic18.jpeg",
-        "pic20.png",
-        "pic21.png",
-        "pic22.png",
-        "pic23.jpg",
-        "pic24.png",
-        "pic25.jpg",
-        "pic26.jpg",
-        "pic27.jpg",
-        "pic28.jpg",
-        "pic29.jpg",
-        "pic30.jpg",
-        "pic31.jpg",
-        "pic32.jpg",
-        "pic33.jpg",
-        "pic34.jpg",
-        "pic35.jpg",
-        "pic36.jpg",
-        "pic37.jpg",
-        "pic39.jpg",
-        "pic40.jpg",
-        "pic41.jpg",
-        "img1.jpg",
-        "img2.jpg",
-        "img3.jpg",
-        "img4.jpg",
-        "img5.jpg",
-        "img6.jpg",
-        "img7.jpg",
-        "img8.jpg",
-        "img9.jpg",
-        "img10.jpg",
-        "img11.jpg",
+        "pic1.png", "pic2.png", "pic3.png", "pic4.png", "pic5.jpg", "pic6.png",
+        "pic7.jpg", "pic8.jpeg", "pic9.jpeg", "pic10.png", "pic11.jpeg", "pic12.jpeg",
+        "pic13.jpeg", "pic14.jpeg", "pic15.jpeg", "pic16.jpeg", "pic17.jpeg", "pic18.jpeg",
+        "pic20.png", "pic21.png", "pic22.png", "pic23.jpg", "pic24.png", "pic25.jpg",
+        "pic26.jpg", "pic27.jpg", "pic28.jpg", "pic29.jpg", "pic30.jpg", "pic31.jpg",
+        "pic32.jpg", "pic33.jpg", "pic34.jpg", "pic35.jpg", "pic36.jpg", "pic37.jpg",
+        "pic39.jpg", "pic40.jpg", "pic41.jpg", "img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg",
+        "img5.jpg", "img6.jpg", "img7.jpg", "img8.jpg", "img9.jpg", "img10.jpg", "img11.jpg",
     ]
 
     random.shuffle(photos)
