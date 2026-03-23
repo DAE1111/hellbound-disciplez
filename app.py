@@ -68,7 +68,7 @@ lurk just beyond the edge of society. Get ready to descend into the abyss with H
     st.markdown("---")
     st.subheader("🔥 Deep South, United States 🔥")
     st.markdown("---")
-    st.warning("⚡ Glitch Tape Vol. 2 is in progress — coming soon. Descend deeper into the abyss... ⚡")
+    st.subheader("⚡ Glitch Tape Vol. 2 — Coming Soon ⚡")
 
 elif menu == "The Discography":
     st.header("💀 THE DISCOGRAPHY 💀")
