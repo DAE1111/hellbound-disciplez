@@ -11,7 +11,7 @@ bg_layer = get_image_base64("BGLAYER1.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
-# CSS styling for background layers, fonts, and images
+# CSS for background, fonts, and toggle
 st.markdown(f"""
 <style>
 .stApp {{
@@ -65,8 +65,12 @@ margin: auto;
 </style>
 """, unsafe_allow_html=True)
 
-# Instruction for sidebar toggle on main page
-st.markdown("➡️ **Tip:** Click the double arrow in the top-right corner of the sidebar to expand/collapse the menu.")
+# Instruction + visual cue on main page
+st.markdown("""
+<div style="font-size:18px; color:#ff2200; text-align:center;">
+⬅️ <b>Click the arrow at the edge of the sidebar to expand/collapse the menu</b> ⬅️
+</div>
+""", unsafe_allow_html=True)
 
 # Main header logo
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -81,7 +85,7 @@ with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
 
-# Home / Ritual page
+# Ritual / Home page
 if menu == "The Ritual (Home)":
     st.header("☠️ WHO WE ARE ☠️")
     st.markdown("""
