@@ -7,24 +7,29 @@ def get_image_base64(filename):
         return base64.b64encode(f.read()).decode("utf-8")
 
 bg_data = get_image_base64("HBDBG.jpeg")
+bg_layer = get_image_base64("BGLAYER1.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
 st.markdown(f"""
 <style>
 .stApp {{
-background-image: url('data:image/jpeg;base64,{bg_data}');
-background-size: cover;
-background-repeat: repeat;
-background-attachment: fixed;
+background-image: 
+url('data:image/png;base64,{bg_layer}'),
+url('data:image/jpeg;base64,{bg_data}');
+background-size: cover, cover;
+background-repeat: repeat, repeat;
+background-attachment: fixed, fixed;
 color: #ff2200;
 }}
 
 [data-testid="stSidebar"] {{
-background-image: url('data:image/jpeg;base64,{bg_data}');
-background-size: cover;
-background-repeat: repeat;
-background-attachment: fixed;
+background-image: 
+url('data:image/png;base64,{bg_layer}'),
+url('data:image/jpeg;base64,{bg_data}');
+background-size: cover, cover;
+background-repeat: repeat, repeat;
+background-attachment: fixed, fixed;
 border-right: 2px solid #ff2200;
 }}
 
