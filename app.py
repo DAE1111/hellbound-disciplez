@@ -7,43 +7,36 @@ def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
-# Backgrounds
 bg_data = get_image_base64("HBDBG.jpeg")
 bg_layer = get_image_base64("BGLAYER1.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
-# CSS
 st.markdown(f"""
 <style>
-
 .stApp {{
-background-image:
-url("data:image/png;base64,{bg_layer}"),
-url("data:image/jpeg;base64,{bg_data}");
-background-size: cover, cover;
-background-repeat: repeat, repeat;
-background-attachment: fixed, fixed;
-color:#ff2200;
+    background-image:
+        url("data:image/png;base64,{bg_layer}"),
+        url("data:image/jpeg;base64,{bg_data}");
+    background-size: cover, cover;
+    background-repeat: repeat, repeat;
+    background-attachment: fixed, fixed;
+    color:#ff2200;
 }}
-
 [data-testid="stSidebar"] {{
-background-image:
-url("data:image/png;base64,{bg_layer}"),
-url("data:image/jpeg;base64,{bg_data}");
-background-size: cover, cover;
+    background-image:
+        url("data:image/png;base64,{bg_layer}"),
+        url("data:image/jpeg;base64,{bg_data}");
+    background-size: cover, cover;
 }}
-
 h1,h2,h3,h4,h5,h6,p,label {{
-color:#ff2200 !important;
-font-family: Georgia, serif;
+    color:#ff2200 !important;
+    font-family: Georgia, serif;
 }}
-
 </style>
 """, unsafe_allow_html=True)
 
-# Header
-col1,col2,col3 = st.columns([1,2,1])
+col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("HBDLOGO1.png", width=500)
     st.markdown(
@@ -51,11 +44,9 @@ with col2:
         unsafe_allow_html=True
     )
 
-# Sidebar
 with st.sidebar:
-    st.image("chainsawart.png", use_column_width=True)
+    st.image("chainsawart.png", use_container_width=True)
     st.header("THE VOID")
-
     menu = st.radio(
         "",
         [
@@ -65,8 +56,6 @@ with st.sidebar:
             "The Catacombs (Photos)"
         ]
     )
-
-# ---------------- HOME ----------------
 
 if menu == "The Ritual (Home)":
 
@@ -83,18 +72,21 @@ if menu == "The Ritual (Home)":
     st.markdown("""
 <div style="text-align:center">
 
-Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of Lord-K-Haos, Crazy8 The Snap Case, and Osomane.
-
-Independent and unbothered, these three sonic provocateurs blaze their own trail. With a sound that's equal parts gritty phonk and horrorcore, they paint vivid portraits of America's dark underbelly.
-
+Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of
+<b>Lord-K-Haos</b>, <b>Crazy8 The Snap Case</b>, and <b>Osomane</b>. Independent and unbothered,
+these three sonic provocateurs blaze their own trail. With a sound that's equal parts gritty phonk
+and horrorcore, they paint vivid portraits of America's dark underbelly - exploring themes of the
+occult, street life, and true crime. Fueled by the collaborative production of Osomane and Crazy8
+The Snap Case, and the raw lyricism of the whole crew, their music is a haunting reflection of the
+shadows that lurk just beyond the edge of society. Get ready to descend into the abyss with
+Hellbound Disciplez.
+<br><br>
 🔥 Deep South, United States 🔥
-
+<br><br>
 ⚡ Glitch Tape Vol. 2 — Coming Soon ⚡
 
 </div>
 """, unsafe_allow_html=True)
-
-# ---------------- DISCOGRAPHY ----------------
 
 elif menu == "The Grimoires (Discography)":
 
@@ -156,33 +148,54 @@ elif menu == "The Grimoires (Discography)":
 </div>
 """, unsafe_allow_html=True)
 
-# ---------------- MEMBERS ----------------
-
 elif menu == "The Cult (Members)":
 
     st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CULT 💀</div>', unsafe_allow_html=True)
+    st.markdown("---")
 
-    st.image("pic5.jpg", width=200)
-    st.markdown("<div style='text-align:center'>Lord-K-Haos</div>", unsafe_allow_html=True)
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.image("pic5.jpg", width=150)
+    with col2:
+        st.subheader("🔥 Lord-K-Haos")
+        st.markdown("MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.")
 
-    st.image("img12.jpg", width=200)
-    st.markdown("<div style='text-align:center'>Crazy8 The Snap Case</div>", unsafe_allow_html=True)
+    st.markdown("---")
 
-    st.image("img11.jpg", width=200)
-    st.markdown("<div style='text-align:center'>Osomane</div>", unsafe_allow_html=True)
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.image("img12.jpg", width=150)
+    with col2:
+        st.subheader("🔥 Crazy8 The Snap Case")
+        st.markdown("MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.")
 
-# ---------------- PHOTOS ----------------
+    st.markdown("---")
+
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.image("img11.jpg", width=150)
+    with col2:
+        st.subheader("🔥 Osomane")
+        st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
 
 elif menu == "The Catacombs (Photos)":
 
     st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CATACOMBS 💀</div>', unsafe_allow_html=True)
+    st.markdown("---")
 
     photos = [
-        "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png",
-        "pic7.jpg","pic8.jpeg","pic9.jpeg","pic10.png","pic11.jpeg"
+        "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
+        "pic9.jpeg","pic10.png","pic11.jpeg","pic12.jpeg","pic13.jpeg","pic14.jpeg","pic15.jpeg",
+        "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic20.png","pic21.png","pic22.png","pic23.jpg",
+        "pic24.png","pic25.jpg","pic26.jpg","pic27.jpg","pic28.jpg","pic29.jpg","pic30.jpg",
+        "pic31.jpg","pic32.jpg","pic33.jpg","pic34.jpg","pic35.jpg","pic36.jpg","pic37.jpg",
+        "pic39.jpg","pic40.jpg","pic41.jpg","img1.jpg","img2.jpg","img3.jpg","img4.jpg",
+        "img5.jpg","img6.jpg","img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg",
     ]
 
     random.shuffle(photos)
 
-    for p in photos:
-        st.image(p, use_container_width=True)
+    cols = st.columns(2)
+    for i, photo_path in enumerate(photos):
+        with cols[i % 2]:
+            st.image(photo_path, use_container_width=True)
