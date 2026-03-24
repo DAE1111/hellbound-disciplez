@@ -6,8 +6,16 @@ from PIL import Image
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
+import streamlit as st
+import base64
+import random
+from PIL import Image
 
-# Backgrounds
+def get_image_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+# Background images
 bg_data = get_image_base64("HBDBG.jpeg")
 bg_layer = get_image_base64("BGLAYER1.png")
 
@@ -42,7 +50,7 @@ font-family: Georgia, serif;
 </style>
 """, unsafe_allow_html=True)
 
-# Header
+# HEADER
 col1,col2,col3 = st.columns([1,2,1])
 with col2:
     st.image("HBDLOGO1.png", width=500)
@@ -51,7 +59,7 @@ with col2:
         unsafe_allow_html=True
     )
 
-# Sidebar
+# SIDEBAR
 with st.sidebar:
     st.image("chainsawart.png", use_column_width=True)
     st.header("THE VOID")
@@ -66,8 +74,7 @@ with st.sidebar:
         ]
     )
 
-# ---------------- HOME ----------------
-
+# HOME
 if menu == "The Ritual (Home)":
 
     pistol = get_image_base64("pistol-removebg-preview.png")
@@ -94,8 +101,7 @@ Independent and unbothered, these three sonic provocateurs blaze their own trail
 </div>
 """, unsafe_allow_html=True)
 
-# ---------------- DISCOGRAPHY ----------------
-
+# DISCOGRAPHY
 elif menu == "The Grimoires (Discography)":
 
     st.markdown("""
@@ -156,23 +162,48 @@ elif menu == "The Grimoires (Discography)":
 </div>
 """, unsafe_allow_html=True)
 
-# ---------------- MEMBERS ----------------
-
+# MEMBERS
 elif menu == "The Cult (Members)":
 
     st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CULT 💀</div>', unsafe_allow_html=True)
 
     st.image("pic5.jpg", width=200)
-    st.markdown("<div style='text-align:center'>Lord-K-Haos</div>", unsafe_allow_html=True)
+    st.markdown("""
+<div style="text-align:center">
+
+🔥 Lord-K-Haos  
+MC | Lyricist | Co-Founder  
+
+The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.
+
+</div>
+""", unsafe_allow_html=True)
 
     st.image("img12.jpg", width=200)
-    st.markdown("<div style='text-align:center'>Crazy8 The Snap Case</div>", unsafe_allow_html=True)
+    st.markdown("""
+<div style="text-align:center">
+
+🔥 Crazy8 The Snap Case  
+MC | Lyricist | Producer | Co-Founder  
+
+Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.
+
+</div>
+""", unsafe_allow_html=True)
 
     st.image("img11.jpg", width=200)
-    st.markdown("<div style='text-align:center'>Osomane</div>", unsafe_allow_html=True)
+    st.markdown("""
+<div style="text-align:center">
 
-# ---------------- PHOTOS ----------------
+🔥 Osomane  
+Producer | Member  
 
+The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.
+
+</div>
+""", unsafe_allow_html=True)
+
+# PHOTOS
 elif menu == "The Catacombs (Photos)":
 
     st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CATACOMBS 💀</div>', unsafe_allow_html=True)
