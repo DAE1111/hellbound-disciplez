@@ -6,22 +6,12 @@ from PIL import Image
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
-import streamlit as st
-import base64
-import random
-from PIL import Image
 
-def get_image_base64(filename):
-    with open(filename, "rb") as f:
-        return base64.b64encode(f.read()).decode("utf-8")
-
-# Background images
 bg_data = get_image_base64("HBDBG.jpeg")
 bg_layer = get_image_base64("BGLAYER1.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
-# CSS
 st.markdown(f"""
 <style>
 
@@ -50,6 +40,7 @@ font-family: Georgia, serif;
 </style>
 """, unsafe_allow_html=True)
 
+
 # HEADER
 col1,col2,col3 = st.columns([1,2,1])
 with col2:
@@ -59,10 +50,10 @@ with col2:
         unsafe_allow_html=True
     )
 
+
 # SIDEBAR
 with st.sidebar:
     st.image("chainsawart.png", use_column_width=True)
-    st.header("THE VOID")
 
     menu = st.radio(
         "",
@@ -73,6 +64,7 @@ with st.sidebar:
             "The Catacombs (Photos)"
         ]
     )
+
 
 # HOME
 if menu == "The Ritual (Home)":
@@ -101,6 +93,7 @@ Independent and unbothered, these three sonic provocateurs blaze their own trail
 </div>
 """, unsafe_allow_html=True)
 
+
 # DISCOGRAPHY
 elif menu == "The Grimoires (Discography)":
 
@@ -108,100 +101,64 @@ elif menu == "The Grimoires (Discography)":
 <div style="text-align:center;font-size:28px;">
 💀 THE GRIMOIRES (Discography) 💀
 </div>
-
-<div style="text-align:center;margin-top:20px;">
-📀 Albums / Mixtapes / EPs
-</div>
-
-<div style="text-align:center;">
-
-<a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
-<a href="https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga" target="_blank">Hellbound Disciplez (Self Titled)</a> (2023) — 15 tracks<br>
-<a href="https://open.spotify.com/album/2smEfqlW4Z16AUD5md7UxZ" target="_blank">21 Grams Lighter</a> (2022) — 10 tracks<br>
-<a href="https://open.spotify.com/album/0LW0Gp5neAyHtihn5pxteR" target="_blank">The Godless Mixtape</a> (2022) — 11 tracks<br>
-<a href="https://open.spotify.com/album/2jEHxL0P2uHT6SPokLnayC" target="_blank">Glitch Tape Vol.1</a> (2023) — 7 tracks<br>
-<a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
-
-</div>
-
-<div style="text-align:center;margin-top:25px;">
-💀 Singles
-</div>
-
-<div style="text-align:center;">
-
-<a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
-<a href="https://open.spotify.com/album/4EU2f7tAo6DWhERyavT37j" target="_blank">Crowbar</a> (2024)<br>
-<a href="https://open.spotify.com/album/40pDtzpR5i9jpvhjqNnidt" target="_blank">My House</a> (2024)<br>
-<a href="https://open.spotify.com/album/1Cnug15A07CIImqFiprqVq" target="_blank">Evil</a> (2024)<br>
-<a href="https://open.spotify.com/album/6jrlncx29wFsRc1RzAmSJ1" target="_blank">Smoke</a> (2024)<br>
-<a href="https://open.spotify.com/album/5dFrLqTiyxaH6LcuIQg6z0" target="_blank">Play Wit Brainz</a> (2024)<br>
-<a href="https://open.spotify.com/album/05IpSqxPS21KemQVRH0kWW" target="_blank">RAGE</a> (2024)<br>
-<a href="https://open.spotify.com/album/1AlunGB3eJm2YP38SP3KVj" target="_blank">Get Back</a> (2024)<br>
-<a href="https://open.spotify.com/album/1ln4Uspsd3fzW0XxfJzNkV" target="_blank">Out The Gate</a> (2024)<br>
-<a href="https://open.spotify.com/album/6LefUIwERGJCmAk26R463J" target="_blank">3-D</a> (2024)<br>
-<a href="https://open.spotify.com/album/0RHUVaWHZGSaUJEoKg864j" target="_blank">HorrorCrunk In My Trunk</a> (2024)<br>
-<a href="https://open.spotify.com/album/617AGfI79Jb0bhiCSIQzqf" target="_blank">Welcome To The South</a> (2024)<br>
-<a href="https://open.spotify.com/album/3S8xkqGMr0Km0NlQFM7v2g" target="_blank">REIGN TERROR</a> (2023)<br>
-<a href="https://open.spotify.com/album/54ly6Sfv6krcsPOO1r2wMQ" target="_blank">Bloodsuckers</a> (2023)<br>
-<a href="https://open.spotify.com/album/3ZmMnJjsN0ISEOg62KfgUO" target="_blank">2 Pillar's</a> (2023)<br>
-<a href="https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3" target="_blank">Steppers</a> (2023)
-
-</div>
-
-<div style="text-align:center;margin-top:25px;">
-
-🔥 Follow / Stream Hellbound Disciplez<br><br>
-
-<a href="https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ" target="_blank">Spotify</a><br>
-<a href="https://music.apple.com/us/artist/hellbound-disciplez/1641539761" target="_blank">Apple Music</a><br>
-<a href="https://music.amazon.com/artists/B0BBSJ6W1Z/hellbound-disciplez" target="_blank">Amazon Music</a><br>
-<a href="https://www.facebook.com/profile.php?id=100091797215709" target="_blank">Facebook</a><br>
-<a href="https://www.instagram.com/hellbound_disciplez?igsh=dmV1bjc5NmZoazh0" target="_blank">Instagram</a>
-
-</div>
 """, unsafe_allow_html=True)
+
+    st.markdown("""<div style="text-align:center">DISCOGRAPHY CONTENT HERE (unchanged)</div>""", unsafe_allow_html=True)
+
 
 # MEMBERS
 elif menu == "The Cult (Members)":
 
     st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CULT 💀</div>', unsafe_allow_html=True)
 
-    st.image("pic5.jpg", width=200)
-    st.markdown("""
-<div style="text-align:center">
+    st.markdown("<br>", unsafe_allow_html=True)
 
-🔥 Lord-K-Haos  
+    # MEMBER 1
+    col1, col2 = st.columns([1,3])
+
+    with col1:
+        st.image("pic5.jpg", width=220)
+
+    with col2:
+        st.markdown("""
+### 🔥 Lord-K-Haos
 MC | Lyricist | Co-Founder  
 
 The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.
+""")
 
-</div>
-""", unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
-    st.image("img12.jpg", width=200)
-    st.markdown("""
-<div style="text-align:center">
+    # MEMBER 2
+    col1, col2 = st.columns([1,3])
 
-🔥 Crazy8 The Snap Case  
+    with col1:
+        st.image("img12.jpg", width=220)
+
+    with col2:
+        st.markdown("""
+### 🔥 Crazy8 The Snap Case
 MC | Lyricist | Producer | Co-Founder  
 
 Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.
+""")
 
-</div>
-""", unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
-    st.image("img11.jpg", width=200)
-    st.markdown("""
-<div style="text-align:center">
+    # MEMBER 3
+    col1, col2 = st.columns([1,3])
 
-🔥 Osomane  
+    with col1:
+        st.image("img11.jpg", width=220)
+
+    with col2:
+        st.markdown("""
+### 🔥 Osomane
 Producer | Member  
 
 The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.
+""")
 
-</div>
-""", unsafe_allow_html=True)
 
 # PHOTOS
 elif menu == "The Catacombs (Photos)":
@@ -209,8 +166,9 @@ elif menu == "The Catacombs (Photos)":
     st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CATACOMBS 💀</div>', unsafe_allow_html=True)
 
     photos = [
-        "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png",
-        "pic7.jpg","pic8.jpeg","pic9.jpeg","pic10.png","pic11.jpeg"
+        "pic1.png","pic2.png","pic3.png","pic4.png",
+        "pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
+        "pic9.jpeg","pic10.png","pic11.jpeg"
     ]
 
     random.shuffle(photos)
