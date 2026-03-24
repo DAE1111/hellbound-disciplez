@@ -14,7 +14,7 @@ bg_layer = get_image_base64("BGLAYER1.png")
 # Page config
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
-# CSS for background, fonts, and sidebar toggle
+# CSS for background, fonts, sidebar toggle
 st.markdown(f"""
 <style>
 .stApp {{
@@ -55,7 +55,7 @@ display: block;
 margin: auto;
 }}
 
-/* Enlarge & highlight the sidebar toggle */
+/* Highlight sidebar toggle */
 [data-testid="collapsedControl"] {{
     width: 40px !important;
     height: 40px !important;
@@ -68,7 +68,7 @@ margin: auto;
 </style>
 """, unsafe_allow_html=True)
 
-# Instruction + visual cue on main page
+# Instruction on main page about sidebar
 st.markdown("""
 <div style="font-size:18px; color:#ff2200; text-align:center;">
 ⬅️ <b>Click the arrow at the edge of the sidebar to expand/collapse the menu</b> ⬅️
@@ -82,19 +82,28 @@ with col2:
     st.subheader("Official Underground Hub")
     st.markdown("---")
 
-# Load chainsawart image and flipped version
+# Load images for sidebar
 top_img = Image.open("chainsawart.png")
 bottom_img = top_img.transpose(Image.FLIP_TOP_BOTTOM)
+pistol_img_file = "pistol-removebg-preview.png"
 
-# Sidebar with top image, menu, and bottom image always visible
+# Sidebar
 with st.sidebar:
     st.image(top_img, use_column_width=True)
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
-    
+
 # Ritual / Home page
 if menu == "The Ritual (Home)":
-    st.header("☠️ WHO WE ARE ☠️")
+    # WHO WE ARE with mirrored pistols
+    st.markdown(f"""
+    <div style="text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:28px;">
+    <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px; transform: scaleX(-1); vertical-align:middle;">
+     <b>WHO WE ARE</b> 
+    <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px; vertical-align:middle;">
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("""
 Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of **Lord-K-Haos**, **Crazy8 The Snap Case**, and **Osomane**. Independent and unbothered, these three sonic provocateurs blaze their own trail. With a sound that's equal parts gritty phonk and horrorcore, they paint vivid portraits of America's dark underbelly - exploring themes of the occult, street life, and true crime. Fueled by the collaborative production of Osomane and Crazy8 The Snap Case, and the raw lyricism of the whole crew, their music is a haunting reflection of the shadows that lurk just beyond the edge of society. Get ready to descend into the abyss with Hellbound Disciplez.
 """)
@@ -196,6 +205,6 @@ elif menu == "The Catacombs (Photos)":
         with cols[i % 2]:
             st.image(photo_path, use_container_width=True)
 
-# Bottom chainsaw image always visible
+# Bottom chainsaw always visible
 with st.sidebar:
     st.image(bottom_img, use_column_width=True)
