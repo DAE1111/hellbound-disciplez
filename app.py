@@ -52,7 +52,7 @@ st.markdown("---")
 
 with st.sidebar:
     st.header("THE VOID")
-    menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
+    menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)", "The Signal (Socials)"])
 
 if menu == "The Ritual (Home)":
     st.header("☠️ WHO WE ARE ☠️")
@@ -164,3 +164,21 @@ elif menu == "The Catacombs (Photos)":
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
             st.image(photo_path, use_container_width=True)
+
+elif menu == "The Signal (Socials)":
+    st.header("📡 THE SIGNAL 📡")
+    st.markdown("---")
+
+    st.subheader("🔥 Follow Us")
+    st.markdown("""
+- 📘 [Facebook](https://www.facebook.com/profile.php?id=100091797215709)
+    """)
+
+    st.markdown("---")
+
+    st.subheader("🎵 Stream Our Music")
+    st.markdown("""
+- 🎧 [Spotify](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
+- 🍎 [Apple Music](https://music.apple.com/us/artist/hellbound-disciplez/1641539761)
+- 📦 [Amazon Music](https://music.amazon.com/artists/B0BBSJ6W1Z/hellbound-disciplez)
+    """)
