@@ -52,7 +52,6 @@ st.markdown(f"""
 h1,h2,h3,h4,h5,h6,p,label {{
     color:#ff2200 !important;
     font-family: 'Creepster', cursive !important;
-    text-shadow: 0 0 10px #ff2200, 0 0 20px #ff0000;
 }}
 a {{
     color: #ff2200 !important;
