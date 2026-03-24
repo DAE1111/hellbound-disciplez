@@ -61,6 +61,7 @@ with col2:
     st.markdown("---")
 
 with st.sidebar:
+    st.image("chainsawart.png", use_column_width=True)  # <-- added image at top
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
 
