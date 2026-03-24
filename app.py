@@ -61,7 +61,7 @@ with col2:
     st.markdown("---")
 
 with st.sidebar:
-    st.image("chainsawart.png", use_column_width=True)  # <-- added image at top
+    st.image("chainsawart.png", use_column_width=True)  # sidebar top image
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
 
@@ -111,7 +111,8 @@ elif menu == "The Discography":
 🎧 [Spotify](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)  
 🍎 [Apple Music](https://music.apple.com/us/artist/hellbound-disciplez/1641539761)  
 📦 [Amazon Music](https://music.amazon.com/artists/B0BBSJ6W1Z/hellbound-disciplez)  
-📘 [Facebook](https://www.facebook.com/profile.php?id=100091797215709)
+📘 [Facebook](https://www.facebook.com/profile.php?id=100091797215709)  
+📸 [Instagram](https://www.instagram.com/hellbound_disciplez?igsh=dmV1bjc5NmZoazh0)
 """)
 
 elif menu == "The Cult (Members)":
