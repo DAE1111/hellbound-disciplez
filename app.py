@@ -96,17 +96,17 @@ with st.sidebar:
 
 # Ritual / Home page
 if menu == "The Ritual (Home)":
-    # WHO WE ARE with mirrored pistols inline
+    # WHO WE ARE with pistols pointing inward
     st.markdown(f"""
     <div style="text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:28px;">
     <span style="display:inline-block; vertical-align:middle;">
-        <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px; transform: scaleX(-1);">
+        <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px;">
     </span>
     <span style="display:inline-block; vertical-align:middle; margin: 0 12px;">
         <b>WHO WE ARE</b>
     </span>
     <span style="display:inline-block; vertical-align:middle;">
-        <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px;">
+        <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px; transform: scaleX(-1);">
     </span>
     </div>
     """, unsafe_allow_html=True)
