@@ -80,51 +80,38 @@ elif menu == "The Discography":
     st.header("💀 THE DISCOGRAPHY 💀")
     st.markdown("---")
 
-    st.subheader("📀 Albums")
+    st.subheader("📀 Releases")
     st.markdown("""
-- [**Tales From The Swamp (2025) — 8 tracks**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Hellbound Disciplez (Self Titled) (2023) — 15 tracks**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**21 Grams Lighter (2022) — 10 tracks**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-""")
-
-    st.subheader("📼 Mixtapes")
-    st.markdown("""
-- [**The Godless Mixtape Vol. 1 (2022) — 11 tracks**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Glitch Tape Volume 1 (2023) — 7 tracks**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-""")
-
-    st.subheader("🎵 EPs")
-    st.markdown("""
-- [**Pumpkin Patch Massacre EP (2023) — 5 tracks (with Con-Crete)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-""")
-
-    st.subheader("🔥 Singles")
-    st.markdown("""
-- [**COUNTERFEIT (2025)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**3-D (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**CROWBAR (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**EVIL (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Get Back (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**HorrorCrunk In My Trunk (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**My House (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Out The Gate (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**PLAY WIT BRAINZ (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Smoke (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**RAGE (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Welcome To The South (2024)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Bloodsuckers (2023)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**2 Pillar's (2023)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Reign Terror (2023)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
-- [**Steppers ft. Psychologik (2023)**](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
+- [Tales From The Swamp](https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK)
+- [Hellbound Disciplez](https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv)
+- [21 Grams Lighter](https://open.spotify.com/album/40pDtzpR5i9jpvhjqNnidt)
+- [COUNTERFEIT](https://open.spotify.com/album/1Cnug15A07CIImqFiprqVq)
+- [3-D](https://open.spotify.com/album/6jrlncx29wFsRc1RzAmSJ1)
+- [CROWBAR](https://open.spotify.com/album/5dFrLqTiyxaH6LcuIQg6z0)
+- [EVIL](https://open.spotify.com/album/05IpSqxPS21KemQVRH0kWW)
+- [Get Back](https://open.spotify.com/album/1AlunGB3eJm2YP38SP3KVj)
+- [HorrorCrunk In My Trunk](https://open.spotify.com/album/1ln4Uspsd3fzW0XxfJzNkV)
+- [My House](https://open.spotify.com/album/6LefUIwERGJCmAk26R463J)
+- [Out The Gate](https://open.spotify.com/album/0RHUVaWHZGSaUJEoKg864j)
+- [PLAY WIT BRAINZ](https://open.spotify.com/album/617AGfI79Jb0bhiCSIQzqf)
+- [Smoke](https://open.spotify.com/album/3S8xkqGMr0Km0NlQFM7v2g)
+- [RAGE](https://open.spotify.com/album/54ly6Sfv6krcsPOO1r2wMQ)
+- [Welcome To The South](https://open.spotify.com/album/3ZmMnJjsN0ISEOg62KfgUO)
+- [Bloodsuckers](https://open.spotify.com/album/2jEHxL0P2uHT6SPokLnayC)
+- [2 Pillar's](https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3)
+- [Reign Terror](https://open.spotify.com/album/2smEfqlW4Z16AUD5md7UxZ)
+- [Steppers ft. Psychologik](https://open.spotify.com/album/0LW0Gp5neAyHtihn5pxteR)
+- [Glitch Tape Vol 1](https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga)
+- [Godless Mixtape Vol 1](https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu)
 """)
 
     st.markdown("---")
 
     st.subheader("🔥 Follow Hellbound Disciplez")
     st.markdown("""
-🎧 [Spotify](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
+🎧 https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ  
 
-📘 [Facebook](https://www.facebook.com/profile.php?id=100091797215709)
+📘 https://www.facebook.com/profile.php?id=100091797215709
 """)
 
 
@@ -137,7 +124,7 @@ elif menu == "The Cult (Members)":
         st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
-        st.markdown("MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.")
+        st.markdown("MC | Lyricist | Co-Founder — The chaos incarnate.")
 
     st.markdown("---")
 
@@ -146,7 +133,7 @@ elif menu == "The Cult (Members)":
         st.image("img12.jpg", width=150)
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
-        st.markdown("MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.")
+        st.markdown("MC | Lyricist | Producer | Co-Founder")
 
     st.markdown("---")
 
@@ -155,7 +142,7 @@ elif menu == "The Cult (Members)":
         st.image("img11.jpg", width=150)
     with col2:
         st.subheader("🔥 Osomane")
-        st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
+        st.markdown("Producer | Member")
 
 
 elif menu == "The Catacombs (Photos)":
