@@ -62,6 +62,14 @@ a:hover {{
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
 }}
+.menu-hint {{
+    font-family: Georgia, serif !important;
+    color: #4a90d9 !important;
+    font-size: 13px;
+    text-align: right;
+    padding-right: 10px;
+    margin-top: 5px;
+}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -72,6 +80,11 @@ with col2:
         '<div style="text-align:center;font-size:24px;">Official Underground Hub</div>',
         unsafe_allow_html=True
     )
+
+st.markdown(
+    '<div class="menu-hint">← Use the arrow to expand the navigation menu</div>',
+    unsafe_allow_html=True
+)
 
 with st.sidebar:
     st.image("chainsawart.png", use_container_width=True)
