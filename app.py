@@ -90,7 +90,7 @@ pistol_img_file = "pistol-removebg-preview.png"
 with st.sidebar:
     st.image(top_img, use_column_width=True)
     st.header("THE VOID")
-    menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
+    menu = st.radio("Navigate:", ["The Ritual (Home)", "The Grimoires", "The Cult (Members)", "The Catacombs (Photos)"])
     # Bottom chainsaw removed
 
 # Ritual / Home page
@@ -118,9 +118,9 @@ Forged in the depths of the underground, Hellbound Disciplez is a formidable tri
     st.markdown("---")
     st.subheader("⚡ Glitch Tape Vol. 2 — Coming Soon ⚡")
 
-# Discography page
-elif menu == "The Discography":
-    st.header("💀 THE DISCOGRAPHY 💀")
+# Grimoires page (formerly Discography)
+elif menu == "The Grimoires":
+    st.header("💀 THE GRIMOIRES 💀")
     st.markdown("---")
 
     st.subheader("📀 Albums & Releases")
