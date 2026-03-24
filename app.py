@@ -84,7 +84,6 @@ with col2:
 
 # Load images for sidebar
 top_img = Image.open("chainsawart.png")
-bottom_img = top_img.transpose(Image.FLIP_TOP_BOTTOM)
 pistol_img_file = "pistol-removebg-preview.png"
 
 # Sidebar
@@ -92,7 +91,7 @@ with st.sidebar:
     st.image(top_img, use_column_width=True)
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
-    st.image(bottom_img, use_column_width=True)  # bottom chainsaw always visible
+    # Bottom chainsaw removed
 
 # Ritual / Home page
 if menu == "The Ritual (Home)":
