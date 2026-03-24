@@ -1,17 +1,20 @@
 import streamlit as st
 import base64
 import random
+from PIL import Image
 
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
+# Load background images
 bg_data = get_image_base64("HBDBG.jpeg")
 bg_layer = get_image_base64("BGLAYER1.png")
 
+# Page config
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
-# CSS for background, fonts, and toggle
+# CSS for background, fonts, and sidebar toggle
 st.markdown(f"""
 <style>
 .stApp {{
@@ -79,11 +82,17 @@ with col2:
     st.subheader("Official Underground Hub")
     st.markdown("---")
 
-# Sidebar menu with top image
+# Load chainsawart image and flipped version
+top_img = Image.open("chainsawart.png")
+bottom_img = top_img.transpose(Image.FLIP_TOP_BOTTOM)
+
+# Sidebar with top and bottom chainsawart
 with st.sidebar:
-    st.image("chainsawart.png", use_column_width=True)
+    st.image(top_img, use_column_width=True)
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
+    st.markdown("---")
+    st.image(bottom_img, use_column_width=True)
 
 # Ritual / Home page
 if menu == "The Ritual (Home)":
