@@ -92,15 +92,22 @@ with st.sidebar:
     st.image(top_img, use_column_width=True)
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
+    st.image(bottom_img, use_column_width=True)  # bottom chainsaw always visible
 
 # Ritual / Home page
 if menu == "The Ritual (Home)":
-    # WHO WE ARE with mirrored pistols
+    # WHO WE ARE with mirrored pistols inline
     st.markdown(f"""
     <div style="text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:28px;">
-    <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px; transform: scaleX(-1); vertical-align:middle;">
-     <b>WHO WE ARE</b> 
-    <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px; vertical-align:middle;">
+    <span style="display:inline-block; vertical-align:middle;">
+        <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px; transform: scaleX(-1);">
+    </span>
+    <span style="display:inline-block; vertical-align:middle; margin: 0 12px;">
+        <b>WHO WE ARE</b>
+    </span>
+    <span style="display:inline-block; vertical-align:middle;">
+        <img src="data:image/png;base64,{get_image_base64(pistol_img_file)}" style="height:32px;">
+    </span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -204,7 +211,3 @@ elif menu == "The Catacombs (Photos)":
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
             st.image(photo_path, use_container_width=True)
-
-# Bottom chainsaw always visible
-with st.sidebar:
-    st.image(bottom_img, use_column_width=True)
