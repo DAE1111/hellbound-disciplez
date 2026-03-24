@@ -82,36 +82,36 @@ elif menu == "The Discography":
 
     st.subheader("📀 Releases")
     st.markdown("""
+- [Counterfeit](https://open.spotify.com/album/1Cnug15A07CIImqFiprqVq)
 - [Tales From The Swamp](https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK)
-- [Hellbound Disciplez](https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv)
-- [21 Grams Lighter](https://open.spotify.com/album/40pDtzpR5i9jpvhjqNnidt)
-- [COUNTERFEIT](https://open.spotify.com/album/1Cnug15A07CIImqFiprqVq)
-- [3-D](https://open.spotify.com/album/6jrlncx29wFsRc1RzAmSJ1)
-- [CROWBAR](https://open.spotify.com/album/5dFrLqTiyxaH6LcuIQg6z0)
-- [EVIL](https://open.spotify.com/album/05IpSqxPS21KemQVRH0kWW)
+- [Crowbar](https://open.spotify.com/album/5dFrLqTiyxaH6LcuIQg6z0)
+- [My House](https://open.spotify.com/album/1AlunGB3eJm2YP38SP3KVj)
+- [Evil](https://open.spotify.com/album/05IpSqxPS21KemQVRH0kWW)
+- [Smoke](https://open.spotify.com/album/54ly6Sfv6krcsPOO1r2wMQ)
+- [Play Wit Brainz](https://open.spotify.com/album/617AGfI79Jb0bhiCSIQzqf)
+- [Rage](https://open.spotify.com/album/0RHUVaWHZGSaUJEoKg864j)
 - [Get Back](https://open.spotify.com/album/1AlunGB3eJm2YP38SP3KVj)
+- [Out The Gate](https://open.spotify.com/album/0LW0Gp5neAyHtihn5pxteR)
+- [3-D](https://open.spotify.com/album/6jrlncx29wFsRc1RzAmSJ1)
 - [HorrorCrunk In My Trunk](https://open.spotify.com/album/1ln4Uspsd3fzW0XxfJzNkV)
-- [My House](https://open.spotify.com/album/6LefUIwERGJCmAk26R463J)
-- [Out The Gate](https://open.spotify.com/album/0RHUVaWHZGSaUJEoKg864j)
-- [PLAY WIT BRAINZ](https://open.spotify.com/album/617AGfI79Jb0bhiCSIQzqf)
-- [Smoke](https://open.spotify.com/album/3S8xkqGMr0Km0NlQFM7v2g)
-- [RAGE](https://open.spotify.com/album/54ly6Sfv6krcsPOO1r2wMQ)
 - [Welcome To The South](https://open.spotify.com/album/3ZmMnJjsN0ISEOg62KfgUO)
-- [Bloodsuckers](https://open.spotify.com/album/2jEHxL0P2uHT6SPokLnayC)
-- [2 Pillar's](https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3)
 - [Reign Terror](https://open.spotify.com/album/2smEfqlW4Z16AUD5md7UxZ)
-- [Steppers ft. Psychologik](https://open.spotify.com/album/0LW0Gp5neAyHtihn5pxteR)
-- [Glitch Tape Vol 1](https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga)
+- [Bloodsuckers](https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3)
+- [2 Pillar's](https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga)
+- [Glitch Tape Vol 1](https://open.spotify.com/album/3S8xkqGMr0Km0NlQFM7v2g)
+- [Steppers](https://open.spotify.com/album/0LW0Gp5neAyHtihn5pxteR)
+- [21 Grams Lighter](https://open.spotify.com/album/40pDtzpR5i9jpvhjqNnidt)
 - [Godless Mixtape Vol 1](https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu)
+- [Hellbound Disciplez (Self Titled)](https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv)
 """)
 
     st.markdown("---")
 
     st.subheader("🔥 Follow Hellbound Disciplez")
     st.markdown("""
-🎧 https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ  
+🎧 [Spotify](https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ)
 
-📘 https://www.facebook.com/profile.php?id=100091797215709
+📘 [Facebook](https://www.facebook.com/profile.php?id=100091797215709)
 """)
 
 
