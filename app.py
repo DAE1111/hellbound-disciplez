@@ -79,7 +79,7 @@ st.markdown("""
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("HBDLOGO1.png", width=490)
-    st.subheader("Official Underground Hub")
+    st.markdown('<div style="text-align:center; font-family:Georgia, serif; font-size:24px; color:#ff2200;">Official Underground Hub</div>', unsafe_allow_html=True)
     st.markdown("---")
 
 # Load images for sidebar
@@ -91,11 +91,9 @@ with st.sidebar:
     st.image(top_img, use_column_width=True)
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Grimoires (Discography)", "The Cult (Members)", "The Catacombs (Photos)"])
-    # Bottom chainsaw removed
 
 # Ritual / Home page
 if menu == "The Ritual (Home)":
-    # WHO WE ARE with pistols pointing inward
     st.markdown(f"""
     <div style="text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:28px;">
     <span style="display:inline-block; vertical-align:middle;">
@@ -122,7 +120,6 @@ Forged in the depths of the underground, Hellbound Disciplez is a formidable tri
 elif menu == "The Grimoires (Discography)":
     st.header("💀 THE GRIMOIRES 💀")
     st.markdown("---")
-
     st.subheader("📀 Albums & Releases")
     st.markdown("""
 - **Tales From The Swamp** (2025) — 8 tracks
@@ -148,7 +145,6 @@ elif menu == "The Grimoires (Discography)":
 - **Reign Terror** (2023)
 - **Steppers ft. Psychologik** (2023)
 """)
-
     st.markdown("---")
     st.subheader("🔥 Follow / Stream Hellbound Disciplez")
     st.markdown("""
