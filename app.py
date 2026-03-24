@@ -14,6 +14,26 @@ st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="w
 
 st.markdown(f"""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+* {{
+    font-family: 'Creepster', cursive !important;
+}}
+
+::-webkit-scrollbar {{
+    width: 8px;
+}}
+::-webkit-scrollbar-track {{
+    background: #000000;
+}}
+::-webkit-scrollbar-thumb {{
+    background: #ff2200;
+    border-radius: 4px;
+}}
+::-webkit-scrollbar-thumb:hover {{
+    background: #ff5500;
+}}
+
 .stApp {{
     background-image:
         url("data:image/png;base64,{bg_layer}"),
@@ -31,7 +51,17 @@ st.markdown(f"""
 }}
 h1,h2,h3,h4,h5,h6,p,label {{
     color:#ff2200 !important;
-    font-family: Georgia, serif;
+    font-family: 'Creepster', cursive !important;
+    text-shadow: 0 0 10px #ff2200, 0 0 20px #ff0000;
+}}
+a {{
+    color: #ff2200 !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}}
+a:hover {{
+    color: #ff5500 !important;
+    text-shadow: 0 0 10px #ff2200;
 }}
 </style>
 """, unsafe_allow_html=True)
