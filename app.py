@@ -86,13 +86,11 @@ with col2:
 top_img = Image.open("chainsawart.png")
 bottom_img = top_img.transpose(Image.FLIP_TOP_BOTTOM)
 
-# Sidebar with top and bottom chainsawart
+# Sidebar with top image, menu, and bottom flipped image under social links
 with st.sidebar:
     st.image(top_img, use_column_width=True)
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
-    st.markdown("---")
-    st.image(bottom_img, use_column_width=True)
 
 # Ritual / Home page
 if menu == "The Ritual (Home)":
@@ -136,6 +134,7 @@ elif menu == "The Discography":
 - **Steppers ft. Psychologik** (2023)
 """)
 
+    # Social links and bottom chainsawart
     st.markdown("---")
     st.subheader("🔥 Follow / Stream Hellbound Disciplez")
     st.markdown("""
@@ -145,6 +144,7 @@ elif menu == "The Discography":
 📘 [Facebook](https://www.facebook.com/profile.php?id=100091797215709)  
 📸 [Instagram](https://www.instagram.com/hellbound_disciplez?igsh=dmV1bjc5NmZoazh0)
 """)
+    st.image(bottom_img, use_column_width=True)
 
 # Cult / Members page
 elif menu == "The Cult (Members)":
