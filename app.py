@@ -16,7 +16,7 @@ st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
 
-* {{
+.main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
     font-family: 'Creepster', cursive !important;
 }}
 
