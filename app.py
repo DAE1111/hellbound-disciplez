@@ -120,7 +120,7 @@ Forged in the depths of the underground, Hellbound Disciplez is a formidable tri
 elif menu == "The Grimoires (Discography)":
     st.markdown("""
 <div style="text-align:center; color:#ff2200; font-family:Georgia, serif; font-size:28px; margin-top:20px;">
-💀 THE GRIMOIRES 💀
+💀 THE GRIMOIRES (Discography) 💀
 </div>
 <div style="text-align:center; margin-top:20px;">
 📀 Albums & Releases
@@ -151,11 +151,11 @@ Steppers ft. Psychologik (2023)
 </div>
 <div style="text-align:center; margin-top:20px;">
 🔥 Follow / Stream Hellbound Disciplez<br>
-🎧 Spotify<br>
-🍎 Apple Music<br>
-📦 Amazon Music<br>
-📘 Facebook<br>
-📸 Instagram
+🎧 <a href="https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ" target="_blank">Spotify</a><br>
+🍎 <a href="https://music.apple.com/us/artist/hellbound-disciplez/1641539761" target="_blank">Apple Music</a><br>
+📦 <a href="https://music.amazon.com/artists/B0BBSJ6W1Z/hellbound-disciplez" target="_blank">Amazon Music</a><br>
+📘 <a href="https://www.facebook.com/profile.php?id=100091797215709" target="_blank">Facebook</a><br>
+📸 <a href="https://www.instagram.com/hellbound_disciplez?igsh=dmV1bjc5NmZoazh0" target="_blank">Instagram</a>
 </div>
 """, unsafe_allow_html=True)
 
