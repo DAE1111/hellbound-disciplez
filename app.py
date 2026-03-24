@@ -11,6 +11,7 @@ bg_layer = get_image_base64("BGLAYER1.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
+# CSS styling for background layers, fonts, and images
 st.markdown(f"""
 <style>
 .stApp {{
@@ -50,21 +51,37 @@ img {{
 display: block;
 margin: auto;
 }}
+
+/* Enlarge & highlight the sidebar toggle */
+[data-testid="collapsedControl"] {{
+    width: 40px !important;
+    height: 40px !important;
+    background-color: #ff2200 !important;
+    border-radius: 8px !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 999 !important;
+}}
 </style>
 """, unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns([1, 2, 1])
+# Instruction for sidebar toggle on main page
+st.markdown("➡️ **Tip:** Click the double arrow in the top-right corner of the sidebar to expand/collapse the menu.")
 
+# Main header logo
+col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("HBDLOGO1.png", width=490)
     st.subheader("Official Underground Hub")
     st.markdown("---")
 
+# Sidebar menu with top image
 with st.sidebar:
-    st.image("chainsawart.png", use_column_width=True)  # sidebar top image
+    st.image("chainsawart.png", use_column_width=True)
     st.header("THE VOID")
     menu = st.radio("Navigate:", ["The Ritual (Home)", "The Discography", "The Cult (Members)", "The Catacombs (Photos)"])
 
+# Home / Ritual page
 if menu == "The Ritual (Home)":
     st.header("☠️ WHO WE ARE ☠️")
     st.markdown("""
@@ -75,6 +92,7 @@ Forged in the depths of the underground, Hellbound Disciplez is a formidable tri
     st.markdown("---")
     st.subheader("⚡ Glitch Tape Vol. 2 — Coming Soon ⚡")
 
+# Discography page
 elif menu == "The Discography":
     st.header("💀 THE DISCOGRAPHY 💀")
     st.markdown("---")
@@ -115,6 +133,7 @@ elif menu == "The Discography":
 📸 [Instagram](https://www.instagram.com/hellbound_disciplez?igsh=dmV1bjc5NmZoazh0)
 """)
 
+# Cult / Members page
 elif menu == "The Cult (Members)":
     st.header("💀 THE CULT 💀")
     st.markdown("---")
@@ -144,6 +163,7 @@ elif menu == "The Cult (Members)":
         st.subheader("🔥 Osomane")
         st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
 
+# Catacombs / Photos page
 elif menu == "The Catacombs (Photos)":
     st.header("💀 THE CATACOMBS 💀")
     st.markdown("---")
