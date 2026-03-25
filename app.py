@@ -18,7 +18,17 @@ st.markdown(f"""
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
 
 *, html, body, .stApp {{
-    cursor: url("data:image/png;base64,{knife}") 16 16, auto !important;
+    cursor: none !important;
+}}
+
+#knife-cursor {{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 60px;
+    pointer-events: none;
+    z-index: 999999;
+    transform: translate(-50%, -50%);
 }}
 
 .main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
@@ -65,6 +75,18 @@ a:hover {{
     text-shadow: 0 0 10px #ff2200;
 }}
 </style>
+
+<img id="knife-cursor" src="data:image/png;base64,{knife}" />
+
+<script>
+document.addEventListener('mousemove', function(e) {{
+    var cursor = document.getElementById('knife-cursor');
+    if (cursor) {{
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    }}
+}});
+</script>
 """, unsafe_allow_html=True)
 
 st.markdown(
