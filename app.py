@@ -110,6 +110,41 @@ h1, h2, h3, h4, h5, h6,
     font-family: 'DoctorGlitch', cursive !important;
 }}
 
+/* SIDEBAR TOGGLE ARROW FIX — hide broken text label, keep SVG arrow visible */
+[data-testid="stSidebarCollapsedControl"] span:not(:has(svg)),
+[data-testid="stSidebarNavCollapseButton"] span:not(:has(svg)),
+[data-testid="collapsedControl"] span:not(:has(svg)) {{
+    display: none !important;
+}}
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarNavCollapseButton"],
+[data-testid="collapsedControl"] {{
+    font-size: 0 !important;
+    color: transparent !important;
+    background: transparent !important;
+    border: none !important;
+}}
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarNavCollapseButton"] svg,
+[data-testid="collapsedControl"] svg {{
+    display: block !important;
+    visibility: visible !important;
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    color: #ff2200 !important;
+    fill: #ff2200 !important;
+}}
+/* Nuclear option — hide ALL text nodes inside toggle buttons that aren't SVG */
+button[kind="header"] span,
+button[kind="headerNoBorder"] span {{
+    visibility: hidden !important;
+    font-size: 0 !important;
+}}
+button[kind="header"] svg,
+button[kind="headerNoBorder"] svg {{
+    visibility: visible !important;
+}}
+
 ::-webkit-scrollbar {{ width: 8px; }}
 ::-webkit-scrollbar-track {{ background: #000000; }}
 ::-webkit-scrollbar-thumb {{ background: #ff2200; border-radius: 4px; }}
@@ -178,24 +213,38 @@ img {{
 }}
 
 #nav-hint span.arrow {{
-    font-size: 20px;
+    font-size: 20px !important;
     color: #ff2200;
     font-weight: bold;
     line-height: 1;
+    visibility: visible !important;
+    display: inline !important;
 }}
 
 #nav-hint span.text {{
     font-family: 'DoctorGlitch', cursive !important;
-    font-size: 16px;
+    font-size: 16px !important;
     color: #ff2200;
     letter-spacing: 1px;
     white-space: nowrap;
     -webkit-text-stroke: 0.3px white;
+    visibility: visible !important;
+    display: inline !important;
 }}
 
 @keyframes announcePulse {{
     0%, 100% {{ text-shadow: 0 0 10px #ff2200, 0 0 20px #ff2200, 0 0 40px #ff0000; letter-spacing: 4px; }}
     50% {{ text-shadow: 0 0 20px #ff5500, 0 0 40px #ff2200, 0 0 80px #ff0000; letter-spacing: 6px; }}
+}}
+
+.section-header {{
+    font-family: 'DoctorGlitch', cursive !important;
+    font-size: 28px !important;
+    color: #ff2200 !important;
+    -webkit-text-stroke: 0.5px white;
+    display: block;
+    text-align: center;
+    margin: 10px 0;
 }}
 
 .announce-text {{
@@ -320,6 +369,19 @@ function triggerVHS() {{
 var doc = window.parent.document;
 doc.addEventListener("click", function() {{ playShotty(); triggerVHS(); }});
 
+function fixSidebarButton() {{
+    var btns = doc.querySelectorAll(
+        "[data-testid='stSidebarCollapsedControl'], [data-testid='stSidebarNavCollapseButton'], [data-testid='collapsedControl']"
+    );
+    btns.forEach(function(btn) {{
+        btn.querySelectorAll("span").forEach(function(span) {{
+            if (!span.querySelector("svg")) {{
+                span.style.display = "none";
+            }}
+        }});
+    }});
+}}
+
 function attachHoverSounds() {{
     var clickables = doc.querySelectorAll("a, button, [role='radio'], [role='button'], label");
     clickables.forEach(function(el) {{
@@ -330,8 +392,12 @@ function attachHoverSounds() {{
     }});
 }}
 
+fixSidebarButton();
 attachHoverSounds();
-setInterval(attachHoverSounds, 1500);
+setInterval(function() {{
+    fixSidebarButton();
+    attachHoverSounds();
+}}, 1500);
 </script>
 """, height=0)
 
@@ -353,10 +419,12 @@ with st.sidebar:
 
 if menu == "The Ritual (Home)":
     st.markdown(f"""
-    <div style="text-align:center;font-size:28px;font-family:'DoctorGlitch',cursive;">
-    <img src="data:image/png;base64,{pistol}" width="60">
-    <b> WHO ARE WE </b>
-    <img src="data:image/png;base64,{pistol}" width="60" style="transform:scaleX(-1);">
+    <div style="text-align:center;">
+        <span class="section-header">
+        <img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;">
+        WHO ARE WE
+        <img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;transform:scaleX(-1);">
+        </span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -391,10 +459,14 @@ Hellbound Disciplez.
 
 elif menu == "The Grimoires (Discography)":
     st.markdown(f"""
-<div style="text-align:center;font-size:28px;font-family:'DoctorGlitch',cursive;">
-<img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE GRIMOIRES (Discography) </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
+<div style="text-align:center;">
+    <span class="section-header">
+    <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;">
+    THE GRIMOIRES (Discography)
+    <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
+    </span>
 </div>
-<div style="text-align:center;margin-top:20px;font-family:'DoctorGlitch',cursive;">📀 Albums / Mixtapes / EPs</div>
+<div style="text-align:center;margin-top:20px;font-family:'DoctorGlitch',cursive;font-size:20px;color:#ff2200;">📀 Albums / Mixtapes / EPs</div>
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;">
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
 <a href="https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga" target="_blank">Hellbound Disciplez (Self Titled)</a> (2023) — 15 tracks<br>
@@ -403,8 +475,12 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/2jEHxL0P2uHT6SPokLnayC" target="_blank">Glitch Tape Vol.1</a> (2023) — 7 tracks<br>
 <a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
 </div>
-<div style="text-align:center;margin-top:25px;font-family:'DoctorGlitch',cursive;">
-<img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> Singles </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
+<div style="text-align:center;margin-top:25px;">
+    <span class="section-header">
+    <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;">
+    Singles
+    <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
+    </span>
 </div>
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;">
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
@@ -435,7 +511,15 @@ elif menu == "The Grimoires (Discography)":
 """, unsafe_allow_html=True)
 
 elif menu == "The Cult (Members)":
-    st.markdown(f'<div style="text-align:center;font-size:28px;font-family:\'DoctorGlitch\',cursive;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CULT </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="text-align:center;">
+        <span class="section-header">
+        <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;">
+        THE CULT
+        <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
     st.markdown("---")
 
     col1, col2 = st.columns([1, 3])
@@ -464,11 +548,20 @@ elif menu == "The Cult (Members)":
         st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;">Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>', unsafe_allow_html=True)
 
 elif menu == "The Catacombs (Photos)":
-    st.markdown(f'<div style="text-align:center;font-size:28px;font-family:\'DoctorGlitch\',cursive;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CATACOMBS </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="text-align:center;">
+        <span class="section-header">
+        <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;">
+        THE CATACOMBS
+        <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
     st.markdown("---")
 
     photos = get_shuffled_photos()
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
+            st.image(photo_path, use_container_width=True)
             st.image(photo_path, use_container_width=True)
