@@ -93,75 +93,17 @@ css = """
     box-sizing: border-box;
 }
 
-/* BUTTONS - completely untouched, Streamlit handles these */
-button, button *, [data-testid="stSidebarCollapsedControl"],
-[data-testid="stSidebarCollapsedControl"] * {
-    font-family: unset !important;
-    font-size: unset !important;
-    color: unset !important;
-    visibility: visible !important;
-    display: revert !important;
-    opacity: revert !important;
-    width: revert !important;
-    height: revert !important;
-    position: revert !important;
-    overflow: revert !important;
-    pointer-events: revert !important;
+/* NUCLEAR BUTTON RESET - this must come first */
+button, button p, button span, button div,
+button svg, button svg *,
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapsedControl"] *,
+[data-testid="stSidebarNavCollapseButton"],
+[data-testid="stSidebarNavCollapseButton"] *,
+[data-testid="collapsedControl"],
+[data-testid="collapsedControl"] * {
+    all: revert !important;
 }
-
-/* FONTS - scoped only to content, never buttons */
-[data-testid="stMain"] p,
-[data-testid="stMain"] li,
-[data-testid="stMain"] a,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] li,
-[data-testid="stSidebar"] label {
-    font-family: 'BaronessKuffner', cursive !important;
-    font-size: 28px !important;
-    color: #ff2200 !important;
-}
-
-[data-testid="stMain"] h1,
-[data-testid="stMain"] h2,
-[data-testid="stMain"] h3,
-[data-testid="stMain"] h4,
-[data-testid="stMain"] h5,
-[data-testid="stMain"] h6,
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {
-    font-family: 'DoctorGlitch', cursive !important;
-    color: #ff2200 !important;
-}
-
-[data-testid="stMain"] a {
-    color: #ff2200 !important;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-[data-testid="stMain"] a:hover {
-    color: #ff5500 !important;
-    text-shadow: 0 0 10px #ff2200;
-}
-
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #000; }
-::-webkit-scrollbar-thumb { background: #ff2200; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #ff5500; }
-
-.stApp {
-    background-image: url("data:image/png;base64,""" + bg_data + """");
-    background-size: cover;
-    background-repeat: repeat;
-    background-attachment: fixed;
-    color: #ff2200;
-}
-[data-testid="stSidebar"] {
-    background-image: url("data:image/png;base64,""" + bg_data + """");
-    background-size: cover;
-    background-repeat: repeat;
-}
-img { transform: translateZ(0); }
 
 /* NAV HINT */
 @keyframes navPulse {
@@ -183,6 +125,7 @@ img { transform: translateZ(0); }
     animation: navPulse 2s ease-in-out infinite;
     box-shadow: 0 0 10px rgba(255,34,0,0.5);
     pointer-events: none;
+    font-family: sans-serif !important;
 }
 #nav-hint .nh-arrow {
     font-size: 20px;
@@ -198,6 +141,57 @@ img { transform: translateZ(0); }
     letter-spacing: 1px;
     white-space: nowrap;
     -webkit-text-stroke: 0.3px white;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #ff2200; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #ff5500; }
+
+.stApp {
+    background-image: url("data:image/png;base64,""" + bg_data + """");
+    background-size: cover;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    color: #ff2200;
+}
+[data-testid="stSidebar"] {
+    background-image: url("data:image/png;base64,""" + bg_data + """");
+    background-size: cover;
+    background-repeat: repeat;
+}
+img { transform: translateZ(0); }
+
+[data-testid="stMain"] p,
+[data-testid="stMain"] li,
+[data-testid="stMain"] a,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] li,
+[data-testid="stSidebar"] label {
+    font-family: 'BaronessKuffner', cursive !important;
+    font-size: 28px !important;
+    color: #ff2200 !important;
+}
+[data-testid="stMain"] h1,
+[data-testid="stMain"] h2,
+[data-testid="stMain"] h3,
+[data-testid="stMain"] h4,
+[data-testid="stMain"] h5,
+[data-testid="stMain"] h6,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    font-family: 'DoctorGlitch', cursive !important;
+    color: #ff2200 !important;
+}
+[data-testid="stMain"] a {
+    color: #ff2200 !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+[data-testid="stMain"] a:hover {
+    color: #ff5500 !important;
+    text-shadow: 0 0 10px #ff2200;
 }
 
 @keyframes announcePulse {
