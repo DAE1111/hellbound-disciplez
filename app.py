@@ -4,41 +4,43 @@ import random
 from PIL import Image
 import io
 import streamlit.components.v1 as components
-
+ 
+# ─── Asset Loaders (all cached) ───────────────────────────────────────────────
+ 
 @st.cache_data(show_spinner=False)
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
-
+ 
 @st.cache_data(show_spinner=False)
 def get_image_base64_resized_flipped(filename, size=(64, 64)):
     img = Image.open(filename).convert("RGBA")
     img = img.resize(size, Image.LANCZOS)
     img = img.transpose(Image.FLIP_LEFT_RIGHT)
-    buffer = io.BytesIO()
-    img.save(buffer, format="PNG")
-    return base64.b64encode(buffer.getvalue()).decode("utf-8")
-
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+ 
 @st.cache_data(show_spinner=False)
 def get_image_base64_transparent(filename, opacity=0.5):
     img = Image.open(filename).convert("RGBA")
     r, g, b, a = img.split()
     a = a.point(lambda x: int(x * opacity))
     img = Image.merge("RGBA", (r, g, b, a))
-    buffer = io.BytesIO()
-    img.save(buffer, format="PNG")
-    return base64.b64encode(buffer.getvalue()).decode("utf-8")
-
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+ 
 @st.cache_data(show_spinner=False)
 def get_audio_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
-
+ 
 @st.cache_data(show_spinner=False)
 def get_font_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
-
+ 
 @st.cache_data(show_spinner=False)
 def get_shuffled_photos():
     photos = [
@@ -53,185 +55,218 @@ def get_shuffled_photos():
     ]
     random.shuffle(photos)
     return photos
-
-bg_data      = get_image_base64("BGSKULLS.png")
-skull        = get_image_base64("SKULL1.png")
-shotgun      = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
-pistol       = get_image_base64("pistol-removebg-preview.png")
-logo         = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
-reload_snd   = get_audio_base64("reload.wav")
-shotty_snd   = get_audio_base64("shottyblast.wav")
-font_baroness = get_font_base64("BaronessKuffner.ttf")
-font_glitch  = get_font_base64("DoctorGlitch.otf")
-
+ 
+# ─── Load Assets (cached after first run) ─────────────────────────────────────
+ 
+bg_data        = get_image_base64("BGSKULLS.png")
+skull          = get_image_base64("SKULL1.png")
+shotgun        = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
+pistol         = get_image_base64("pistol-removebg-preview.png")
+logo           = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
+reload_snd     = get_audio_base64("reload.wav")
+shotty_snd     = get_audio_base64("shottyblast.wav")
+font_baroness  = get_font_base64("BaronessKuffner.ttf")
+font_glitch    = get_font_base64("DoctorGlitch.otf")
+ 
+# ─── Page Config ──────────────────────────────────────────────────────────────
+ 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
-
-BG_URL    = "url(\"data:image/png;base64," + bg_data + "\")"
-CURSOR_URL = "url(\"data:image/png;base64," + shotgun + "\") 10 4, auto"
-
-css = (
-    "<style>"
-    "@import url('https://fonts.googleapis.com/icon?family=Material+Icons');"
-
-    "@font-face {"
-    "font-family:'BaronessKuffner';"
-    "src:url(\"data:font/truetype;base64," + font_baroness + "\") format('truetype');"
-    "font-display:swap;}"
-
-    "@font-face {"
-    "font-family:'DoctorGlitch';"
-    "src:url(\"data:font/otf;base64," + font_glitch + "\") format('opentype');"
-    "font-display:swap;}"
-
-    "*,html,body,.stApp,[data-testid=\"stSidebar\"],.stApp *{"
-    "cursor:" + CURSOR_URL + " !important;"
-    "-webkit-font-smoothing:antialiased;"
-    "box-sizing:border-box;}"
-
-    "[data-testid=\"stSidebarCollapsedControl\"] span,"
-    "[data-testid=\"stSidebarCollapsedControl\"] button span,"
-    "[data-testid=\"stSidebarNavCollapseButton\"] span,"
-    "[data-testid=\"collapsedControl\"] span,"
-    "button[aria-label=\"Close sidebar\"] span,"
-    "button[aria-label=\"Open sidebar\"] span,"
-    "button[aria-label=\"collapse sidebar\"] span,"
-    "button[aria-label=\"expand sidebar\"] span,"
-    "button[aria-label=\"Collapse sidebar\"] span,"
-    "button[aria-label=\"Expand sidebar\"] span{"
-    "font-family:'Material Icons' !important;"
-    "font-size:24px !important;"
-    "font-style:normal !important;"
-    "font-weight:normal !important;"
-    "line-height:1 !important;"
-    "letter-spacing:normal !important;"
-    "text-transform:none !important;"
-    "display:inline-block !important;"
-    "white-space:nowrap !important;"
-    "word-wrap:normal !important;"
-    "direction:ltr !important;"
-    "color:#ff2200 !important;"
-    "-webkit-font-feature-settings:'liga' !important;"
-    "font-feature-settings:'liga' !important;"
-    "-webkit-font-smoothing:antialiased !important;}"
-
-    "@keyframes navPulse{"
-    "0%,100%{opacity:1;transform:translateX(0);}"
-    "50%{opacity:0.6;transform:translateX(3px);}}"
-
-    "#nav-hint{"
-    "position:fixed;top:80px;left:8px;z-index:9999;"
-    "display:flex;align-items:center;gap:6px;"
-    "background:rgba(0,0,0,0.75);border:1px solid #ff2200;"
-    "border-radius:6px;padding:6px 12px;"
-    "animation:navPulse 2s ease-in-out infinite;"
-    "box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;}"
-
-    "#nav-hint .nh-text{"
-    "font-family:'DoctorGlitch',cursive !important;"
-    "font-size:16px;color:#ff2200;letter-spacing:1px;"
-    "white-space:nowrap;-webkit-text-stroke:0.3px white;}"
-
-    "::-webkit-scrollbar{width:8px;}"
-    "::-webkit-scrollbar-track{background:#000;}"
-    "::-webkit-scrollbar-thumb{background:#ff2200;border-radius:4px;}"
-    "::-webkit-scrollbar-thumb:hover{background:#ff5500;}"
-
-    ".stApp{"
-    "background-image:" + BG_URL + ";"
-    "background-size:cover;background-repeat:repeat;"
-    "background-attachment:fixed;color:#ff2200;}"
-
-    "[data-testid=\"stSidebar\"]{"
-    "background-image:" + BG_URL + ";"
-    "background-size:cover;background-repeat:repeat;}"
-
-    "img{transform:translateZ(0);}"
-
-    "[data-testid=\"stMain\"] p,"
-    "[data-testid=\"stMain\"] li,"
-    "[data-testid=\"stMain\"] a,"
-    "[data-testid=\"stSidebar\"] p,"
-    "[data-testid=\"stSidebar\"] li,"
-    "[data-testid=\"stSidebar\"] label{"
-    "font-family:'BaronessKuffner',cursive !important;"
-    "font-size:28px !important;color:#ff2200 !important;}"
-
-    "[data-testid=\"stMain\"] h1,[data-testid=\"stMain\"] h2,"
-    "[data-testid=\"stMain\"] h3,[data-testid=\"stMain\"] h4,"
-    "[data-testid=\"stMain\"] h5,[data-testid=\"stMain\"] h6,"
-    "[data-testid=\"stSidebar\"] h1,[data-testid=\"stSidebar\"] h2,"
-    "[data-testid=\"stSidebar\"] h3{"
-    "font-family:'DoctorGlitch',cursive !important;color:#ff2200 !important;}"
-
-    "[data-testid=\"stMain\"] a{"
-    "color:#ff2200 !important;text-decoration:none;transition:color 0.2s ease;}"
-
-    "[data-testid=\"stMain\"] a:hover{"
-    "color:#ff5500 !important;text-shadow:0 0 10px #ff2200;}"
-
-    "@keyframes announcePulse{"
-    "0%,100%{text-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:4px;}"
-    "50%{text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:6px;}}"
-
-    ".section-header{"
-    "font-family:'DoctorGlitch',cursive !important;"
-    "font-size:28px !important;color:#ff2200 !important;"
-    "-webkit-text-stroke:0.5px white;"
-    "display:block;text-align:center;margin:10px 0;}"
-
-    ".skull-divider{display:block;text-align:center;margin:6px 0 18px 0;}"
-
-    ".announce-text{"
-    "font-family:'DoctorGlitch',cursive !important;"
-    "font-size:28px !important;color:#ff2200 !important;"
-    "-webkit-text-stroke:0.5px white;"
-    "animation:announcePulse 2s ease-in-out infinite;"
-    "display:block;text-align:center;margin:10px 0;}"
-
-    ".glitch-tape-text{"
-    "font-family:'DoctorGlitch',cursive !important;"
-    "font-size:28px !important;color:#ff2200 !important;"
-    "-webkit-text-stroke:0.5px white;"
-    "display:block;text-align:center;margin:10px 0;}"
-
-    "@keyframes vhs-shake{"
-    "0%{transform:translate(0,0) skewX(0deg);filter:none;}"
-    "10%{transform:translate(-6px,3px) skewX(-3deg);filter:hue-rotate(90deg) saturate(3) brightness(1.4);}"
-    "20%{transform:translate(6px,-3px) skewX(3deg);filter:hue-rotate(180deg) saturate(4) brightness(0.8);}"
-    "30%{transform:translate(-4px,5px) skewX(-2deg);filter:hue-rotate(270deg) saturate(5) brightness(1.6) blur(1px);}"
-    "40%{transform:translate(8px,-2px) skewX(4deg);filter:hue-rotate(0deg) saturate(6) brightness(0.6) blur(2px);}"
-    "50%{transform:translate(-8px,4px) skewX(-4deg);filter:hue-rotate(120deg) saturate(8) brightness(1.8) blur(1px);}"
-    "60%{transform:translate(4px,-5px) skewX(2deg);filter:hue-rotate(240deg) saturate(5) brightness(0.7);}"
-    "70%{transform:translate(-6px,2px) skewX(-3deg);filter:hue-rotate(60deg) saturate(3) brightness(1.3);}"
-    "80%{transform:translate(5px,-3px) skewX(2deg);filter:hue-rotate(180deg) saturate(4) brightness(1.1) blur(1px);}"
-    "90%{transform:translate(-3px,4px) skewX(-1deg);filter:hue-rotate(300deg) saturate(2) brightness(0.9);}"
-    "100%{transform:translate(0,0) skewX(0deg);filter:none;}}"
-
-    "@keyframes scanline-flash{"
-    "0%{opacity:0;}20%{opacity:0.6;}40%{opacity:0.2;}"
-    "60%{opacity:0.8;}80%{opacity:0.3;}100%{opacity:0;}}"
-
-    ".vhs-glitch-active{animation:vhs-shake 0.5s steps(1,end) forwards !important;}"
-
-    "#vhs-overlay{"
-    "position:fixed;top:0;left:0;width:100vw;height:100vh;"
-    "pointer-events:none;z-index:999998;display:none;"
-    "background:repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0px,rgba(255,0,0,0.08) 1px,transparent 1px,transparent 3px);}"
-
-    "#vhs-overlay.active{display:block;animation:scanline-flash 0.5s steps(1,end) forwards;}"
-
-    "#vhs-rgb-r,#vhs-rgb-b{"
-    "position:fixed;top:0;left:0;width:100vw;height:100vh;"
-    "pointer-events:none;z-index:999997;display:none;mix-blend-mode:screen;}"
-
-    "#vhs-rgb-r{background:rgba(255,0,0,0.15);}"
-    "#vhs-rgb-b{background:rgba(0,0,255,0.15);}"
-    "#vhs-rgb-r.active,#vhs-rgb-b.active{display:block;animation:scanline-flash 0.5s steps(1,end) forwards;}"
-    "</style>"
-)
-
+ 
+# ─── Prebuilt reusable strings ─────────────────────────────────────────────────
+ 
+BG_URL     = f'url("data:image/png;base64,{bg_data}")'
+CURSOR_URL = f'url("data:image/png;base64,{shotgun}") 10 4, auto'
+ 
+skull_s       = f'<img src="data:image/png;base64,{skull}" width="80" style="margin:0 8px;">'
+skull_s_r     = f'<img src="data:image/png;base64,{skull}" width="80" style="margin:0 8px;transform:scaleX(-1);">'
+skull_divider = f'<div class="skull-divider">{skull_s_r}{skull_s}{skull_s_r}</div>'
+pistol_l      = f'<img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;">'
+pistol_r      = f'<img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
+ 
+# ─── CSS ──────────────────────────────────────────────────────────────────────
+ 
+css = f"""
+<style>
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+ 
+@font-face {{
+  font-family:'BaronessKuffner';
+  src:url("data:font/truetype;base64,{font_baroness}") format('truetype');
+  font-display:swap;
+}}
+@font-face {{
+  font-family:'DoctorGlitch';
+  src:url("data:font/otf;base64,{font_glitch}") format('opentype');
+  font-display:swap;
+}}
+ 
+*,html,body,.stApp,[data-testid="stSidebar"],.stApp * {{
+  cursor:{CURSOR_URL} !important;
+  -webkit-font-smoothing:antialiased;
+  box-sizing:border-box;
+}}
+ 
+[data-testid="stSidebarCollapsedControl"] span,
+[data-testid="stSidebarCollapsedControl"] button span,
+[data-testid="stSidebarNavCollapseButton"] span,
+[data-testid="collapsedControl"] span,
+button[aria-label="Close sidebar"] span,
+button[aria-label="Open sidebar"] span,
+button[aria-label="collapse sidebar"] span,
+button[aria-label="expand sidebar"] span,
+button[aria-label="Collapse sidebar"] span,
+button[aria-label="Expand sidebar"] span {{
+  font-family:'Material Icons' !important;
+  font-size:24px !important;
+  font-style:normal !important;
+  font-weight:normal !important;
+  line-height:1 !important;
+  letter-spacing:normal !important;
+  text-transform:none !important;
+  display:inline-block !important;
+  white-space:nowrap !important;
+  word-wrap:normal !important;
+  direction:ltr !important;
+  color:#ff2200 !important;
+  -webkit-font-feature-settings:'liga' !important;
+  font-feature-settings:'liga' !important;
+  -webkit-font-smoothing:antialiased !important;
+}}
+ 
+@keyframes navPulse {{
+  0%,100% {{ opacity:1; transform:translateX(0); }}
+  50%      {{ opacity:0.6; transform:translateX(3px); }}
+}}
+ 
+#nav-hint {{
+  position:fixed;top:80px;left:8px;z-index:9999;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,0.75);border:1px solid #ff2200;
+  border-radius:6px;padding:6px 12px;
+  animation:navPulse 2s ease-in-out infinite;
+  box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
+}}
+#nav-hint .nh-text {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:16px;color:#ff2200;letter-spacing:1px;
+  white-space:nowrap;-webkit-text-stroke:0.3px white;
+}}
+ 
+::-webkit-scrollbar       {{ width:8px; }}
+::-webkit-scrollbar-track {{ background:#000; }}
+::-webkit-scrollbar-thumb {{ background:#ff2200;border-radius:4px; }}
+::-webkit-scrollbar-thumb:hover {{ background:#ff5500; }}
+ 
+.stApp {{
+  background-image:{BG_URL};
+  background-size:cover;background-repeat:repeat;
+  background-attachment:fixed;color:#ff2200;
+}}
+[data-testid="stSidebar"] {{
+  background-image:{BG_URL};
+  background-size:cover;background-repeat:repeat;
+}}
+ 
+img {{ transform:translateZ(0); }}
+ 
+[data-testid="stMain"] p,
+[data-testid="stMain"] li,
+[data-testid="stMain"] a,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] li,
+[data-testid="stSidebar"] label {{
+  font-family:'BaronessKuffner',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+}}
+ 
+[data-testid="stMain"] h1,[data-testid="stMain"] h2,
+[data-testid="stMain"] h3,[data-testid="stMain"] h4,
+[data-testid="stMain"] h5,[data-testid="stMain"] h6,
+[data-testid="stSidebar"] h1,[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {{
+  font-family:'DoctorGlitch',cursive !important;color:#ff2200 !important;
+}}
+ 
+[data-testid="stMain"] a {{
+  color:#ff2200 !important;text-decoration:none;transition:color 0.2s ease;
+}}
+[data-testid="stMain"] a:hover {{
+  color:#ff5500 !important;text-shadow:0 0 10px #ff2200;
+}}
+ 
+@keyframes announcePulse {{
+  0%,100% {{ text-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:4px; }}
+  50%      {{ text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:6px; }}
+}}
+ 
+.section-header {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+  -webkit-text-stroke:0.5px white;
+  display:block;text-align:center;margin:10px 0;
+}}
+.skull-divider {{ display:block;text-align:center;margin:6px 0 18px 0; }}
+ 
+.announce-text {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+  -webkit-text-stroke:0.5px white;
+  animation:announcePulse 2s ease-in-out infinite;
+  display:block;text-align:center;margin:10px 0;
+}}
+.glitch-tape-text {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+  -webkit-text-stroke:0.5px white;
+  display:block;text-align:center;margin:10px 0;
+}}
+ 
+@keyframes vhs-shake {{
+  0%   {{ transform:translate(0,0) skewX(0deg);filter:none; }}
+  10%  {{ transform:translate(-6px,3px) skewX(-3deg);filter:hue-rotate(90deg) saturate(3) brightness(1.4); }}
+  20%  {{ transform:translate(6px,-3px) skewX(3deg);filter:hue-rotate(180deg) saturate(4) brightness(0.8); }}
+  30%  {{ transform:translate(-4px,5px) skewX(-2deg);filter:hue-rotate(270deg) saturate(5) brightness(1.6) blur(1px); }}
+  40%  {{ transform:translate(8px,-2px) skewX(4deg);filter:hue-rotate(0deg) saturate(6) brightness(0.6) blur(2px); }}
+  50%  {{ transform:translate(-8px,4px) skewX(-4deg);filter:hue-rotate(120deg) saturate(8) brightness(1.8) blur(1px); }}
+  60%  {{ transform:translate(4px,-5px) skewX(2deg);filter:hue-rotate(240deg) saturate(5) brightness(0.7); }}
+  70%  {{ transform:translate(-6px,2px) skewX(-3deg);filter:hue-rotate(60deg) saturate(3) brightness(1.3); }}
+  80%  {{ transform:translate(5px,-3px) skewX(2deg);filter:hue-rotate(180deg) saturate(4) brightness(1.1) blur(1px); }}
+  90%  {{ transform:translate(-3px,4px) skewX(-1deg);filter:hue-rotate(300deg) saturate(2) brightness(0.9); }}
+  100% {{ transform:translate(0,0) skewX(0deg);filter:none; }}
+}}
+ 
+@keyframes scanline-flash {{
+  0%  {{ opacity:0; }}  20% {{ opacity:0.6; }} 40% {{ opacity:0.2; }}
+  60% {{ opacity:0.8; }} 80% {{ opacity:0.3; }} 100% {{ opacity:0; }}
+}}
+ 
+.vhs-glitch-active {{ animation:vhs-shake 0.5s steps(1,end) forwards !important; }}
+ 
+#vhs-overlay {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  pointer-events:none;z-index:999998;display:none;
+  background:repeating-linear-gradient(
+    0deg,rgba(255,0,0,0.08) 0px,rgba(255,0,0,0.08) 1px,
+    transparent 1px,transparent 3px);
+}}
+#vhs-overlay.active {{ display:block;animation:scanline-flash 0.5s steps(1,end) forwards; }}
+ 
+#vhs-rgb-r,#vhs-rgb-b {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  pointer-events:none;z-index:999997;display:none;mix-blend-mode:screen;
+}}
+#vhs-rgb-r {{ background:rgba(255,0,0,0.15); }}
+#vhs-rgb-b {{ background:rgba(0,0,255,0.15); }}
+#vhs-rgb-r.active,#vhs-rgb-b.active {{
+  display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
+}}
+</style>
+"""
+ 
 st.markdown(css, unsafe_allow_html=True)
-
+ 
+# ─── Persistent overlays & nav hint ───────────────────────────────────────────
+ 
 st.markdown(
     '<div id="nav-hint"><span class="nh-text">TAP ARROW TO NAVIGATE</span></div>'
     '<div id="vhs-overlay"></div>'
@@ -239,52 +274,81 @@ st.markdown(
     '<div id="vhs-rgb-b"></div>',
     unsafe_allow_html=True
 )
-
-skull_s   = '<img src="data:image/png;base64,' + skull + '" width="80" style="margin:0 8px;">'
-skull_s_r = '<img src="data:image/png;base64,' + skull + '" width="80" style="margin:0 8px;transform:scaleX(-1);">'
-skull_divider = '<div class="skull-divider">' + skull_s_r + skull_s + skull_s_r + '</div>'
-
-pistol_l = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
-pistol_r = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
-
+ 
+# ─── Audio + interaction JS (deferred until first user gesture) ───────────────
+ 
 components.html(
-    "<script>"
-    "var doc=window.parent.document;"
-    "var reloadAudio=new Audio(\"data:audio/wav;base64," + reload_snd + "\");"
-    "var shottyAudio=new Audio(\"data:audio/wav;base64," + shotty_snd + "\");"
-    "reloadAudio.volume=0.64;shottyAudio.volume=0.64;"
-    "function playReload(){reloadAudio.currentTime=0;reloadAudio.play();}"
-    "function playShotty(){shottyAudio.currentTime=0;shottyAudio.play();}"
-    "function triggerVHS(){"
-    "var app=doc.querySelector('.stApp');"
-    "var overlay=doc.getElementById('vhs-overlay');"
-    "var rgbR=doc.getElementById('vhs-rgb-r');"
-    "var rgbB=doc.getElementById('vhs-rgb-b');"
-    "[app,overlay,rgbR,rgbB].forEach(function(el){"
-    "if(!el)return;"
-    "el.classList.remove('vhs-glitch-active','active');"
-    "void el.offsetWidth;"
-    "el.classList.add(el===app?'vhs-glitch-active':'active');"
-    "setTimeout(function(){el.classList.remove('vhs-glitch-active','active');},500);});}"
-    "doc.addEventListener('click',function(e){playShotty();triggerVHS();});"
-    "function attachHoverSounds(){"
-    "doc.querySelectorAll('a,button,[role=\"radio\"],[role=\"button\"],label').forEach(function(el){"
-    "if(!el.dataset.soundAttached){"
-    "el.addEventListener('mouseenter',playReload);"
-    "el.dataset.soundAttached='true';}});}"
-    "attachHoverSounds();"
-    "setInterval(attachHoverSounds,1500);"
-    "</script>",
+    f"""
+    <script>
+    (function() {{
+      var doc = window.parent.document;
+      var reloadAudio = null;
+      var shottyAudio = null;
+      var audioReady  = false;
+ 
+      function initAudio() {{
+        if (audioReady) return;
+        audioReady = true;
+        reloadAudio = new Audio("data:audio/wav;base64,{reload_snd}");
+        shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
+        reloadAudio.volume = 0.64;
+        shottyAudio.volume = 0.64;
+      }}
+ 
+      function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
+      function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
+ 
+      function triggerVHS() {{
+        var app     = doc.querySelector('.stApp');
+        var overlay = doc.getElementById('vhs-overlay');
+        var rgbR    = doc.getElementById('vhs-rgb-r');
+        var rgbB    = doc.getElementById('vhs-rgb-b');
+        [app, overlay, rgbR, rgbB].forEach(function(el) {{
+          if (!el) return;
+          el.classList.remove('vhs-glitch-active', 'active');
+          void el.offsetWidth;
+          el.classList.add(el === app ? 'vhs-glitch-active' : 'active');
+          setTimeout(function() {{ el.classList.remove('vhs-glitch-active', 'active'); }}, 500);
+        }});
+      }}
+ 
+      function attachHoverSounds() {{
+        doc.querySelectorAll('a,button,[role="radio"],[role="button"],label').forEach(function(el) {{
+          if (!el.dataset.soundAttached) {{
+            el.addEventListener('mouseenter', playReload);
+            el.dataset.soundAttached = 'true';
+          }}
+        }});
+      }}
+ 
+      doc.addEventListener('click', function() {{
+        initAudio();
+        playShotty();
+        triggerVHS();
+      }}, {{ passive: true }});
+ 
+      doc.addEventListener('mousemove', initAudio, {{ once: true, passive: true }});
+ 
+      attachHoverSounds();
+      setInterval(attachHoverSounds, 1500);
+    }})();
+    </script>
+    """,
     height=0
 )
-
+ 
+# ─── Logo ──────────────────────────────────────────────────────────────────────
+ 
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.markdown(
-        '<img src="data:image/png;base64,' + logo + '" width="500" style="display:block;margin:auto;">',
+        f'<img src="data:image/png;base64,{logo}" width="500" '
+        f'style="display:block;margin:auto;" loading="lazy">',
         unsafe_allow_html=True
     )
-
+ 
+# ─── Sidebar ───────────────────────────────────────────────────────────────────
+ 
 with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("", [
@@ -293,9 +357,15 @@ with st.sidebar:
         "The Cult (Members)",
         "The Catacombs (Photos)"
     ])
-
+ 
+# ─── Pages ─────────────────────────────────────────────────────────────────────
+ 
 if menu == "The Ritual (Home)":
-    st.markdown('<div style="text-align:center;"><span class="section-header">' + pistol_l + ' WHO ARE WE ' + pistol_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div style="text-align:center;"><span class="section-header">'
+        f'{pistol_l} WHO ARE WE {pistol_r}</span></div>',
+        unsafe_allow_html=True
+    )
     st.markdown(skull_divider, unsafe_allow_html=True)
     st.markdown(
         "<div style=\"text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;\">"
@@ -310,10 +380,16 @@ if menu == "The Ritual (Home)":
         "</div><br><br>",
         unsafe_allow_html=True
     )
-    st.markdown('<div style="text-align:center;"><span class="announce-text">ANNOUNCEMENTS</span></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div style="text-align:center;"><span class="announce-text">ANNOUNCEMENTS</span></div>',
+        unsafe_allow_html=True
+    )
     st.markdown(skull_divider, unsafe_allow_html=True)
-    st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">Glitch Tape Vol. 2 — Coming Soon</span></div>', unsafe_allow_html=True)
-
+    st.markdown(
+        '<div style="text-align:center;"><span class="glitch-tape-text">Glitch Tape Vol. 2 — Coming Soon</span></div>',
+        unsafe_allow_html=True
+    )
+ 
 elif menu == "The Grimoires (Discography)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE GRIMOIRES</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
@@ -365,7 +441,7 @@ elif menu == "The Grimoires (Discography)":
         "</div>",
         unsafe_allow_html=True
     )
-
+ 
 elif menu == "The Cult (Members)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE CULT</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
@@ -374,22 +450,38 @@ elif menu == "The Cult (Members)":
         st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
-        st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.</p>', unsafe_allow_html=True)
+        st.markdown(
+            '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
+            'MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness '
+            'with razor sharp lyricism and an iron grip on the mic.</p>',
+            unsafe_allow_html=True
+        )
     st.markdown(skull_divider, unsafe_allow_html=True)
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img12.jpg", width=150)
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
-        st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.</p>', unsafe_allow_html=True)
+        st.markdown(
+            '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
+            'MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. '
+            'Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft '
+            'the sonic backbone of the group alongside Osomane.</p>',
+            unsafe_allow_html=True
+        )
     st.markdown(skull_divider, unsafe_allow_html=True)
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img11.jpg", width=150)
     with col2:
         st.subheader("🔥 Osomane")
-        st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>', unsafe_allow_html=True)
-
+        st.markdown(
+            '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
+            'Producer | Member — The architect of the sound. Osomane works hand in hand with '
+            'Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>',
+            unsafe_allow_html=True
+        )
+ 
 elif menu == "The Catacombs (Photos)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE CATACOMBS</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
