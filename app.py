@@ -2,6 +2,7 @@ import streamlit as st
 import base64
 import random
 from PIL import Image
+import streamlit.components.v1 as components
 
 def get_image_base64(filename):
     with open(filename, "rb") as f:
@@ -16,20 +17,6 @@ st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="w
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
-
-*, html, body, .stApp {{
-    cursor: none !important;
-}}
-
-#knife-cursor {{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 60px;
-    pointer-events: none;
-    z-index: 999999;
-    transform: translate(-50%, -50%);
-}}
 
 .main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
     font-family: 'Creepster', cursive !important;
@@ -75,19 +62,31 @@ a:hover {{
     text-shadow: 0 0 10px #ff2200;
 }}
 </style>
-
-<img id="knife-cursor" src="data:image/png;base64,{knife}" />
-
-<script>
-document.addEventListener('mousemove', function(e) {{
-    var cursor = document.getElementById('knife-cursor');
-    if (cursor) {{
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-    }}
-}});
-</script>
 """, unsafe_allow_html=True)
+
+components.html(f"""
+<script>
+var knife = document.createElement('img');
+knife.src = 'data:image/png;base64,{knife}';
+knife.style.position = 'fixed';
+knife.style.width = '60px';
+knife.style.pointerEvents = 'none';
+knife.style.zIndex = '999999';
+knife.style.top = '0px';
+knife.style.left = '0px';
+document.body.appendChild(knife);
+
+window.parent.document.addEventListener('mousemove', function(e) {{
+    knife.style.left = e.clientX + 'px';
+    knife.style.top = e.clientY + 'px';
+}});
+
+window.parent.document.body.style.cursor = 'none';
+var style = document.createElement('style');
+style.innerHTML = '* {{ cursor: none !important; }}';
+window.parent.document.head.appendChild(style);
+</script>
+""", height=0)
 
 st.markdown(
     '<div style="position:fixed;top:60px;left:10px;font-family:Georgia,serif;color:#4a90d9;font-size:12px;z-index:9999;">☰ Tap arrow to navigate</div>',
