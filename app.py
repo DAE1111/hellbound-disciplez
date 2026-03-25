@@ -287,6 +287,10 @@ components.html(
       var shottyAudio = null;
       var audioReady  = false;
  
+      var bgMusic = new Audio("data:audio/wav;base64,{web_beat}");
+      bgMusic.loop   = true;
+      bgMusic.volume = 0.35;
+ 
       function initAudio() {{
         if (audioReady) return;
         audioReady = true;
@@ -294,11 +298,12 @@ components.html(
         shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
         reloadAudio.volume = 0.64;
         shottyAudio.volume = 0.64;
- 
-        var bgMusic = new Audio("data:audio/wav;base64,{web_beat}");
-        bgMusic.loop   = true;
-        bgMusic.volume = 0.35;
-        bgMusic.play().catch(function() {{}});
+        var playPromise = bgMusic.play();
+        if (playPromise !== undefined) {{
+          playPromise.catch(function(e) {{
+            console.log('BG music blocked, retrying on next click:', e);
+          }});
+        }}
       }}
  
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
@@ -329,11 +334,10 @@ components.html(
  
       doc.addEventListener('click', function() {{
         initAudio();
+        if (bgMusic.paused) {{ bgMusic.play().catch(function(){{}}); }}
         playShotty();
         triggerVHS();
       }}, {{ passive: true }});
- 
-      doc.addEventListener('mousemove', initAudio, {{ once: true, passive: true }});
  
       attachHoverSounds();
       setInterval(attachHoverSounds, 1500);
