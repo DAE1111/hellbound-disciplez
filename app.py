@@ -74,28 +74,22 @@ font_glitch = get_font_base64("DoctorGlitch.otf")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
-# Build CSS separately to avoid f-string parsing issues
 css = """
 <style>
 @font-face {
     font-family: 'BaronessKuffner';
     src: url("data:font/truetype;base64,""" + font_baroness + """") format('truetype');
-    font-weight: normal;
-    font-style: normal;
     font-display: swap;
 }
-
 @font-face {
     font-family: 'DoctorGlitch';
     src: url("data:font/otf;base64,""" + font_glitch + """") format('opentype');
-    font-weight: normal;
-    font-style: normal;
     font-display: swap;
 }
 
-* {
+*, html, body, .stApp, [data-testid="stSidebar"], .stApp * {
+    cursor: url("data:image/png;base64,""" + shotgun + """") 10 4, auto !important;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     box-sizing: border-box;
 }
 
@@ -103,130 +97,120 @@ css = """
     font-family: 'BaronessKuffner', cursive !important;
     font-size: 28px !important;
 }
-
-h1, h2, h3, h4, h5, h6,
+h1,h2,h3,h4,h5,h6,
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3 {
     font-family: 'DoctorGlitch', cursive !important;
+    color: #ff2200 !important;
 }
-
 p, div, span, li, a, label {
     font-family: 'BaronessKuffner', cursive !important;
     font-size: 28px !important;
-}
-
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="stSidebarNavCollapseButton"],
-[data-testid="collapsedControl"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-#custom-sidebar-btn {
-    position: fixed;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    z-index: 99999;
-    background: rgba(0,0,0,0.85);
-    border: 1px solid #ff2200;
-    border-left: none;
-    border-radius: 0 8px 8px 0;
-    padding: 14px 8px;
-    cursor: pointer !important;
-    box-shadow: 3px 0 15px rgba(255,34,0,0.4);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    animation: navPulse 2s ease-in-out infinite;
-}
-
-#custom-sidebar-btn:hover {
-    background: rgba(139,0,0,0.9);
-    box-shadow: 3px 0 25px rgba(255,34,0,0.8);
-    padding-right: 12px;
-    animation: none;
-}
-
-#custom-sidebar-btn .bar {
-    width: 22px;
-    height: 2px;
-    background: #ff2200;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 6px #ff2200;
-}
-
-#custom-sidebar-btn:hover .bar {
-    background: #ff5500;
-    box-shadow: 0 0 10px #ff5500;
-}
-
-#custom-sidebar-btn .chevron {
-    font-size: 14px;
     color: #ff2200;
-    font-family: sans-serif;
-    line-height: 1;
-    text-shadow: 0 0 6px #ff2200;
-    margin-top: 4px;
 }
-
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #000000; }
-::-webkit-scrollbar-thumb { background: #ff2200; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #ff5500; }
-
-.stApp {
-    background-image: url("data:image/jpeg;base64,""" + bg_data + """");
-    background-size: cover;
-    background-repeat: repeat;
-    background-attachment: fixed;
-    color: #ff2200;
-    will-change: transform;
-}
-
-[data-testid="stSidebar"] {
-    background-image: url("data:image/jpeg;base64,""" + bg_data + """");
-    background-size: cover;
-    background-repeat: repeat;
-    will-change: transform;
-}
-
-h1,h2,h3,h4,h5,h6,p,label {
-    color: #ff2200 !important;
-}
-
 a {
     color: #ff2200 !important;
     text-decoration: none;
-    transition: color 0.2s ease, text-shadow 0.2s ease;
-    will-change: color;
+    transition: color 0.2s ease;
 }
 a:hover {
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
 }
 
-img {
-    image-rendering: -webkit-optimize-contrast;
-    transform: translateZ(0);
+/* HIDE STREAMLIT'S BROKEN BUTTON COMPLETELY */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarNavCollapseButton"],
+[data-testid="collapsedControl"],
+button[aria-label="Close sidebar"],
+button[aria-label="Open sidebar"],
+button[aria-label="collapse sidebar"],
+button[aria-label="expand sidebar"] {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
 }
 
-@keyframes navPulse {
-    0%, 100% { opacity: 1; transform: translateY(-50%) translateX(0); }
-    50% { opacity: 0.7; transform: translateY(-50%) translateX(3px); }
+/* OUR CUSTOM BUTTON injected by JS into parent doc */
+#hbd-menu-btn {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 2147483647;
+    background: rgba(0,0,0,0.88);
+    border: 1px solid #ff2200;
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    padding: 16px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 4px 0 18px rgba(255,34,0,0.5);
+    animation: btnPulse 2s ease-in-out infinite;
+    cursor: pointer !important;
 }
+#hbd-menu-btn:hover {
+    background: rgba(120,0,0,0.95);
+    box-shadow: 4px 0 28px rgba(255,34,0,0.9);
+    animation: none;
+    padding-right: 14px;
+}
+#hbd-menu-btn .hbd-bar {
+    width: 24px;
+    height: 2px;
+    background: #ff2200;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #ff2200;
+    transition: all 0.3s;
+}
+#hbd-menu-btn:hover .hbd-bar {
+    background: #ff6600;
+    box-shadow: 0 0 12px #ff6600;
+}
+#hbd-menu-btn .hbd-arrow {
+    font-size: 16px;
+    color: #ff2200;
+    font-family: Arial, sans-serif !important;
+    text-shadow: 0 0 8px #ff2200;
+    margin-top: 5px;
+    line-height: 1;
+    font-size: 16px !important;
+}
+
+@keyframes btnPulse {
+    0%,100% { box-shadow: 4px 0 18px rgba(255,34,0,0.5); }
+    50% { box-shadow: 4px 0 28px rgba(255,34,0,0.9); }
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #ff2200; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #ff5500; }
+
+.stApp {
+    background-image: url("data:image/png;base64,""" + bg_data + """");
+    background-size: cover;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    color: #ff2200;
+}
+[data-testid="stSidebar"] {
+    background-image: url("data:image/png;base64,""" + bg_data + """");
+    background-size: cover;
+    background-repeat: repeat;
+}
+img { transform: translateZ(0); }
 
 @keyframes announcePulse {
-    0%, 100% { text-shadow: 0 0 10px #ff2200, 0 0 20px #ff2200, 0 0 40px #ff0000; letter-spacing: 4px; }
+    0%,100% { text-shadow: 0 0 10px #ff2200, 0 0 20px #ff2200, 0 0 40px #ff0000; letter-spacing: 4px; }
     50% { text-shadow: 0 0 20px #ff5500, 0 0 40px #ff2200, 0 0 80px #ff0000; letter-spacing: 6px; }
 }
-
 .section-header {
     font-family: 'DoctorGlitch', cursive !important;
     font-size: 28px !important;
@@ -236,7 +220,6 @@ img {
     text-align: center;
     margin: 10px 0;
 }
-
 .announce-text {
     font-family: 'DoctorGlitch', cursive !important;
     font-size: 28px !important;
@@ -247,7 +230,6 @@ img {
     text-align: center;
     margin: 10px 0;
 }
-
 .glitch-tape-text {
     font-family: 'DoctorGlitch', cursive !important;
     font-size: 28px !important;
@@ -256,10 +238,6 @@ img {
     display: block;
     text-align: center;
     margin: 10px 0;
-}
-
-*, html, body, .stApp, [data-testid="stSidebar"], .stApp * {
-    cursor: url("data:image/png;base64,""" + shotgun + """") 10 4, auto !important;
 }
 
 @keyframes vhs-shake {
@@ -275,7 +253,6 @@ img {
     90%  { transform: translate(-3px,4px) skewX(-1deg); filter: hue-rotate(300deg) saturate(2) brightness(0.9); }
     100% { transform: translate(0,0) skewX(0deg); filter: none; }
 }
-
 @keyframes scanline-flash {
     0%   { opacity: 0; }
     20%  { opacity: 0.6; }
@@ -284,152 +261,128 @@ img {
     80%  { opacity: 0.3; }
     100% { opacity: 0; }
 }
-
-.vhs-glitch-active {
-    animation: vhs-shake 0.5s steps(1, end) forwards !important;
-}
-
+.vhs-glitch-active { animation: vhs-shake 0.5s steps(1,end) forwards !important; }
 #vhs-overlay {
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    pointer-events: none; z-index: 999998;
-    display: none;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,0,0,0.08) 0px, rgba(255,0,0,0.08) 1px,
-        transparent 1px, transparent 3px
-    );
-    will-change: opacity;
+    position: fixed; top:0; left:0; width:100vw; height:100vh;
+    pointer-events:none; z-index:999998; display:none;
+    background: repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0px,rgba(255,0,0,0.08) 1px,transparent 1px,transparent 3px);
 }
-#vhs-overlay.active {
-    display: block;
-    animation: scanline-flash 0.5s steps(1, end) forwards;
-}
-
+#vhs-overlay.active { display:block; animation: scanline-flash 0.5s steps(1,end) forwards; }
 #vhs-rgb-r, #vhs-rgb-b {
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    pointer-events: none; z-index: 999997;
-    display: none; mix-blend-mode: screen;
-    will-change: opacity;
+    position:fixed; top:0; left:0; width:100vw; height:100vh;
+    pointer-events:none; z-index:999997; display:none; mix-blend-mode:screen;
 }
 #vhs-rgb-r { background: rgba(255,0,0,0.15); }
 #vhs-rgb-b { background: rgba(0,0,255,0.15); }
-#vhs-rgb-r.active, #vhs-rgb-b.active {
-    display: block;
-    animation: scanline-flash 0.5s steps(1, end) forwards;
-}
+#vhs-rgb-r.active, #vhs-rgb-b.active { display:block; animation: scanline-flash 0.5s steps(1,end) forwards; }
 </style>
 """
 
 st.markdown(css, unsafe_allow_html=True)
 
-skull_img = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:-4px;">'
-skull_img_r = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">'
-skull_sm = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-right:6px;">'
-skull_sm_r = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">'
-pistol_l = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
-pistol_r = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
-
 st.markdown("""
-<div id="custom-sidebar-btn" onclick="toggleSidebar()" title="Open/Close Menu">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="chevron">&#9658;</div>
-</div>
 <div id="vhs-overlay"></div>
 <div id="vhs-rgb-r"></div>
 <div id="vhs-rgb-b"></div>
 """, unsafe_allow_html=True)
 
+skull_img  = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:-4px;">'
+skull_img_r= '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">'
+skull_sm   = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-right:6px;">'
+skull_sm_r = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">'
+pistol_l   = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
+pistol_r   = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
+
 components.html("""
 <script>
+var doc = window.parent.document;
+
+/* ── inject our custom menu button directly into the parent page ── */
+function injectBtn() {
+    if (doc.getElementById('hbd-menu-btn')) return;
+    var btn = doc.createElement('div');
+    btn.id = 'hbd-menu-btn';
+    btn.title = 'Open / Close Menu';
+    btn.innerHTML =
+        '<div class="hbd-bar"></div>' +
+        '<div class="hbd-bar"></div>' +
+        '<div class="hbd-bar"></div>' +
+        '<div class="hbd-arrow">&#9658;</div>';
+    btn.addEventListener('click', function() {
+        /* find and click Streamlit's real hidden toggle */
+        var btns = doc.querySelectorAll('button');
+        btns.forEach(function(b) {
+            var lbl = (b.getAttribute('aria-label') || '').toLowerCase();
+            var tid = b.getAttribute('data-testid') || '';
+            if (lbl.includes('sidebar') || lbl.includes('collapse') ||
+                lbl.includes('expand')  || tid.toLowerCase().includes('sidebar') ||
+                tid.toLowerCase().includes('collapsed')) {
+                b.click();
+            }
+        });
+        var arrow = btn.querySelector('.hbd-arrow');
+        arrow.innerHTML = arrow.innerHTML.trim() === '&#9658;' ? '&#9664;' : '&#9658;';
+    });
+    doc.body.appendChild(btn);
+}
+
+/* ── audio ── */
 var reloadAudio = new Audio("data:audio/wav;base64,""" + reload_snd + """");
 var shottyAudio = new Audio("data:audio/wav;base64,""" + shotty_snd + """");
 reloadAudio.volume = 0.64;
 shottyAudio.volume = 0.64;
-
 function playReload() { reloadAudio.currentTime = 0; reloadAudio.play(); }
 function playShotty() { shottyAudio.currentTime = 0; shottyAudio.play(); }
 
+/* ── VHS ── */
 function triggerVHS() {
-    var doc = window.parent.document;
-    var app = doc.querySelector(".stApp");
-    var overlay = doc.getElementById("vhs-overlay");
-    var rgbR = doc.getElementById("vhs-rgb-r");
-    var rgbB = doc.getElementById("vhs-rgb-b");
+    var app     = doc.querySelector('.stApp');
+    var overlay = doc.getElementById('vhs-overlay');
+    var rgbR    = doc.getElementById('vhs-rgb-r');
+    var rgbB    = doc.getElementById('vhs-rgb-b');
     [app, overlay, rgbR, rgbB].forEach(function(el) {
         if (!el) return;
-        el.classList.remove("vhs-glitch-active", "active");
+        el.classList.remove('vhs-glitch-active','active');
         void el.offsetWidth;
-        el.classList.add(el === app ? "vhs-glitch-active" : "active");
-        setTimeout(function() { el.classList.remove("vhs-glitch-active", "active"); }, 500);
+        el.classList.add(el === app ? 'vhs-glitch-active' : 'active');
+        setTimeout(function() { el.classList.remove('vhs-glitch-active','active'); }, 500);
     });
 }
 
-window.parent.toggleSidebar = function() {
-    var doc = window.parent.document;
-    var allBtns = doc.querySelectorAll("button");
-    allBtns.forEach(function(btn) {
-        var label = (btn.getAttribute("aria-label") || "").toLowerCase();
-        var testid = btn.getAttribute("data-testid") || "";
-        if (label.includes("sidebar") || label.includes("collapse") || label.includes("expand") ||
-            testid.includes("Sidebar") || testid.includes("sidebar") || testid.includes("collapsed")) {
-            btn.click();
-        }
-    });
-    var chevron = doc.querySelector("#custom-sidebar-btn .chevron");
-    if (chevron) {
-        chevron.innerHTML = chevron.innerHTML.trim() === "&#9658;" ? "&#9664;" : "&#9658;";
-    }
-};
-
-var doc = window.parent.document;
-doc.addEventListener("click", function(e) {
-    if (!e.target.closest("#custom-sidebar-btn")) {
-        playShotty();
-        triggerVHS();
-    }
+doc.addEventListener('click', function(e) {
+    if (!e.target.closest('#hbd-menu-btn')) { playShotty(); triggerVHS(); }
 });
 
 function attachHoverSounds() {
-    var clickables = doc.querySelectorAll("a, button, [role='radio'], [role='button'], label");
-    clickables.forEach(function(el) {
+    doc.querySelectorAll('a, button, [role="radio"], [role="button"], label').forEach(function(el) {
         if (!el.dataset.soundAttached) {
-            el.addEventListener("mouseenter", playReload);
-            el.dataset.soundAttached = "true";
+            el.addEventListener('mouseenter', playReload);
+            el.dataset.soundAttached = 'true';
         }
     });
 }
 
+injectBtn();
 attachHoverSounds();
-setInterval(attachHoverSounds, 1500);
+setInterval(function() { injectBtn(); attachHoverSounds(); }, 1000);
 </script>
 """, height=0)
 
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.markdown('<img src="data:image/png;base64,' + logo + '" width="500" style="display:block;margin:auto;transform:translateZ(0);">', unsafe_allow_html=True)
+    st.markdown('<img src="data:image/png;base64,' + logo + '" width="500" style="display:block;margin:auto;">', unsafe_allow_html=True)
 
 with st.sidebar:
     st.header("THE VOID")
-    menu = st.radio(
-        "",
-        [
-            "The Ritual (Home)",
-            "The Grimoires (Discography)",
-            "The Cult (Members)",
-            "The Catacombs (Photos)"
-        ]
-    )
+    menu = st.radio("", [
+        "The Ritual (Home)",
+        "The Grimoires (Discography)",
+        "The Cult (Members)",
+        "The Catacombs (Photos)"
+    ])
 
 if menu == "The Ritual (Home)":
-    st.markdown(
-        '<div style="text-align:center;"><span class="section-header">' +
-        pistol_l + ' WHO ARE WE ' + pistol_r +
-        '</span></div>', unsafe_allow_html=True)
-
+    st.markdown('<div style="text-align:center;"><span class="section-header">' + pistol_l + ' WHO ARE WE ' + pistol_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of
@@ -445,18 +398,10 @@ Hellbound Disciplez.
 <div style="text-align:center;"><span class="announce-text">🔥 ANNOUNCEMENTS 🔥</span></div>
 <br>
 """, unsafe_allow_html=True)
-
-    st.markdown(
-        '<div style="text-align:center;"><span class="glitch-tape-text">' +
-        skull_sm + ' Glitch Tape Vol. 2 — Coming Soon ' + skull_sm_r +
-        '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">' + skull_sm + ' Glitch Tape Vol. 2 — Coming Soon ' + skull_sm_r + '</span></div>', unsafe_allow_html=True)
 
 elif menu == "The Grimoires (Discography)":
-    st.markdown(
-        '<div style="text-align:center;"><span class="section-header">' +
-        skull_img + ' THE GRIMOIRES (Discography) ' + skull_img_r +
-        '</span></div>', unsafe_allow_html=True)
-
+    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE GRIMOIRES (Discography) ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;margin-top:20px;font-family:'DoctorGlitch',cursive;font-size:20px;color:#ff2200;">📀 Albums / Mixtapes / EPs</div>
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
@@ -468,12 +413,7 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
 </div>
 """, unsafe_allow_html=True)
-
-    st.markdown(
-        '<div style="text-align:center;margin-top:25px;"><span class="section-header">' +
-        skull_img + ' Singles ' + skull_img_r +
-        '</span></div>', unsafe_allow_html=True)
-
+    st.markdown('<div style="text-align:center;margin-top:25px;"><span class="section-header">' + skull_img + ' Singles ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
@@ -504,10 +444,7 @@ elif menu == "The Grimoires (Discography)":
 """, unsafe_allow_html=True)
 
 elif menu == "The Cult (Members)":
-    st.markdown(
-        '<div style="text-align:center;"><span class="section-header">' +
-        skull_img + ' THE CULT ' + skull_img_r +
-        '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE CULT ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("---")
 
     col1, col2 = st.columns([1, 3])
@@ -518,7 +455,6 @@ elif menu == "The Cult (Members)":
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.</p>', unsafe_allow_html=True)
 
     st.markdown("---")
-
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img12.jpg", width=150)
@@ -527,7 +463,6 @@ elif menu == "The Cult (Members)":
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.</p>', unsafe_allow_html=True)
 
     st.markdown("---")
-
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img11.jpg", width=150)
@@ -536,12 +471,8 @@ elif menu == "The Cult (Members)":
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>', unsafe_allow_html=True)
 
 elif menu == "The Catacombs (Photos)":
-    st.markdown(
-        '<div style="text-align:center;"><span class="section-header">' +
-        skull_img + ' THE CATACOMBS ' + skull_img_r +
-        '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE CATACOMBS ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("---")
-
     photos = get_shuffled_photos()
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
