@@ -70,13 +70,8 @@ st.markdown(
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("HBDLOGO1.png", width=500)
-    st.markdown(
-        '<div style="text-align:center;font-size:24px;">Official Underground Hub</div>',
-        unsafe_allow_html=True
-    )
 
 with st.sidebar:
-    st.image("chainsawart.png", use_container_width=True)
     st.header("THE VOID")
     menu = st.radio(
         "",
