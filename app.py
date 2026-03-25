@@ -3,6 +3,7 @@ import base64
 import random
 from PIL import Image
 import io
+import streamlit.components.v1 as components
 
 @st.cache_data
 def get_image_base64(filename):
@@ -27,11 +28,18 @@ def get_image_base64_transparent(filename, opacity=0.5):
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
+@st.cache_data
+def get_audio_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
 bg_data = get_image_base64("BGSKULLS.png")
 skull = get_image_base64("SKULL1.png")
 knife = get_image_base64_resized("KNIFE1.png", size=(64, 64))
 pistol = get_image_base64("pistol-removebg-preview.png")
 logo = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
+reload_snd = get_audio_base64("reload.wav")
+shotty_snd = get_audio_base64("shottyblast.wav")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
@@ -88,6 +96,47 @@ a:hover {{
 }}
 </style>
 """, unsafe_allow_html=True)
+
+components.html(f"""
+<script>
+var reloadAudio = new Audio("data:audio/wav;base64,{reload_snd}");
+var shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
+
+reloadAudio.volume = 1.0;
+shottyAudio.volume = 1.0;
+
+function playReload() {{
+    reloadAudio.currentTime = 0;
+    reloadAudio.play();
+}}
+
+function playShotty() {{
+    shottyAudio.currentTime = 0;
+    shottyAudio.play();
+}}
+
+var doc = window.parent.document;
+
+doc.addEventListener("click", function(e) {{
+    playShotty();
+}});
+
+function attachHoverSounds() {{
+    var clickables = doc.querySelectorAll("a, button, [role='radio'], [role='button'], label");
+    clickables.forEach(function(el) {{
+        if (!el.dataset.soundAttached) {{
+            el.addEventListener("mouseenter", function() {{
+                playReload();
+            }});
+            el.dataset.soundAttached = "true";
+        }}
+    }});
+}}
+
+attachHoverSounds();
+setInterval(attachHoverSounds, 1500);
+</script>
+""", height=0)
 
 st.markdown(
     '<div style="position:fixed;top:60px;left:10px;font-family:Georgia,serif;color:#4a90d9;font-size:12px;z-index:9999;">☰ Tap arrow to navigate</div>',
