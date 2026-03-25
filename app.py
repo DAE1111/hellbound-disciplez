@@ -43,6 +43,11 @@ def get_audio_base64(filename):
         return base64.b64encode(f.read()).decode("utf-8")
 
 @st.cache_data(show_spinner=False)
+def get_font_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
 def get_shuffled_photos():
     photos = [
         "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
@@ -63,12 +68,28 @@ pistol = get_image_base64("pistol-removebg-preview.png")
 logo = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
 reload_snd = get_audio_base64("reload.wav")
 shotty_snd = get_audio_base64("shottyblast.wav")
+font_baroness = get_font_base64("BaronessKuffner.ttf")
+font_glitch = get_font_base64("DoctorGlitch.otf")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
 st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+@font-face {{
+    font-family: 'BaronessKuffner';
+    src: url("data:font/truetype;base64,{font_baroness}") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}}
+
+@font-face {{
+    font-family: 'DoctorGlitch';
+    src: url("data:font/otf;base64,{font_glitch}") format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}}
 
 *, html, body, .stApp, [data-testid="stSidebar"], .stApp * {{
     cursor: url("data:image/png;base64,{shotgun}") 10 4, auto !important;
@@ -77,8 +98,15 @@ st.markdown(f"""
     box-sizing: border-box;
 }}
 
-.main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
-    font-family: 'Creepster', cursive !important;
+.main *, [data-testid="stSidebar"] label {{
+    font-family: 'BaronessKuffner', cursive !important;
+}}
+
+h1, h2, h3, h4, h5, h6,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {{
+    font-family: 'DoctorGlitch', cursive !important;
 }}
 
 ::-webkit-scrollbar {{ width: 8px; }}
@@ -104,7 +132,6 @@ st.markdown(f"""
 
 h1,h2,h3,h4,h5,h6,p,label {{
     color: #ff2200 !important;
-    font-family: 'Creepster', cursive !important;
 }}
 
 a {{
@@ -112,10 +139,15 @@ a {{
     text-decoration: none;
     transition: color 0.2s ease, text-shadow 0.2s ease;
     will-change: color;
+    font-family: 'BaronessKuffner', cursive !important;
 }}
 a:hover {{
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
+}}
+
+p, div, span, li {{
+    font-family: 'BaronessKuffner', cursive !important;
 }}
 
 img {{
@@ -152,7 +184,7 @@ img {{
 }}
 
 #nav-hint span.text {{
-    font-family: 'Creepster', cursive;
+    font-family: 'DoctorGlitch', cursive !important;
     font-size: 16px;
     color: #ff2200;
     letter-spacing: 1px;
@@ -294,7 +326,7 @@ with st.sidebar:
 
 if menu == "The Ritual (Home)":
     st.markdown(f"""
-    <div style="text-align:center;font-size:28px;">
+    <div style="text-align:center;font-size:28px;font-family:'DoctorGlitch',cursive;">
     <img src="data:image/png;base64,{pistol}" width="60">
     <b> WHO ARE WE </b>
     <img src="data:image/png;base64,{pistol}" width="60" style="transform:scaleX(-1);">
@@ -302,7 +334,7 @@ if menu == "The Ritual (Home)":
     """, unsafe_allow_html=True)
 
     st.markdown("""
-<div style="text-align:center">
+<div style="text-align:center;font-family:'BaronessKuffner',cursive;">
 Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of
 <b>Lord-K-Haos</b>, <b>Crazy8 The Snap Case</b>, and <b>Osomane</b>. Independent and unbothered,
 these three sonic provocateurs blaze their own trail. With a sound that's equal parts gritty phonk
@@ -320,11 +352,11 @@ Hellbound Disciplez.
 
 elif menu == "The Grimoires (Discography)":
     st.markdown(f"""
-<div style="text-align:center;font-size:28px;">
+<div style="text-align:center;font-size:28px;font-family:'DoctorGlitch',cursive;">
 <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE GRIMOIRES (Discography) </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
 </div>
-<div style="text-align:center;margin-top:20px;">📀 Albums / Mixtapes / EPs</div>
-<div style="text-align:center;">
+<div style="text-align:center;margin-top:20px;font-family:'DoctorGlitch',cursive;">📀 Albums / Mixtapes / EPs</div>
+<div style="text-align:center;font-family:'BaronessKuffner',cursive;">
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
 <a href="https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga" target="_blank">Hellbound Disciplez (Self Titled)</a> (2023) — 15 tracks<br>
 <a href="https://open.spotify.com/album/2smEfqlW4Z16AUD5md7UxZ" target="_blank">21 Grams Lighter</a> (2022) — 10 tracks<br>
@@ -332,10 +364,10 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/2jEHxL0P2uHT6SPokLnayC" target="_blank">Glitch Tape Vol.1</a> (2023) — 7 tracks<br>
 <a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
 </div>
-<div style="text-align:center;margin-top:25px;">
+<div style="text-align:center;margin-top:25px;font-family:'DoctorGlitch',cursive;">
 <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> Singles </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
 </div>
-<div style="text-align:center;">
+<div style="text-align:center;font-family:'BaronessKuffner',cursive;">
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
 <a href="https://open.spotify.com/album/4EU2f7tAo6DWhERyavT37j" target="_blank">Crowbar</a> (2024)<br>
 <a href="https://open.spotify.com/album/40pDtzpR5i9jpvhjqNnidt" target="_blank">My House</a> (2024)<br>
@@ -353,7 +385,7 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/3ZmMnJjsN0ISEOg62KfgUO" target="_blank">2 Pillar's</a> (2023)<br>
 <a href="https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3" target="_blank">Steppers</a> (2023)
 </div>
-<div style="text-align:center;margin-top:25px;">
+<div style="text-align:center;margin-top:25px;font-family:'BaronessKuffner',cursive;">
 🔥 Follow / Stream Hellbound Disciplez<br><br>
 <a href="https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ" target="_blank">Spotify</a><br>
 <a href="https://music.apple.com/us/artist/hellbound-disciplez/1641539761" target="_blank">Apple Music</a><br>
@@ -364,7 +396,7 @@ elif menu == "The Grimoires (Discography)":
 """, unsafe_allow_html=True)
 
 elif menu == "The Cult (Members)":
-    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CULT </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:center;font-size:28px;font-family:\'DoctorGlitch\',cursive;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CULT </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
     col1, col2 = st.columns([1, 3])
@@ -372,7 +404,7 @@ elif menu == "The Cult (Members)":
         st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
-        st.markdown("MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.")
+        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;">MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.</p>', unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -381,7 +413,7 @@ elif menu == "The Cult (Members)":
         st.image("img12.jpg", width=150)
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
-        st.markdown("MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.")
+        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;">MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.</p>', unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -390,10 +422,10 @@ elif menu == "The Cult (Members)":
         st.image("img11.jpg", width=150)
     with col2:
         st.subheader("🔥 Osomane")
-        st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
+        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;">Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>', unsafe_allow_html=True)
 
 elif menu == "The Catacombs (Photos)":
-    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CATACOMBS </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:center;font-size:28px;font-family:\'DoctorGlitch\',cursive;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CATACOMBS </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
     photos = get_shuffled_photos()
