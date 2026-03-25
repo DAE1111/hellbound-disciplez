@@ -65,6 +65,7 @@ pistol         = get_image_base64("pistol-removebg-preview.png")
 logo           = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
 reload_snd     = get_audio_base64("reload.wav")
 shotty_snd     = get_audio_base64("shottyblast.wav")
+web_beat       = get_audio_base64("WEB_BEAT.wav")
 font_baroness  = get_font_base64("BaronessKuffner.ttf")
 font_glitch    = get_font_base64("DoctorGlitch.otf")
  
@@ -293,6 +294,11 @@ components.html(
         shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
         reloadAudio.volume = 0.64;
         shottyAudio.volume = 0.64;
+ 
+        var bgMusic = new Audio("data:audio/wav;base64,{web_beat}");
+        bgMusic.loop   = true;
+        bgMusic.volume = 0.35;
+        bgMusic.play().catch(function() {{}});
       }}
  
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
@@ -490,3 +496,4 @@ elif menu == "The Catacombs (Photos)":
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
             st.image(photo_path, use_container_width=True)
+ 
