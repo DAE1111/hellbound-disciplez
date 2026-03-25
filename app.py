@@ -215,6 +215,19 @@ img { transform: translateZ(0); }
     text-align: center;
     margin: 10px 0;
 }
+.section-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+.section-header-row span.label {
+    font-family: 'DoctorGlitch', cursive !important;
+    font-size: 28px !important;
+    color: #ff2200 !important;
+    -webkit-text-stroke: 0.5px white;
+}
 .announce-text {
     font-family: 'DoctorGlitch', cursive !important;
     font-size: 28px !important;
@@ -364,9 +377,12 @@ Hellbound Disciplez.
     st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">' + skull_sm + ' Glitch Tape Vol. 2 — Coming Soon ' + skull_sm_r + '</span></div>', unsafe_allow_html=True)
 
 elif menu == "The Grimoires (Discography)":
-    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE GRIMOIRES (Discography) ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-header-row">' + skull_img + '<span class="label"> THE GRIMOIRES (Discography) </span>' + skull_img_r + '</div>',
+        unsafe_allow_html=True
+    )
+    st.markdown('<div style="text-align:center;margin-top:20px;"><span class="section-header">📀 Albums / Mixtapes / EPs</span></div>', unsafe_allow_html=True)
     st.markdown("""
-<div style="text-align:center;margin-top:20px;font-family:'DoctorGlitch',cursive;font-size:20px;color:#ff2200;">📀 Albums / Mixtapes / EPs</div>
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
 <a href="https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga" target="_blank">Hellbound Disciplez (Self Titled)</a> (2023) — 15 tracks<br>
@@ -376,7 +392,10 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
 </div>
 """, unsafe_allow_html=True)
-    st.markdown('<div style="text-align:center;margin-top:25px;"><span class="section-header">' + skull_img + ' Singles ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-header-row">' + skull_img + '<span class="label"> Singles </span>' + skull_img_r + '</div>',
+        unsafe_allow_html=True
+    )
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
