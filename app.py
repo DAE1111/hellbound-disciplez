@@ -4,10 +4,12 @@ import random
 from PIL import Image
 import io
 
+@st.cache_data
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
+@st.cache_data
 def get_image_base64_resized(filename, size=(64, 64)):
     img = Image.open(filename).convert("RGBA")
     img = img.resize(size, Image.LANCZOS)
@@ -15,9 +17,21 @@ def get_image_base64_resized(filename, size=(64, 64)):
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
+@st.cache_data
+def get_image_base64_transparent(filename, opacity=0.5):
+    img = Image.open(filename).convert("RGBA")
+    r, g, b, a = img.split()
+    a = a.point(lambda x: int(x * opacity))
+    img = Image.merge("RGBA", (r, g, b, a))
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
 bg_data = get_image_base64("BGSKULLS.png")
 skull = get_image_base64("SKULL1.png")
 knife = get_image_base64_resized("KNIFE1.png", size=(64, 64))
+pistol = get_image_base64("pistol-removebg-preview.png")
+logo = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
@@ -82,7 +96,7 @@ st.markdown(
 
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("HBDLOGO1.png", width=500)
+    st.markdown(f'<img src="data:image/png;base64,{logo}" width="500" style="display:block;margin:auto;">', unsafe_allow_html=True)
 
 with st.sidebar:
     st.header("THE VOID")
@@ -97,8 +111,6 @@ with st.sidebar:
     )
 
 if menu == "The Ritual (Home)":
-
-    pistol = get_image_base64("pistol-removebg-preview.png")
 
     st.markdown(f"""
     <div style="text-align:center;font-size:28px;">
