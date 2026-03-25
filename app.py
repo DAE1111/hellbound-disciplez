@@ -123,7 +123,7 @@ elif menu == "The Grimoires (Discography)":
 
     st.markdown(f"""
 <div style="text-align:center;font-size:28px;">
-<img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;"> THE GRIMOIRES (Discography) <img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;">
+<img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE GRIMOIRES (Discography) </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
 </div>
 
 <div style="text-align:center;margin-top:20px;">
@@ -142,7 +142,7 @@ elif menu == "The Grimoires (Discography)":
 </div>
 
 <div style="text-align:center;margin-top:25px;">
-<img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;"> Singles <img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;">
+<img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> Singles </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
 </div>
 
 <div style="text-align:center;">
@@ -181,7 +181,7 @@ elif menu == "The Grimoires (Discography)":
 
 elif menu == "The Cult (Members)":
 
-    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;"> THE CULT <img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;"></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CULT </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
     col1, col2 = st.columns([1, 3])
@@ -211,7 +211,7 @@ elif menu == "The Cult (Members)":
 
 elif menu == "The Catacombs (Photos)":
 
-    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;"> THE CATACOMBS <img src="data:image/png;base64,{skull}" width="60" style="vertical-align:middle;"></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CATACOMBS </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
     photos = [
