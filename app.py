@@ -101,6 +101,7 @@ st.markdown(f"""
 
 .main *, [data-testid="stSidebar"] label {{
     font-family: 'BaronessKuffner', cursive !important;
+    font-size: 28px !important;
 }}
 
 h1, h2, h3, h4, h5, h6,
@@ -110,39 +111,9 @@ h1, h2, h3, h4, h5, h6,
     font-family: 'DoctorGlitch', cursive !important;
 }}
 
-/* SIDEBAR TOGGLE ARROW FIX — hide broken text label, keep SVG arrow visible */
-[data-testid="stSidebarCollapsedControl"] span:not(:has(svg)),
-[data-testid="stSidebarNavCollapseButton"] span:not(:has(svg)),
-[data-testid="collapsedControl"] span:not(:has(svg)) {{
-    display: none !important;
-}}
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="stSidebarNavCollapseButton"],
-[data-testid="collapsedControl"] {{
-    font-size: 0 !important;
-    color: transparent !important;
-    background: transparent !important;
-    border: none !important;
-}}
-[data-testid="stSidebarCollapsedControl"] svg,
-[data-testid="stSidebarNavCollapseButton"] svg,
-[data-testid="collapsedControl"] svg {{
-    display: block !important;
-    visibility: visible !important;
-    width: 1.5rem !important;
-    height: 1.5rem !important;
-    color: #ff2200 !important;
-    fill: #ff2200 !important;
-}}
-/* Nuclear option — hide ALL text nodes inside toggle buttons that aren't SVG */
-button[kind="header"] span,
-button[kind="headerNoBorder"] span {{
-    visibility: hidden !important;
-    font-size: 0 !important;
-}}
-button[kind="header"] svg,
-button[kind="headerNoBorder"] svg {{
-    visibility: visible !important;
+p, div, span, li, a, label {{
+    font-family: 'BaronessKuffner', cursive !important;
+    font-size: 28px !important;
 }}
 
 ::-webkit-scrollbar {{ width: 8px; }}
@@ -175,15 +146,10 @@ a {{
     text-decoration: none;
     transition: color 0.2s ease, text-shadow 0.2s ease;
     will-change: color;
-    font-family: 'BaronessKuffner', cursive !important;
 }}
 a:hover {{
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
-}}
-
-p, div, span, li {{
-    font-family: 'BaronessKuffner', cursive !important;
 }}
 
 img {{
@@ -214,22 +180,19 @@ img {{
 
 #nav-hint span.arrow {{
     font-size: 20px !important;
-    color: #ff2200;
+    font-family: sans-serif !important;
+    color: #ff2200 !important;
     font-weight: bold;
     line-height: 1;
-    visibility: visible !important;
-    display: inline !important;
 }}
 
 #nav-hint span.text {{
     font-family: 'DoctorGlitch', cursive !important;
     font-size: 16px !important;
-    color: #ff2200;
+    color: #ff2200 !important;
     letter-spacing: 1px;
     white-space: nowrap;
     -webkit-text-stroke: 0.3px white;
-    visibility: visible !important;
-    display: inline !important;
 }}
 
 @keyframes announcePulse {{
@@ -354,33 +317,47 @@ function triggerVHS() {{
     var overlay = doc.getElementById("vhs-overlay");
     var rgbR = doc.getElementById("vhs-rgb-r");
     var rgbB = doc.getElementById("vhs-rgb-b");
-
     [app, overlay, rgbR, rgbB].forEach(function(el) {{
         if (!el) return;
         el.classList.remove("vhs-glitch-active", "active");
         void el.offsetWidth;
         el.classList.add(el === app ? "vhs-glitch-active" : "active");
-        setTimeout(function() {{
-            el.classList.remove("vhs-glitch-active", "active");
-        }}, 500);
+        setTimeout(function() {{ el.classList.remove("vhs-glitch-active", "active"); }}, 500);
+    }});
+}}
+
+function fixSidebarButton() {{
+    var doc = window.parent.document;
+    var selectors = [
+        "[data-testid='stSidebarCollapsedControl']",
+        "[data-testid='stSidebarNavCollapseButton']",
+        "[data-testid='collapsedControl']",
+        "button[aria-label='Close sidebar']",
+        "button[aria-label='Open sidebar']",
+        "button[aria-label='collapse sidebar']",
+        "button[aria-label='expand sidebar']"
+    ];
+    selectors.forEach(function(sel) {{
+        var btns = doc.querySelectorAll(sel);
+        btns.forEach(function(btn) {{
+            btn.querySelectorAll("span, p, div").forEach(function(el) {{
+                if (!el.querySelector("svg") && el.tagName !== "svg" && !el.closest("svg")) {{
+                    var txt = el.innerText || el.textContent || "";
+                    if (txt.trim().length > 0 && !el.querySelector("svg")) {{
+                        el.style.cssText = "display:none!important;visibility:hidden!important;font-size:0!important;width:0!important;height:0!important;overflow:hidden!important;";
+                    }}
+                }}
+            }});
+            var svgs = btn.querySelectorAll("svg");
+            svgs.forEach(function(svg) {{
+                svg.style.cssText = "display:block!important;visibility:visible!important;color:#ff2200!important;fill:#ff2200!important;width:1.5rem!important;height:1.5rem!important;";
+            }});
+        }});
     }});
 }}
 
 var doc = window.parent.document;
 doc.addEventListener("click", function() {{ playShotty(); triggerVHS(); }});
-
-function fixSidebarButton() {{
-    var btns = doc.querySelectorAll(
-        "[data-testid='stSidebarCollapsedControl'], [data-testid='stSidebarNavCollapseButton'], [data-testid='collapsedControl']"
-    );
-    btns.forEach(function(btn) {{
-        btn.querySelectorAll("span").forEach(function(span) {{
-            if (!span.querySelector("svg")) {{
-                span.style.display = "none";
-            }}
-        }});
-    }});
-}}
 
 function attachHoverSounds() {{
     var clickables = doc.querySelectorAll("a, button, [role='radio'], [role='button'], label");
@@ -397,7 +374,7 @@ attachHoverSounds();
 setInterval(function() {{
     fixSidebarButton();
     attachHoverSounds();
-}}, 1500);
+}}, 800);
 </script>
 """, height=0)
 
@@ -429,7 +406,7 @@ if menu == "The Ritual (Home)":
     """, unsafe_allow_html=True)
 
     st.markdown(f"""
-<div style="text-align:center;font-family:'BaronessKuffner',cursive;">
+<div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of
 <b>Lord-K-Haos</b>, <b>Crazy8 The Snap Case</b>, and <b>Osomane</b>. Independent and unbothered,
 these three sonic provocateurs blaze their own trail. With a sound that's equal parts gritty phonk
@@ -467,7 +444,7 @@ elif menu == "The Grimoires (Discography)":
     </span>
 </div>
 <div style="text-align:center;margin-top:20px;font-family:'DoctorGlitch',cursive;font-size:20px;color:#ff2200;">📀 Albums / Mixtapes / EPs</div>
-<div style="text-align:center;font-family:'BaronessKuffner',cursive;">
+<div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
 <a href="https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga" target="_blank">Hellbound Disciplez (Self Titled)</a> (2023) — 15 tracks<br>
 <a href="https://open.spotify.com/album/2smEfqlW4Z16AUD5md7UxZ" target="_blank">21 Grams Lighter</a> (2022) — 10 tracks<br>
@@ -482,7 +459,7 @@ elif menu == "The Grimoires (Discography)":
     <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
     </span>
 </div>
-<div style="text-align:center;font-family:'BaronessKuffner',cursive;">
+<div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
 <a href="https://open.spotify.com/album/4EU2f7tAo6DWhERyavT37j" target="_blank">Crowbar</a> (2024)<br>
 <a href="https://open.spotify.com/album/40pDtzpR5i9jpvhjqNnidt" target="_blank">My House</a> (2024)<br>
@@ -500,7 +477,7 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/3ZmMnJjsN0ISEOg62KfgUO" target="_blank">2 Pillar's</a> (2023)<br>
 <a href="https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3" target="_blank">Steppers</a> (2023)
 </div>
-<div style="text-align:center;margin-top:25px;font-family:'BaronessKuffner',cursive;">
+<div style="text-align:center;margin-top:25px;font-family:'BaronessKuffner',cursive;font-size:28px;">
 🔥 Follow / Stream Hellbound Disciplez<br><br>
 <a href="https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ" target="_blank">Spotify</a><br>
 <a href="https://music.apple.com/us/artist/hellbound-disciplez/1641539761" target="_blank">Apple Music</a><br>
@@ -527,7 +504,7 @@ elif menu == "The Cult (Members)":
         st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
-        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;">MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;font-size:28px;">MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.</p>', unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -536,7 +513,7 @@ elif menu == "The Cult (Members)":
         st.image("img12.jpg", width=150)
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
-        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;">MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;font-size:28px;">MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.</p>', unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -545,7 +522,7 @@ elif menu == "The Cult (Members)":
         st.image("img11.jpg", width=150)
     with col2:
         st.subheader("🔥 Osomane")
-        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;">Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-family:\'BaronessKuffner\',cursive;font-size:28px;">Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>', unsafe_allow_html=True)
 
 elif menu == "The Catacombs (Photos)":
     st.markdown(f"""
@@ -563,5 +540,4 @@ elif menu == "The Catacombs (Photos)":
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
-            st.image(photo_path, use_container_width=True)
             st.image(photo_path, use_container_width=True)
