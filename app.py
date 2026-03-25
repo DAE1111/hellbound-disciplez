@@ -95,7 +95,6 @@ css = """
     box-sizing: border-box;
 }
 
-/* FIX: restore Material Icons font on the sidebar button spans */
 [data-testid="stSidebarCollapsedControl"] span,
 [data-testid="stSidebarCollapsedControl"] button span,
 [data-testid="stSidebarNavCollapseButton"] span,
@@ -123,7 +122,6 @@ button[aria-label="Expand sidebar"] span {
     -webkit-font-smoothing: antialiased !important;
 }
 
-/* NAV HINT */
 @keyframes navPulse {
     0%, 100% { opacity: 1; transform: translateX(0); }
     50% { opacity: 0.6; transform: translateX(3px); }
@@ -143,13 +141,6 @@ button[aria-label="Expand sidebar"] span {
     animation: navPulse 2s ease-in-out infinite;
     box-shadow: 0 0 10px rgba(255,34,0,0.5);
     pointer-events: none;
-}
-#nav-hint .nh-arrow {
-    font-size: 20px;
-    color: #ff2200;
-    font-family: sans-serif !important;
-    font-weight: bold;
-    line-height: 1;
 }
 #nav-hint .nh-text {
     font-family: 'DoctorGlitch', cursive !important;
@@ -286,7 +277,6 @@ st.markdown(css, unsafe_allow_html=True)
 
 st.markdown("""
 <div id="nav-hint">
-    <span class="nh-arrow">☰</span>
     <span class="nh-text">TAP ARROW TO NAVIGATE</span>
 </div>
 <div id="vhs-overlay"></div>
