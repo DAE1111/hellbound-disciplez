@@ -92,110 +92,73 @@ css = """
     font-display: swap;
 }
 
+/* CURSOR */
 *, html, body, .stApp, [data-testid="stSidebar"], .stApp * {
     cursor: url("data:image/png;base64,""" + shotgun + """") 10 4, auto !important;
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
 }
 
-/* HIDE ALL STREAMLIT SIDEBAR TOGGLE BUTTONS */
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="stSidebarNavCollapseButton"],
-[data-testid="collapsedControl"],
-[data-testid="stSidebarNavCollapseButton"],
-button[aria-label="Close sidebar"],
-button[aria-label="Open sidebar"],
-button[aria-label="collapse sidebar"],
-button[aria-label="expand sidebar"],
-button[aria-label="Collapse sidebar"],
-button[aria-label="Expand sidebar"] {
-    display: none !important;
-    visibility: hidden !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    opacity: 0 !important;
+/* RESTORE normal font + size on ALL buttons so nothing is broken */
+button, button *, button span, button p,
+[role="button"], [role="button"] * {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: inherit !important;
+    visibility: visible !important;
+    display: revert !important;
+    width: revert !important;
+    height: revert !important;
+    opacity: revert !important;
+    position: revert !important;
+    overflow: revert !important;
 }
 
-/* CUSTOM BUTTON - built in parent doc by JS */
-#hbd-menu-btn {
-    position: fixed;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    z-index: 2147483647;
-    background: rgba(0,0,0,0.88);
-    border: 1px solid #ff2200;
-    border-left: none;
-    border-radius: 0 10px 10px 0;
-    padding: 16px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 4px 0 18px rgba(255,34,0,0.5);
-    cursor: pointer !important;
-    transition: all 0.3s ease;
-}
-#hbd-menu-btn:hover {
-    background: rgba(120,0,0,0.95);
-    box-shadow: 4px 0 30px rgba(255,34,0,0.95);
-    padding-right: 15px;
-}
-.hbd-bar {
-    width: 24px;
-    height: 2px;
-    background: #ff2200;
-    border-radius: 2px;
-    box-shadow: 0 0 8px #ff2200;
-    display: block;
-    transition: all 0.3s;
-}
-#hbd-menu-btn:hover .hbd-bar {
-    background: #ff6600;
-    box-shadow: 0 0 14px #ff6600;
-}
-.hbd-arrow {
-    color: #ff2200;
-    font-size: 18px;
-    line-height: 1;
-    font-family: Arial, sans-serif;
-    text-shadow: 0 0 8px #ff2200;
-    display: block;
-    margin-top: 4px;
-}
-
-/* FONT RULES - carefully scoped to NOT hit buttons */
-.main p, .main div, .main span, .main li,
+/* APPLY our fonts only to content areas, never buttons */
+[data-testid="stMain"] p,
+[data-testid="stMain"] div:not([class*="button"]):not([class*="Button"]),
+[data-testid="stMain"] span:not([class*="button"]):not([class*="Button"]),
+[data-testid="stMain"] li,
+[data-testid="stMain"] a,
+[data-testid="stMain"] label,
 [data-testid="stSidebar"] p,
-[data-testid="stSidebar"] div,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] li {
+[data-testid="stSidebar"] div:not([class*="button"]):not([class*="Button"]),
+[data-testid="stSidebar"] span:not([class*="button"]):not([class*="Button"]),
+[data-testid="stSidebar"] li,
+[data-testid="stSidebar"] label {
     font-family: 'BaronessKuffner', cursive !important;
     font-size: 28px !important;
 }
-h1, h2, h3, h4, h5, h6,
+
+[data-testid="stMain"] h1,
+[data-testid="stMain"] h2,
+[data-testid="stMain"] h3,
+[data-testid="stMain"] h4,
+[data-testid="stMain"] h5,
+[data-testid="stMain"] h6,
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3 {
     font-family: 'DoctorGlitch', cursive !important;
     color: #ff2200 !important;
 }
-a {
+
+[data-testid="stMain"] a {
     font-family: 'BaronessKuffner', cursive !important;
     font-size: 28px !important;
     color: #ff2200 !important;
     text-decoration: none;
     transition: color 0.2s ease;
 }
-a:hover {
+[data-testid="stMain"] a:hover {
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
 }
-p, h1, h2, h3, h4, h5, h6, label {
+
+[data-testid="stMain"] p,
+[data-testid="stMain"] label,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label {
     color: #ff2200 !important;
 }
 
@@ -306,33 +269,6 @@ pistol_r    = '<img src="data:image/png;base64,' + pistol + '" width="60" style=
 components.html("""
 <script>
 var doc = window.parent.document;
-var sidebarOpen = true;
-
-function injectBtn() {
-    if (doc.getElementById('hbd-menu-btn')) return;
-    var btn = doc.createElement('div');
-    btn.id = 'hbd-menu-btn';
-    btn.innerHTML =
-        '<span class="hbd-bar"></span>' +
-        '<span class="hbd-bar"></span>' +
-        '<span class="hbd-bar"></span>' +
-        '<span class="hbd-arrow">&#9664;</span>';
-    btn.addEventListener('click', function() {
-        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        var mainArea = doc.querySelector('.main') || doc.querySelector('[data-testid="stMain"]');
-        var arrow = btn.querySelector('.hbd-arrow');
-        if (sidebarOpen) {
-            if (sidebar) sidebar.style.display = 'none';
-            arrow.innerHTML = '&#9658;';
-            sidebarOpen = false;
-        } else {
-            if (sidebar) sidebar.style.display = '';
-            arrow.innerHTML = '&#9664;';
-            sidebarOpen = true;
-        }
-    });
-    doc.body.appendChild(btn);
-}
 
 var reloadAudio = new Audio("data:audio/wav;base64,""" + reload_snd + """");
 var shottyAudio = new Audio("data:audio/wav;base64,""" + shotty_snd + """");
@@ -356,7 +292,7 @@ function triggerVHS() {
 }
 
 doc.addEventListener('click', function(e) {
-    if (!e.target.closest('#hbd-menu-btn')) { playShotty(); triggerVHS(); }
+    playShotty(); triggerVHS();
 });
 
 function attachHoverSounds() {
@@ -368,9 +304,8 @@ function attachHoverSounds() {
     });
 }
 
-injectBtn();
 attachHoverSounds();
-setInterval(function() { injectBtn(); attachHoverSounds(); }, 1000);
+setInterval(attachHoverSounds, 1500);
 </script>
 """, height=0)
 
