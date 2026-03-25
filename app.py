@@ -55,8 +55,9 @@ def get_shuffled_photos():
         "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic20.png","pic21.png","pic22.png","pic23.jpg",
         "pic24.png","pic25.jpg","pic26.jpg","pic27.jpg","pic28.jpg","pic29.jpg","pic30.jpg",
         "pic31.jpg","pic32.jpg","pic33.jpg","pic34.jpg","pic35.jpg","pic36.jpg","pic37.jpg",
-        "pic39.jpg","pic40.jpg","pic41.jpg","img1.jpg","img2.jpg","img3.jpg","img4.jpg",
-        "img5.jpg","img6.jpg","img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg",
+        "pic39.jpg","pic40.jpg","pic41.jpg",
+        "img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg","img6.jpg",
+        "img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg","img12.jpg",
     ]
     random.shuffle(photos)
     return photos
@@ -190,6 +191,32 @@ img {{
     letter-spacing: 1px;
     white-space: nowrap;
     -webkit-text-stroke: 0.3px white;
+}}
+
+@keyframes announcePulse {{
+    0%, 100% {{ text-shadow: 0 0 10px #ff2200, 0 0 20px #ff2200, 0 0 40px #ff0000; letter-spacing: 4px; }}
+    50% {{ text-shadow: 0 0 20px #ff5500, 0 0 40px #ff2200, 0 0 80px #ff0000; letter-spacing: 6px; }}
+}}
+
+.announce-text {{
+    font-family: 'DoctorGlitch', cursive !important;
+    font-size: 28px !important;
+    color: #ff2200 !important;
+    -webkit-text-stroke: 0.5px white;
+    animation: announcePulse 2s ease-in-out infinite;
+    display: block;
+    text-align: center;
+    margin: 10px 0;
+}}
+
+.glitch-tape-text {{
+    font-family: 'DoctorGlitch', cursive !important;
+    font-size: 28px !important;
+    color: #ff2200 !important;
+    -webkit-text-stroke: 0.5px white;
+    display: block;
+    text-align: center;
+    margin: 10px 0;
 }}
 
 @keyframes vhs-shake {{
@@ -333,7 +360,7 @@ if menu == "The Ritual (Home)":
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(f"""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;">
 Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of
 <b>Lord-K-Haos</b>, <b>Crazy8 The Snap Case</b>, and <b>Osomane</b>. Independent and unbothered,
@@ -343,10 +370,22 @@ occult, street life, and true crime. Fueled by the collaborative production of O
 The Snap Case, and the raw lyricism of the whole crew, their music is a haunting reflection of the
 shadows that lurk just beyond the edge of society. Get ready to descend into the abyss with
 Hellbound Disciplez.
-<br><br>
-🔥 Deep South, United States 🔥
-<br><br>
-⚡ Glitch Tape Vol. 2 — Coming Soon ⚡
+</div>
+
+<br>
+
+<div style="text-align:center;">
+    <span class="announce-text">🔥 ANNOUNCEMENTS 🔥</span>
+</div>
+
+<br>
+
+<div style="text-align:center;">
+    <span class="glitch-tape-text">
+        <img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;margin-right:6px;">
+        Glitch Tape Vol. 2 — Coming Soon
+        <img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">
+    </span>
 </div>
 """, unsafe_allow_html=True)
 
