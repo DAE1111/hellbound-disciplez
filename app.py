@@ -19,6 +19,15 @@ def get_image_base64_resized(filename, size=(64, 64)):
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
 @st.cache_data
+def get_image_base64_resized_flipped(filename, size=(64, 64)):
+    img = Image.open(filename).convert("RGBA")
+    img = img.resize(size, Image.LANCZOS)
+    img = img.transpose(Image.FLIP_LEFT_RIGHT)
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+@st.cache_data
 def get_image_base64_transparent(filename, opacity=0.5):
     img = Image.open(filename).convert("RGBA")
     r, g, b, a = img.split()
@@ -35,7 +44,7 @@ def get_audio_base64(filename):
 
 bg_data = get_image_base64("BGSKULLS.png")
 skull = get_image_base64("SKULL1.png")
-knife = get_image_base64_resized("KNIFE1.png", size=(64, 64))
+shotgun = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
 pistol = get_image_base64("pistol-removebg-preview.png")
 logo = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
 reload_snd = get_audio_base64("reload.wav")
@@ -48,7 +57,7 @@ st.markdown(f"""
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
 
 *, html, body, .stApp, [data-testid="stSidebar"], .stApp * {{
-    cursor: url("data:image/png;base64,{knife}") 38 16, auto !important;
+    cursor: url("data:image/png;base64,{shotgun}") 38 16, auto !important;
 }}
 
 .main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
