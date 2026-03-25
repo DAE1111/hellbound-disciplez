@@ -94,7 +94,89 @@ a:hover {{
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
 }}
+
+@keyframes vhs-shake {{
+    0%   {{ transform: translate(0, 0) skewX(0deg); filter: none; }}
+    10%  {{ transform: translate(-6px, 3px) skewX(-3deg); filter: hue-rotate(90deg) saturate(3) brightness(1.4); }}
+    20%  {{ transform: translate(6px, -3px) skewX(3deg); filter: hue-rotate(180deg) saturate(4) brightness(0.8); }}
+    30%  {{ transform: translate(-4px, 5px) skewX(-2deg); filter: hue-rotate(270deg) saturate(5) brightness(1.6) blur(1px); }}
+    40%  {{ transform: translate(8px, -2px) skewX(4deg); filter: hue-rotate(0deg) saturate(6) brightness(0.6) blur(2px); }}
+    50%  {{ transform: translate(-8px, 4px) skewX(-4deg); filter: hue-rotate(120deg) saturate(8) brightness(1.8) blur(1px); }}
+    60%  {{ transform: translate(4px, -5px) skewX(2deg); filter: hue-rotate(240deg) saturate(5) brightness(0.7); }}
+    70%  {{ transform: translate(-6px, 2px) skewX(-3deg); filter: hue-rotate(60deg) saturate(3) brightness(1.3); }}
+    80%  {{ transform: translate(5px, -3px) skewX(2deg); filter: hue-rotate(180deg) saturate(4) brightness(1.1) blur(1px); }}
+    90%  {{ transform: translate(-3px, 4px) skewX(-1deg); filter: hue-rotate(300deg) saturate(2) brightness(0.9); }}
+    100% {{ transform: translate(0, 0) skewX(0deg); filter: none; }}
+}}
+
+@keyframes scanline-flash {{
+    0%   {{ opacity: 0; }}
+    20%  {{ opacity: 0.6; }}
+    40%  {{ opacity: 0.2; }}
+    60%  {{ opacity: 0.8; }}
+    80%  {{ opacity: 0.3; }}
+    100% {{ opacity: 0; }}
+}}
+
+.vhs-glitch-active {{
+    animation: vhs-shake 0.5s steps(1, end) forwards !important;
+}}
+
+#vhs-overlay {{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999998;
+    display: none;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 0, 0, 0.08) 0px,
+        rgba(255, 0, 0, 0.08) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+}}
+
+#vhs-overlay.active {{
+    display: block;
+    animation: scanline-flash 0.5s steps(1, end) forwards;
+}}
+
+#vhs-rgb-r {{
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 999997;
+    background: rgba(255, 0, 0, 0.15);
+    display: none;
+    mix-blend-mode: screen;
+}}
+#vhs-rgb-b {{
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 999997;
+    background: rgba(0, 0, 255, 0.15);
+    display: none;
+    mix-blend-mode: screen;
+}}
+
+#vhs-rgb-r.active, #vhs-rgb-b.active {{
+    display: block;
+    animation: scanline-flash 0.5s steps(1, end) forwards;
+}}
 </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div id="vhs-overlay"></div>
+<div id="vhs-rgb-r"></div>
+<div id="vhs-rgb-b"></div>
 """, unsafe_allow_html=True)
 
 components.html(f"""
@@ -115,10 +197,49 @@ function playShotty() {{
     shottyAudio.play();
 }}
 
+function triggerVHS() {{
+    var doc = window.parent.document;
+    var app = doc.querySelector(".stApp");
+    var overlay = doc.getElementById("vhs-overlay");
+    var rgbR = doc.getElementById("vhs-rgb-r");
+    var rgbB = doc.getElementById("vhs-rgb-b");
+
+    if (app) {{
+        app.classList.remove("vhs-glitch-active");
+        void app.offsetWidth;
+        app.classList.add("vhs-glitch-active");
+        setTimeout(function() {{
+            app.classList.remove("vhs-glitch-active");
+        }}, 500);
+    }}
+
+    if (overlay) {{
+        overlay.classList.remove("active");
+        void overlay.offsetWidth;
+        overlay.classList.add("active");
+        setTimeout(function() {{ overlay.classList.remove("active"); }}, 500);
+    }}
+
+    if (rgbR) {{
+        rgbR.classList.remove("active");
+        void rgbR.offsetWidth;
+        rgbR.classList.add("active");
+        setTimeout(function() {{ rgbR.classList.remove("active"); }}, 500);
+    }}
+
+    if (rgbB) {{
+        rgbB.classList.remove("active");
+        void rgbB.offsetWidth;
+        rgbB.classList.add("active");
+        setTimeout(function() {{ rgbB.classList.remove("active"); }}, 500);
+    }}
+}}
+
 var doc = window.parent.document;
 
 doc.addEventListener("click", function(e) {{
     playShotty();
+    triggerVHS();
 }});
 
 function attachHoverSounds() {{
