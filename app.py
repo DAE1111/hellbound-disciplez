@@ -284,8 +284,8 @@ st.markdown("""
 <div id="vhs-rgb-b"></div>
 """, unsafe_allow_html=True)
 
-skull_img   = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:12px;">'
-skull_img_r = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:12px;transform:scaleX(-1);">'
+skull_img   = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:-4px;">'
+skull_img_r = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">'
 skull_sm    = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-right:6px;">'
 skull_sm_r  = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">'
 pistol_l    = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
@@ -358,14 +358,14 @@ shadows that lurk just beyond the edge of society. Get ready to descend into the
 Hellbound Disciplez.
 </div>
 <br>
-<div style="text-align:center;"><span class="announce-text">🔥 ANNOUNCEMENTS 🔥</span></div>
+<div style="text-align:center;"><span class="announce-text">ANNOUNCEMENTS</span></div>
 <br>
 """, unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">' + skull_sm + ' Glitch Tape Vol. 2 — Coming Soon ' + skull_sm_r + '</span></div>', unsafe_allow_html=True)
 
 elif menu == "The Grimoires (Discography)":
-    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' DISCOGRAPHY ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
-    st.markdown('<div style="text-align:center;margin-top:20px;"><span class="section-header">' + skull_img + ' Albums / Mixtapes / EPs ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE GRIMOIRES (Discography) ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;margin-top:20px;"><span class="section-header">Albums / Mixtapes / EPs</span></div>', unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
@@ -396,8 +396,10 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/3ZmMnJjsN0ISEOg62KfgUO" target="_blank">2 Pillar's</a> (2023)<br>
 <a href="https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3" target="_blank">Steppers</a> (2023)
 </div>
-<div style="text-align:center;margin-top:25px;font-family:'BaronessKuffner',cursive;font-size:28px;">
-🔥 Follow / Stream Hellbound Disciplez<br><br>
+""", unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;margin-top:25px;"><span class="section-header">Follow / Stream Hellbound Disciplez</span></div>', unsafe_allow_html=True)
+    st.markdown("""
+<div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ" target="_blank">Spotify</a><br>
 <a href="https://music.apple.com/us/artist/hellbound-disciplez/1641539761" target="_blank">Apple Music</a><br>
 <a href="https://music.amazon.com/artists/B0BBSJ6W1Z/hellbound-disciplez" target="_blank">Amazon Music</a><br>
