@@ -1,20 +1,17 @@
-App · PY
-Copy
-
 import streamlit as st
 import base64
 import random
 from PIL import Image
 import io
 import streamlit.components.v1 as components
- 
+
 # ─── Asset Loaders (all cached) ───────────────────────────────────────────────
- 
+
 @st.cache_data(show_spinner=False)
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
- 
+
 @st.cache_data(show_spinner=False)
 def get_image_base64_resized_flipped(filename, size=(64, 64)):
     img = Image.open(filename).convert("RGBA")
@@ -23,7 +20,7 @@ def get_image_base64_resized_flipped(filename, size=(64, 64)):
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return base64.b64encode(buf.getvalue()).decode("utf-8")
- 
+
 @st.cache_data(show_spinner=False)
 def get_image_base64_transparent(filename, opacity=0.5):
     img = Image.open(filename).convert("RGBA")
@@ -33,17 +30,17 @@ def get_image_base64_transparent(filename, opacity=0.5):
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return base64.b64encode(buf.getvalue()).decode("utf-8")
- 
+
 @st.cache_data(show_spinner=False)
 def get_audio_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
- 
+
 @st.cache_data(show_spinner=False)
 def get_font_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
- 
+
 @st.cache_data(show_spinner=False)
 def get_shuffled_photos():
     photos = [
@@ -58,9 +55,9 @@ def get_shuffled_photos():
     ]
     random.shuffle(photos)
     return photos
- 
+
 # ─── Load Assets (cached after first run) ─────────────────────────────────────
- 
+
 bg_data        = get_image_base64("BGSKULLS.png")
 skull          = get_image_base64("SKULL1.png")
 shotgun        = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
@@ -71,28 +68,28 @@ shotty_snd     = get_audio_base64("shottyblast.wav")
 web_beat       = get_audio_base64("WEB_BEAT_001.wav")
 font_baroness  = get_font_base64("BaronessKuffner.ttf")
 font_glitch    = get_font_base64("DoctorGlitch.otf")
- 
+
 # ─── Page Config ──────────────────────────────────────────────────────────────
- 
+
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
- 
+
 # ─── Prebuilt reusable strings ─────────────────────────────────────────────────
- 
+
 BG_URL     = f'url("data:image/png;base64,{bg_data}")'
 CURSOR_URL = f'url("data:image/png;base64,{shotgun}") 10 4, auto'
- 
+
 skull_s       = f'<img src="data:image/png;base64,{skull}" width="80" style="margin:0 8px;">'
 skull_s_r     = f'<img src="data:image/png;base64,{skull}" width="80" style="margin:0 8px;transform:scaleX(-1);">'
 skull_divider = f'<div class="skull-divider">{skull_s_r}{skull_s}{skull_s_r}</div>'
 pistol_l      = f'<img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;">'
 pistol_r      = f'<img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
- 
+
 # ─── CSS ──────────────────────────────────────────────────────────────────────
- 
+
 css = f"""
 <style>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
- 
+
 @font-face {{
   font-family:'BaronessKuffner';
   src:url("data:font/truetype;base64,{font_baroness}") format('truetype');
@@ -103,13 +100,13 @@ css = f"""
   src:url("data:font/otf;base64,{font_glitch}") format('opentype');
   font-display:swap;
 }}
- 
+
 *,html,body,.stApp,[data-testid="stSidebar"],.stApp * {{
   cursor:{CURSOR_URL} !important;
   -webkit-font-smoothing:antialiased;
   box-sizing:border-box;
 }}
- 
+
 [data-testid="stSidebarCollapsedControl"] span,
 [data-testid="stSidebarCollapsedControl"] button span,
 [data-testid="stSidebarNavCollapseButton"] span,
@@ -136,12 +133,12 @@ button[aria-label="Expand sidebar"] span {{
   font-feature-settings:'liga' !important;
   -webkit-font-smoothing:antialiased !important;
 }}
- 
+
 @keyframes navPulse {{
   0%,100% {{ opacity:1; transform:translateX(0); }}
   50%      {{ opacity:0.6; transform:translateX(3px); }}
 }}
- 
+
 #nav-hint {{
   position:fixed;top:80px;left:8px;z-index:9999;
   display:flex;align-items:center;gap:6px;
@@ -155,12 +152,12 @@ button[aria-label="Expand sidebar"] span {{
   font-size:16px;color:#ff2200;letter-spacing:1px;
   white-space:nowrap;-webkit-text-stroke:0.3px white;
 }}
- 
+
 ::-webkit-scrollbar       {{ width:8px; }}
 ::-webkit-scrollbar-track {{ background:#000; }}
 ::-webkit-scrollbar-thumb {{ background:#ff2200;border-radius:4px; }}
 ::-webkit-scrollbar-thumb:hover {{ background:#ff5500; }}
- 
+
 .stApp {{
   background-image:{BG_URL};
   background-size:cover;background-repeat:repeat;
@@ -170,9 +167,9 @@ button[aria-label="Expand sidebar"] span {{
   background-image:{BG_URL};
   background-size:cover;background-repeat:repeat;
 }}
- 
+
 img {{ transform:translateZ(0); }}
- 
+
 [data-testid="stMain"] p,
 [data-testid="stMain"] li,
 [data-testid="stMain"] a,
@@ -182,7 +179,7 @@ img {{ transform:translateZ(0); }}
   font-family:'BaronessKuffner',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
 }}
- 
+
 [data-testid="stMain"] h1,[data-testid="stMain"] h2,
 [data-testid="stMain"] h3,[data-testid="stMain"] h4,
 [data-testid="stMain"] h5,[data-testid="stMain"] h6,
@@ -190,19 +187,19 @@ img {{ transform:translateZ(0); }}
 [data-testid="stSidebar"] h3 {{
   font-family:'DoctorGlitch',cursive !important;color:#ff2200 !important;
 }}
- 
+
 [data-testid="stMain"] a {{
   color:#ff2200 !important;text-decoration:none;transition:color 0.2s ease;
 }}
 [data-testid="stMain"] a:hover {{
   color:#ff5500 !important;text-shadow:0 0 10px #ff2200;
 }}
- 
+
 @keyframes announcePulse {{
   0%,100% {{ text-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:4px; }}
   50%      {{ text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:6px; }}
 }}
- 
+
 .section-header {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
@@ -210,7 +207,7 @@ img {{ transform:translateZ(0); }}
   display:block;text-align:center;margin:10px 0;
 }}
 .skull-divider {{ display:block;text-align:center;margin:6px 0 18px 0; }}
- 
+
 .announce-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
@@ -224,7 +221,7 @@ img {{ transform:translateZ(0); }}
   -webkit-text-stroke:0.5px white;
   display:block;text-align:center;margin:10px 0;
 }}
- 
+
 @keyframes vhs-shake {{
   0%   {{ transform:translate(0,0) skewX(0deg);filter:none; }}
   10%  {{ transform:translate(-6px,3px) skewX(-3deg);filter:hue-rotate(90deg) saturate(3) brightness(1.4); }}
@@ -238,14 +235,14 @@ img {{ transform:translateZ(0); }}
   90%  {{ transform:translate(-3px,4px) skewX(-1deg);filter:hue-rotate(300deg) saturate(2) brightness(0.9); }}
   100% {{ transform:translate(0,0) skewX(0deg);filter:none; }}
 }}
- 
+
 @keyframes scanline-flash {{
   0%  {{ opacity:0; }}  20% {{ opacity:0.6; }} 40% {{ opacity:0.2; }}
   60% {{ opacity:0.8; }} 80% {{ opacity:0.3; }} 100% {{ opacity:0; }}
 }}
- 
+
 .vhs-glitch-active {{ animation:vhs-shake 0.5s steps(1,end) forwards !important; }}
- 
+
 #vhs-overlay {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
   pointer-events:none;z-index:999998;display:none;
@@ -254,7 +251,7 @@ img {{ transform:translateZ(0); }}
     transparent 1px,transparent 3px);
 }}
 #vhs-overlay.active {{ display:block;animation:scanline-flash 0.5s steps(1,end) forwards; }}
- 
+
 #vhs-rgb-r,#vhs-rgb-b {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
   pointer-events:none;z-index:999997;display:none;mix-blend-mode:screen;
@@ -266,11 +263,11 @@ img {{ transform:translateZ(0); }}
 }}
 </style>
 """
- 
+
 st.markdown(css, unsafe_allow_html=True)
- 
+
 # ─── Persistent overlays & nav hint ───────────────────────────────────────────
- 
+
 st.markdown(
     '<div id="nav-hint"><span class="nh-text">TAP ARROW TO NAVIGATE</span></div>'
     '<div id="vhs-overlay"></div>'
@@ -278,9 +275,9 @@ st.markdown(
     '<div id="vhs-rgb-b"></div>',
     unsafe_allow_html=True
 )
- 
+
 # ─── Audio + interaction JS (deferred until first user gesture) ───────────────
- 
+
 components.html(
     f"""
     <script>
@@ -289,11 +286,11 @@ components.html(
       var reloadAudio = null;
       var shottyAudio = null;
       var audioReady  = false;
- 
+
       var bgMusic = new Audio("data:audio/wav;base64,{web_beat}");
       bgMusic.loop   = true;
       bgMusic.volume = 0.35;
- 
+
       function initAudio() {{
         if (audioReady) return;
         audioReady = true;
@@ -308,10 +305,10 @@ components.html(
           }});
         }}
       }}
- 
+
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
       function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
- 
+
       function triggerVHS() {{
         var app     = doc.querySelector('.stApp');
         var overlay = doc.getElementById('vhs-overlay');
@@ -325,7 +322,7 @@ components.html(
           setTimeout(function() {{ el.classList.remove('vhs-glitch-active', 'active'); }}, 500);
         }});
       }}
- 
+
       function attachHoverSounds() {{
         doc.querySelectorAll('a,button,[role="radio"],[role="button"],label').forEach(function(el) {{
           if (!el.dataset.soundAttached) {{
@@ -334,14 +331,14 @@ components.html(
           }}
         }});
       }}
- 
+
       doc.addEventListener('click', function() {{
         initAudio();
         if (bgMusic.paused) {{ bgMusic.play().catch(function(){{}}); }}
         playShotty();
         triggerVHS();
       }}, {{ passive: true }});
- 
+
       attachHoverSounds();
       setInterval(attachHoverSounds, 1500);
     }})();
@@ -349,9 +346,9 @@ components.html(
     """,
     height=0
 )
- 
+
 # ─── Logo ──────────────────────────────────────────────────────────────────────
- 
+
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.markdown(
@@ -359,9 +356,9 @@ with col2:
         f'style="display:block;margin:auto;" loading="lazy">',
         unsafe_allow_html=True
     )
- 
+
 # ─── Sidebar ───────────────────────────────────────────────────────────────────
- 
+
 with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("", [
@@ -370,9 +367,9 @@ with st.sidebar:
         "The Cult (Members)",
         "The Catacombs (Photos)"
     ])
- 
+
 # ─── Pages ─────────────────────────────────────────────────────────────────────
- 
+
 if menu == "The Ritual (Home)":
     st.markdown(
         f'<div style="text-align:center;"><span class="section-header">'
@@ -402,7 +399,7 @@ if menu == "The Ritual (Home)":
         '<div style="text-align:center;"><span class="glitch-tape-text">Glitch Tape Vol. 2 — Coming Soon</span></div>',
         unsafe_allow_html=True
     )
- 
+
 elif menu == "The Grimoires (Discography)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE GRIMOIRES</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
@@ -454,7 +451,7 @@ elif menu == "The Grimoires (Discography)":
         "</div>",
         unsafe_allow_html=True
     )
- 
+
 elif menu == "The Cult (Members)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE CULT</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
@@ -494,7 +491,7 @@ elif menu == "The Cult (Members)":
             'Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>',
             unsafe_allow_html=True
         )
- 
+
 elif menu == "The Catacombs (Photos)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE CATACOMBS</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
