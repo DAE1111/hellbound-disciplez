@@ -9,12 +9,17 @@ def get_image_base64(filename):
 
 bg_data = get_image_base64("BGSKULLS.png")
 skull = get_image_base64("SKULL1.png")
+knife = get_image_base64("KNIFE1.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+*, html, body, .stApp {{
+    cursor: url("data:image/png;base64,{knife}") 16 16, auto !important;
+}}
 
 .main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
     font-family: 'Creepster', cursive !important;
