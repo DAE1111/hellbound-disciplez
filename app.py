@@ -221,13 +221,235 @@ img {{
     line-height: 1;
 }}
 
-#nav-hint span.text {{
+#nav-hint span.text {{import streamlit as st
+import base64
+import random
+from PIL import Image
+import io
+import streamlit.components.v1 as components
+
+@st.cache_data(show_spinner=False)
+def get_image_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_image_base64_resized(filename, size=(64, 64)):
+    img = Image.open(filename).convert("RGBA")
+    img = img.resize(size, Image.LANCZOS)
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_image_base64_resized_flipped(filename, size=(64, 64)):
+    img = Image.open(filename).convert("RGBA")
+    img = img.resize(size, Image.LANCZOS)
+    img = img.transpose(Image.FLIP_LEFT_RIGHT)
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_image_base64_transparent(filename, opacity=0.5):
+    img = Image.open(filename).convert("RGBA")
+    r, g, b, a = img.split()
+    a = a.point(lambda x: int(x * opacity))
+    img = Image.merge("RGBA", (r, g, b, a))
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_audio_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_font_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_shuffled_photos():
+    photos = [
+        "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
+        "pic9.jpeg","pic10.png","pic11.jpeg","pic12.jpeg","pic13.jpeg","pic14.jpeg","pic15.jpeg",
+        "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic20.png","pic21.png","pic22.png","pic23.jpg",
+        "pic24.png","pic25.jpg","pic26.jpg","pic27.jpg","pic28.jpg","pic29.jpg","pic30.jpg",
+        "pic31.jpg","pic32.jpg","pic33.jpg","pic34.jpg","pic35.jpg","pic36.jpg","pic37.jpg",
+        "pic39.jpg","pic40.jpg","pic41.jpg",
+        "img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg","img6.jpg",
+        "img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg","img12.jpg",
+    ]
+    random.shuffle(photos)
+    return photos
+
+bg_data = get_image_base64("BGSKULLS.png")
+skull = get_image_base64("SKULL1.png")
+shotgun = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
+pistol = get_image_base64("pistol-removebg-preview.png")
+logo = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
+reload_snd = get_audio_base64("reload.wav")
+shotty_snd = get_audio_base64("shottyblast.wav")
+font_baroness = get_font_base64("BaronessKuffner.ttf")
+font_glitch = get_font_base64("DoctorGlitch.otf")
+
+st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
+
+st.markdown(f"""
+<style>
+@font-face {{
+    font-family: 'BaronessKuffner';
+    src: url("data:font/truetype;base64,{font_baroness}") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}}
+
+@font-face {{
+    font-family: 'DoctorGlitch';
+    src: url("data:font/otf;base64,{font_glitch}") format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}}
+
+*, html, body, .stApp, [data-testid="stSidebar"], .stApp * {{
+    cursor: url("data:image/png;base64,{shotgun}") 10 4, auto !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
+}}
+
+.main *, [data-testid="stSidebar"] label {{
+    font-family: 'BaronessKuffner', cursive !important;
+    font-size: 28px !important;
+}}
+
+h1, h2, h3, h4, h5, h6,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {{
     font-family: 'DoctorGlitch', cursive !important;
-    font-size: 16px !important;
+}}
+
+p, div, span, li, a, label {{
+    font-family: 'BaronessKuffner', cursive !important;
+    font-size: 28px !important;
+}}
+
+/* HIDE STREAMLIT'S BROKEN SIDEBAR BUTTON COMPLETELY */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarNavCollapseButton"],
+[data-testid="collapsedControl"] {{
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}}
+
+/* OUR CUSTOM SIDEBAR TOGGLE */
+#custom-sidebar-btn {{
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 99999;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #ff2200;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 8px;
+    cursor: pointer !important;
+    box-shadow: 3px 0 15px rgba(255,34,0,0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}}
+
+#custom-sidebar-btn:hover {{
+    background: rgba(139,0,0,0.9);
+    box-shadow: 3px 0 25px rgba(255,34,0,0.8);
+    padding-right: 12px;
+}}
+
+#custom-sidebar-btn .bar {{
+    width: 22px;
+    height: 2px;
+    background: #ff2200;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 6px #ff2200;
+}}
+
+#custom-sidebar-btn:hover .bar {{
+    background: #ff5500;
+    box-shadow: 0 0 10px #ff5500;
+}}
+
+#custom-sidebar-btn .chevron {{
+    font-size: 14px;
+    color: #ff2200;
+    font-family: sans-serif;
+    line-height: 1;
+    text-shadow: 0 0 6px #ff2200;
+    margin-top: 4px;
+}}
+
+::-webkit-scrollbar {{ width: 8px; }}
+::-webkit-scrollbar-track {{ background: #000000; }}
+::-webkit-scrollbar-thumb {{ background: #ff2200; border-radius: 4px; }}
+::-webkit-scrollbar-thumb:hover {{ background: #ff5500; }}
+
+.stApp {{
+    background-image: url("data:image/png;base64,{bg_data}");
+    background-size: cover;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    color: #ff2200;
+    will-change: transform;
+}}
+
+[data-testid="stSidebar"] {{
+    background-image: url("data:image/png;base64,{bg_data}");
+    background-size: cover;
+    background-repeat: repeat;
+    will-change: transform;
+}}
+
+h1,h2,h3,h4,h5,h6,p,label {{
     color: #ff2200 !important;
-    letter-spacing: 1px;
-    white-space: nowrap;
-    -webkit-text-stroke: 0.3px white;
+}}
+
+a {{
+    color: #ff2200 !important;
+    text-decoration: none;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+    will-change: color;
+}}
+a:hover {{
+    color: #ff5500 !important;
+    text-shadow: 0 0 10px #ff2200;
+}}
+
+img {{
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+}}
+
+@keyframes navPulse {{
+    0%, 100% {{ opacity: 1; transform: translateY(-50%) translateX(0); }}
+    50% {{ opacity: 0.7; transform: translateY(-50%) translateX(3px); }}
+}}
+
+#custom-sidebar-btn {{
+    animation: navPulse 2s ease-in-out infinite;
+}}
+#custom-sidebar-btn:hover {{
+    animation: none;
 }}
 
 @keyframes announcePulse {{
@@ -327,9 +549,11 @@ img {{
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div id="nav-hint">
-    <span class="arrow">☰</span>
-    <span class="text">TAP ARROW TO NAVIGATE</span>
+<div id="custom-sidebar-btn" onclick="toggleSidebar()" title="Open/Close Menu">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="chevron">&#9658;</div>
 </div>
 <div id="vhs-overlay"></div>
 <div id="vhs-rgb-r"></div>
@@ -361,33 +585,30 @@ function triggerVHS() {{
     }});
 }}
 
-function fixSidebarButton() {{
+window.parent.toggleSidebar = function() {{
     var doc = window.parent.document;
-    var allButtons = doc.querySelectorAll("button");
-    allButtons.forEach(function(btn) {{
-        var txt = (btn.innerText || btn.textContent || "").trim().toLowerCase();
-        if (txt.includes("collapse") || txt.includes("expand") || txt.includes("sidebar") || txt.includes("arrow") || txt.includes("double")) {{
-            var svgs = btn.querySelectorAll("svg");
-            var hasSvg = svgs.length > 0;
-            btn.querySelectorAll("p, span, div").forEach(function(el) {{
-                if (!el.querySelector("svg") && el.tagName !== "SVG") {{
-                    el.style.cssText = "font-size:0!important;color:transparent!important;display:none!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;";
-                }}
-            }});
-            svgs.forEach(function(svg) {{
-                svg.style.cssText = "display:block!important;visibility:visible!important;color:#ff2200!important;fill:#ff2200!important;stroke:#ff2200!important;width:24px!important;height:24px!important;";
-                svg.querySelectorAll("*").forEach(function(el) {{
-                    el.style.color = "#ff2200";
-                    el.style.fill = "#ff2200";
-                    el.style.stroke = "#ff2200";
-                }});
-            }});
+    var allBtns = doc.querySelectorAll("button");
+    allBtns.forEach(function(btn) {{
+        var label = (btn.getAttribute("aria-label") || "").toLowerCase();
+        var testid = btn.getAttribute("data-testid") || "";
+        if (label.includes("sidebar") || label.includes("collapse") || label.includes("expand") ||
+            testid.includes("Sidebar") || testid.includes("sidebar") || testid.includes("collapsed")) {{
+            btn.click();
         }}
     }});
-}}
+    var chevron = doc.querySelector("#custom-sidebar-btn .chevron");
+    if (chevron) {{
+        chevron.innerHTML = chevron.innerHTML === "&#9658;" ? "&#9664;" : "&#9658;";
+    }}
+}};
 
 var doc = window.parent.document;
-doc.addEventListener("click", function() {{ playShotty(); triggerVHS(); }});
+doc.addEventListener("click", function(e) {{
+    if (!e.target.closest("#custom-sidebar-btn")) {{
+        playShotty();
+        triggerVHS();
+    }}
+}});
 
 function attachHoverSounds() {{
     var clickables = doc.querySelectorAll("a, button, [role='radio'], [role='button'], label");
@@ -399,12 +620,8 @@ function attachHoverSounds() {{
     }});
 }}
 
-fixSidebarButton();
 attachHoverSounds();
-setInterval(function() {{
-    fixSidebarButton();
-    attachHoverSounds();
-}}, 500);
+setInterval(attachHoverSounds, 1500);
 </script>
 """, height=0)
 
