@@ -5,12 +5,12 @@ from PIL import Image
 import io
 import streamlit.components.v1 as components
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def get_image_base64_resized(filename, size=(64, 64)):
     img = Image.open(filename).convert("RGBA")
     img = img.resize(size, Image.LANCZOS)
@@ -18,7 +18,7 @@ def get_image_base64_resized(filename, size=(64, 64)):
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def get_image_base64_resized_flipped(filename, size=(64, 64)):
     img = Image.open(filename).convert("RGBA")
     img = img.resize(size, Image.LANCZOS)
@@ -27,7 +27,7 @@ def get_image_base64_resized_flipped(filename, size=(64, 64)):
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def get_image_base64_transparent(filename, opacity=0.5):
     img = Image.open(filename).convert("RGBA")
     r, g, b, a = img.split()
@@ -37,10 +37,24 @@ def get_image_base64_transparent(filename, opacity=0.5):
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def get_audio_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_shuffled_photos():
+    photos = [
+        "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
+        "pic9.jpeg","pic10.png","pic11.jpeg","pic12.jpeg","pic13.jpeg","pic14.jpeg","pic15.jpeg",
+        "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic20.png","pic21.png","pic22.png","pic23.jpg",
+        "pic24.png","pic25.jpg","pic26.jpg","pic27.jpg","pic28.jpg","pic29.jpg","pic30.jpg",
+        "pic31.jpg","pic32.jpg","pic33.jpg","pic34.jpg","pic35.jpg","pic36.jpg","pic37.jpg",
+        "pic39.jpg","pic40.jpg","pic41.jpg","img1.jpg","img2.jpg","img3.jpg","img4.jpg",
+        "img5.jpg","img6.jpg","img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg",
+    ]
+    random.shuffle(photos)
+    return photos
 
 bg_data = get_image_base64("BGSKULLS.png")
 skull = get_image_base64("SKULL1.png")
@@ -58,64 +72,108 @@ st.markdown(f"""
 
 *, html, body, .stApp, [data-testid="stSidebar"], .stApp * {{
     cursor: url("data:image/png;base64,{shotgun}") 10 4, auto !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
 }}
 
 .main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
     font-family: 'Creepster', cursive !important;
 }}
 
-::-webkit-scrollbar {{
-    width: 8px;
-}}
-::-webkit-scrollbar-track {{
-    background: #000000;
-}}
-::-webkit-scrollbar-thumb {{
-    background: #ff2200;
-    border-radius: 4px;
-}}
-::-webkit-scrollbar-thumb:hover {{
-    background: #ff5500;
-}}
+::-webkit-scrollbar {{ width: 8px; }}
+::-webkit-scrollbar-track {{ background: #000000; }}
+::-webkit-scrollbar-thumb {{ background: #ff2200; border-radius: 4px; }}
+::-webkit-scrollbar-thumb:hover {{ background: #ff5500; }}
 
 .stApp {{
     background-image: url("data:image/png;base64,{bg_data}");
     background-size: cover;
     background-repeat: repeat;
     background-attachment: fixed;
-    color:#ff2200;
+    color: #ff2200;
+    will-change: transform;
 }}
+
 [data-testid="stSidebar"] {{
     background-image: url("data:image/png;base64,{bg_data}");
     background-size: cover;
     background-repeat: repeat;
+    will-change: transform;
 }}
+
 h1,h2,h3,h4,h5,h6,p,label {{
-    color:#ff2200 !important;
+    color: #ff2200 !important;
     font-family: 'Creepster', cursive !important;
 }}
+
 a {{
     color: #ff2200 !important;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+    will-change: color;
 }}
 a:hover {{
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
 }}
 
+img {{
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+}}
+
+/* NAV HINT */
+@keyframes navPulse {{
+    0%, 100% {{ opacity: 1; transform: translateX(0); }}
+    50% {{ opacity: 0.6; transform: translateX(3px); }}
+}}
+
+#nav-hint {{
+    position: fixed;
+    top: 55px;
+    left: 8px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid #ff2200;
+    border-radius: 6px;
+    padding: 6px 12px;
+    animation: navPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(255,34,0,0.5);
+}}
+
+#nav-hint span.arrow {{
+    font-size: 20px;
+    color: #ff2200;
+    font-weight: bold;
+    line-height: 1;
+}}
+
+#nav-hint span.text {{
+    font-family: 'Creepster', cursive;
+    font-size: 16px;
+    color: #ff2200;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    -webkit-text-stroke: 0.3px white;
+}}
+
+/* VHS GLITCH */
 @keyframes vhs-shake {{
-    0%   {{ transform: translate(0, 0) skewX(0deg); filter: none; }}
-    10%  {{ transform: translate(-6px, 3px) skewX(-3deg); filter: hue-rotate(90deg) saturate(3) brightness(1.4); }}
-    20%  {{ transform: translate(6px, -3px) skewX(3deg); filter: hue-rotate(180deg) saturate(4) brightness(0.8); }}
-    30%  {{ transform: translate(-4px, 5px) skewX(-2deg); filter: hue-rotate(270deg) saturate(5) brightness(1.6) blur(1px); }}
-    40%  {{ transform: translate(8px, -2px) skewX(4deg); filter: hue-rotate(0deg) saturate(6) brightness(0.6) blur(2px); }}
-    50%  {{ transform: translate(-8px, 4px) skewX(-4deg); filter: hue-rotate(120deg) saturate(8) brightness(1.8) blur(1px); }}
-    60%  {{ transform: translate(4px, -5px) skewX(2deg); filter: hue-rotate(240deg) saturate(5) brightness(0.7); }}
-    70%  {{ transform: translate(-6px, 2px) skewX(-3deg); filter: hue-rotate(60deg) saturate(3) brightness(1.3); }}
-    80%  {{ transform: translate(5px, -3px) skewX(2deg); filter: hue-rotate(180deg) saturate(4) brightness(1.1) blur(1px); }}
-    90%  {{ transform: translate(-3px, 4px) skewX(-1deg); filter: hue-rotate(300deg) saturate(2) brightness(0.9); }}
-    100% {{ transform: translate(0, 0) skewX(0deg); filter: none; }}
+    0%   {{ transform: translate(0,0) skewX(0deg); filter: none; }}
+    10%  {{ transform: translate(-6px,3px) skewX(-3deg); filter: hue-rotate(90deg) saturate(3) brightness(1.4); }}
+    20%  {{ transform: translate(6px,-3px) skewX(3deg); filter: hue-rotate(180deg) saturate(4) brightness(0.8); }}
+    30%  {{ transform: translate(-4px,5px) skewX(-2deg); filter: hue-rotate(270deg) saturate(5) brightness(1.6) blur(1px); }}
+    40%  {{ transform: translate(8px,-2px) skewX(4deg); filter: hue-rotate(0deg) saturate(6) brightness(0.6) blur(2px); }}
+    50%  {{ transform: translate(-8px,4px) skewX(-4deg); filter: hue-rotate(120deg) saturate(8) brightness(1.8) blur(1px); }}
+    60%  {{ transform: translate(4px,-5px) skewX(2deg); filter: hue-rotate(240deg) saturate(5) brightness(0.7); }}
+    70%  {{ transform: translate(-6px,2px) skewX(-3deg); filter: hue-rotate(60deg) saturate(3) brightness(1.3); }}
+    80%  {{ transform: translate(5px,-3px) skewX(2deg); filter: hue-rotate(180deg) saturate(4) brightness(1.1) blur(1px); }}
+    90%  {{ transform: translate(-3px,4px) skewX(-1deg); filter: hue-rotate(300deg) saturate(2) brightness(0.9); }}
+    100% {{ transform: translate(0,0) skewX(0deg); filter: none; }}
 }}
 
 @keyframes scanline-flash {{
@@ -132,49 +190,31 @@ a:hover {{
 }}
 
 #vhs-overlay {{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 999998;
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none; z-index: 999998;
     display: none;
     background: repeating-linear-gradient(
         0deg,
-        rgba(255, 0, 0, 0.08) 0px,
-        rgba(255, 0, 0, 0.08) 1px,
-        transparent 1px,
-        transparent 3px
+        rgba(255,0,0,0.08) 0px, rgba(255,0,0,0.08) 1px,
+        transparent 1px, transparent 3px
     );
+    will-change: opacity;
 }}
-
 #vhs-overlay.active {{
     display: block;
     animation: scanline-flash 0.5s steps(1, end) forwards;
 }}
 
-#vhs-rgb-r {{
-    position: fixed;
-    top: 0; left: 0;
+#vhs-rgb-r, #vhs-rgb-b {{
+    position: fixed; top: 0; left: 0;
     width: 100vw; height: 100vh;
-    pointer-events: none;
-    z-index: 999997;
-    background: rgba(255, 0, 0, 0.15);
-    display: none;
-    mix-blend-mode: screen;
+    pointer-events: none; z-index: 999997;
+    display: none; mix-blend-mode: screen;
+    will-change: opacity;
 }}
-#vhs-rgb-b {{
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    pointer-events: none;
-    z-index: 999997;
-    background: rgba(0, 0, 255, 0.15);
-    display: none;
-    mix-blend-mode: screen;
-}}
-
+#vhs-rgb-r {{ background: rgba(255,0,0,0.15); }}
+#vhs-rgb-b {{ background: rgba(0,0,255,0.15); }}
 #vhs-rgb-r.active, #vhs-rgb-b.active {{
     display: block;
     animation: scanline-flash 0.5s steps(1, end) forwards;
@@ -183,6 +223,10 @@ a:hover {{
 """, unsafe_allow_html=True)
 
 st.markdown("""
+<div id="nav-hint">
+    <span class="arrow">☰</span>
+    <span class="text">TAP ARROW TO NAVIGATE</span>
+</div>
 <div id="vhs-overlay"></div>
 <div id="vhs-rgb-r"></div>
 <div id="vhs-rgb-b"></div>
@@ -192,19 +236,11 @@ components.html(f"""
 <script>
 var reloadAudio = new Audio("data:audio/wav;base64,{reload_snd}");
 var shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
-
 reloadAudio.volume = 0.64;
 shottyAudio.volume = 0.64;
 
-function playReload() {{
-    reloadAudio.currentTime = 0;
-    reloadAudio.play();
-}}
-
-function playShotty() {{
-    shottyAudio.currentTime = 0;
-    shottyAudio.play();
-}}
+function playReload() {{ reloadAudio.currentTime = 0; reloadAudio.play(); }}
+function playShotty() {{ shottyAudio.currentTime = 0; shottyAudio.play(); }}
 
 function triggerVHS() {{
     var doc = window.parent.document;
@@ -213,51 +249,25 @@ function triggerVHS() {{
     var rgbR = doc.getElementById("vhs-rgb-r");
     var rgbB = doc.getElementById("vhs-rgb-b");
 
-    if (app) {{
-        app.classList.remove("vhs-glitch-active");
-        void app.offsetWidth;
-        app.classList.add("vhs-glitch-active");
+    [app, overlay, rgbR, rgbB].forEach(function(el) {{
+        if (!el) return;
+        el.classList.remove("vhs-glitch-active", "active");
+        void el.offsetWidth;
+        el.classList.add(el === app ? "vhs-glitch-active" : "active");
         setTimeout(function() {{
-            app.classList.remove("vhs-glitch-active");
+            el.classList.remove("vhs-glitch-active", "active");
         }}, 500);
-    }}
-
-    if (overlay) {{
-        overlay.classList.remove("active");
-        void overlay.offsetWidth;
-        overlay.classList.add("active");
-        setTimeout(function() {{ overlay.classList.remove("active"); }}, 500);
-    }}
-
-    if (rgbR) {{
-        rgbR.classList.remove("active");
-        void rgbR.offsetWidth;
-        rgbR.classList.add("active");
-        setTimeout(function() {{ rgbR.classList.remove("active"); }}, 500);
-    }}
-
-    if (rgbB) {{
-        rgbB.classList.remove("active");
-        void rgbB.offsetWidth;
-        rgbB.classList.add("active");
-        setTimeout(function() {{ rgbB.classList.remove("active"); }}, 500);
-    }}
+    }});
 }}
 
 var doc = window.parent.document;
-
-doc.addEventListener("click", function(e) {{
-    playShotty();
-    triggerVHS();
-}});
+doc.addEventListener("click", function() {{ playShotty(); triggerVHS(); }});
 
 function attachHoverSounds() {{
     var clickables = doc.querySelectorAll("a, button, [role='radio'], [role='button'], label");
     clickables.forEach(function(el) {{
         if (!el.dataset.soundAttached) {{
-            el.addEventListener("mouseenter", function() {{
-                playReload();
-            }});
+            el.addEventListener("mouseenter", playReload);
             el.dataset.soundAttached = "true";
         }}
     }});
@@ -268,14 +278,9 @@ setInterval(attachHoverSounds, 1500);
 </script>
 """, height=0)
 
-st.markdown(
-    '<div style="position:fixed;top:60px;left:10px;font-family:Georgia,serif;color:#4a90d9;font-size:12px;z-index:9999;">☰ Tap arrow to navigate</div>',
-    unsafe_allow_html=True
-)
-
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.markdown(f'<img src="data:image/png;base64,{logo}" width="500" style="display:block;margin:auto;">', unsafe_allow_html=True)
+    st.markdown(f'<img src="data:image/png;base64,{logo}" width="500" style="display:block;margin:auto;transform:translateZ(0);">', unsafe_allow_html=True)
 
 with st.sidebar:
     st.header("THE VOID")
@@ -290,7 +295,6 @@ with st.sidebar:
     )
 
 if menu == "The Ritual (Home)":
-
     st.markdown(f"""
     <div style="text-align:center;font-size:28px;">
     <img src="data:image/png;base64,{pistol}" width="60">
@@ -301,7 +305,6 @@ if menu == "The Ritual (Home)":
 
     st.markdown("""
 <div style="text-align:center">
-
 Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of
 <b>Lord-K-Haos</b>, <b>Crazy8 The Snap Case</b>, and <b>Osomane</b>. Independent and unbothered,
 these three sonic provocateurs blaze their own trail. With a sound that's equal parts gritty phonk
@@ -314,38 +317,27 @@ Hellbound Disciplez.
 🔥 Deep South, United States 🔥
 <br><br>
 ⚡ Glitch Tape Vol. 2 — Coming Soon ⚡
-
 </div>
 """, unsafe_allow_html=True)
 
 elif menu == "The Grimoires (Discography)":
-
     st.markdown(f"""
 <div style="text-align:center;font-size:28px;">
 <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE GRIMOIRES (Discography) </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
 </div>
-
-<div style="text-align:center;margin-top:20px;">
-📀 Albums / Mixtapes / EPs
-</div>
-
+<div style="text-align:center;margin-top:20px;">📀 Albums / Mixtapes / EPs</div>
 <div style="text-align:center;">
-
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
 <a href="https://open.spotify.com/album/43O3pIiiwtOhcd9VANWjga" target="_blank">Hellbound Disciplez (Self Titled)</a> (2023) — 15 tracks<br>
 <a href="https://open.spotify.com/album/2smEfqlW4Z16AUD5md7UxZ" target="_blank">21 Grams Lighter</a> (2022) — 10 tracks<br>
 <a href="https://open.spotify.com/album/0LW0Gp5neAyHtihn5pxteR" target="_blank">The Godless Mixtape</a> (2022) — 11 tracks<br>
 <a href="https://open.spotify.com/album/2jEHxL0P2uHT6SPokLnayC" target="_blank">Glitch Tape Vol.1</a> (2023) — 7 tracks<br>
 <a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
-
 </div>
-
 <div style="text-align:center;margin-top:25px;">
 <img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> Singles </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">
 </div>
-
 <div style="text-align:center;">
-
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
 <a href="https://open.spotify.com/album/4EU2f7tAo6DWhERyavT37j" target="_blank">Crowbar</a> (2024)<br>
 <a href="https://open.spotify.com/album/40pDtzpR5i9jpvhjqNnidt" target="_blank">My House</a> (2024)<br>
@@ -362,24 +354,18 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/54ly6Sfv6krcsPOO1r2wMQ" target="_blank">Bloodsuckers</a> (2023)<br>
 <a href="https://open.spotify.com/album/3ZmMnJjsN0ISEOg62KfgUO" target="_blank">2 Pillar's</a> (2023)<br>
 <a href="https://open.spotify.com/album/43zuHUEggiF3ncNrcPj7s3" target="_blank">Steppers</a> (2023)
-
 </div>
-
 <div style="text-align:center;margin-top:25px;">
-
 🔥 Follow / Stream Hellbound Disciplez<br><br>
-
 <a href="https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ" target="_blank">Spotify</a><br>
 <a href="https://music.apple.com/us/artist/hellbound-disciplez/1641539761" target="_blank">Apple Music</a><br>
 <a href="https://music.amazon.com/artists/B0BBSJ6W1Z/hellbound-disciplez" target="_blank">Amazon Music</a><br>
 <a href="https://www.facebook.com/profile.php?id=100091797215709" target="_blank">Facebook</a><br>
 <a href="https://www.instagram.com/hellbound_disciplez?igsh=dmV1bjc5NmZoazh0" target="_blank">Instagram</a>
-
 </div>
 """, unsafe_allow_html=True)
 
 elif menu == "The Cult (Members)":
-
     st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CULT </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
@@ -409,22 +395,10 @@ elif menu == "The Cult (Members)":
         st.markdown("Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.")
 
 elif menu == "The Catacombs (Photos)":
-
     st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-right:-4px;"><b> THE CATACOMBS </b><img src="data:image/png;base64,{skull}" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
-    photos = [
-        "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
-        "pic9.jpeg","pic10.png","pic11.jpeg","pic12.jpeg","pic13.jpeg","pic14.jpeg","pic15.jpeg",
-        "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic20.png","pic21.png","pic22.png","pic23.jpg",
-        "pic24.png","pic25.jpg","pic26.jpg","pic27.jpg","pic28.jpg","pic29.jpg","pic30.jpg",
-        "pic31.jpg","pic32.jpg","pic33.jpg","pic34.jpg","pic35.jpg","pic36.jpg","pic37.jpg",
-        "pic39.jpg","pic40.jpg","pic41.jpg","img1.jpg","img2.jpg","img3.jpg","img4.jpg",
-        "img5.jpg","img6.jpg","img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg",
-    ]
-
-    random.shuffle(photos)
-
+    photos = get_shuffled_photos()
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
