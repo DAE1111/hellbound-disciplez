@@ -289,7 +289,9 @@ st.markdown("""
 <div id="vhs-rgb-b"></div>
 """, unsafe_allow_html=True)
 
-skull_divider = '<div class="skull-divider"><img src="data:image/png;base64,' + skull + '" width="40" style="margin:0 6px;"><img src="data:image/png;base64,' + skull + '" width="40" style="margin:0 6px;transform:scaleX(-1);"></div>'
+skull_s = '<img src="data:image/png;base64,' + skull + '" width="80" style="margin:0 8px;">'
+skull_s_r = '<img src="data:image/png;base64,' + skull + '" width="80" style="margin:0 8px;transform:scaleX(-1);">'
+skull_divider = '<div class="skull-divider">' + skull_s_r + skull_s + skull_s_r + '</div>'
 
 pistol_l = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
 pistol_r = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
@@ -368,7 +370,7 @@ Hellbound Disciplez.
     st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">Glitch Tape Vol. 2 — Coming Soon</span></div>', unsafe_allow_html=True)
 
 elif menu == "The Grimoires (Discography)":
-    st.markdown('<div style="text-align:center;"><span class="section-header">THE GRIMOIRES (Discography)</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="section-header">THE GRIMOIRES</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;"><span class="section-header">Albums / Mixtapes / EPs</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
