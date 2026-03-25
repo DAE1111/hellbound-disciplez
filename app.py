@@ -215,19 +215,6 @@ img { transform: translateZ(0); }
     text-align: center;
     margin: 10px 0;
 }
-.section-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 10px 0;
-}
-.section-header-row span.label {
-    font-family: 'DoctorGlitch', cursive !important;
-    font-size: 28px !important;
-    color: #ff2200 !important;
-    -webkit-text-stroke: 0.5px white;
-}
 .announce-text {
     font-family: 'DoctorGlitch', cursive !important;
     font-size: 28px !important;
@@ -297,8 +284,8 @@ st.markdown("""
 <div id="vhs-rgb-b"></div>
 """, unsafe_allow_html=True)
 
-skull_img   = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:-4px;">'
-skull_img_r = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">'
+skull_img   = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:12px;">'
+skull_img_r = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:12px;transform:scaleX(-1);">'
 skull_sm    = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-right:6px;">'
 skull_sm_r  = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">'
 pistol_l    = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
@@ -377,11 +364,8 @@ Hellbound Disciplez.
     st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">' + skull_sm + ' Glitch Tape Vol. 2 — Coming Soon ' + skull_sm_r + '</span></div>', unsafe_allow_html=True)
 
 elif menu == "The Grimoires (Discography)":
-    st.markdown(
-        '<div class="section-header-row">' + skull_img + '<span class="label"> THE GRIMOIRES (Discography) </span>' + skull_img_r + '</div>',
-        unsafe_allow_html=True
-    )
-    st.markdown('<div style="text-align:center;margin-top:20px;"><span class="section-header">📀 Albums / Mixtapes / EPs</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' DISCOGRAPHY ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;margin-top:20px;"><span class="section-header">' + skull_img + ' Albums / Mixtapes / EPs ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
@@ -392,10 +376,7 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
 </div>
 """, unsafe_allow_html=True)
-    st.markdown(
-        '<div class="section-header-row">' + skull_img + '<span class="label"> Singles </span>' + skull_img_r + '</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown('<div style="text-align:center;margin-top:25px;"><span class="section-header">' + skull_img + ' Singles ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
