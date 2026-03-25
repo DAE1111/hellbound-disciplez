@@ -26,7 +26,7 @@ st.markdown(f"""
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
 
 *, html, body, .stApp, [data-testid="stSidebar"], .stApp * {{
-    cursor: url("data:image/png;base64,{knife}") 40 16, auto !important;
+    cursor: url("data:image/png;base64,{knife}") 38 16, auto !important;
 }}
 
 .main *, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] label {{
