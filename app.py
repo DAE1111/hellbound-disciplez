@@ -1,3 +1,6 @@
+App · PY
+Copy
+
 import streamlit as st
 import base64
 import random
@@ -65,7 +68,7 @@ pistol         = get_image_base64("pistol-removebg-preview.png")
 logo           = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
 reload_snd     = get_audio_base64("reload.wav")
 shotty_snd     = get_audio_base64("shottyblast.wav")
-web_beat       = get_audio_base64("WEB_BEAT.wav")
+web_beat       = get_audio_base64("WEB_BEAT_001.wav")
 font_baroness  = get_font_base64("BaronessKuffner.ttf")
 font_glitch    = get_font_base64("DoctorGlitch.otf")
  
@@ -500,4 +503,3 @@ elif menu == "The Catacombs (Photos)":
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
             st.image(photo_path, use_container_width=True)
- 
