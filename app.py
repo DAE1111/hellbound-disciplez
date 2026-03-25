@@ -72,12 +72,7 @@ shotty_snd = get_audio_base64("shottyblast.wav")
 font_baroness = get_font_base64("BaronessKuffner.ttf")
 font_glitch = get_font_base64("DoctorGlitch.otf")
 
-st.set_page_config(
-    page_title="HELLBOUND DISCIPLEZ",
-    page_icon="🤘",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
 css = """
 <style>
@@ -92,42 +87,38 @@ css = """
     font-display: swap;
 }
 
-/* CURSOR */
 *, html, body, .stApp, [data-testid="stSidebar"], .stApp * {
     cursor: url("data:image/png;base64,""" + shotgun + """") 10 4, auto !important;
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
 }
 
-/* RESTORE normal font + size on ALL buttons so nothing is broken */
-button, button *, button span, button p,
-[role="button"], [role="button"] * {
-    font-family: inherit !important;
-    font-size: inherit !important;
-    color: inherit !important;
+/* BUTTONS - completely untouched, Streamlit handles these */
+button, button *, [data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapsedControl"] * {
+    font-family: unset !important;
+    font-size: unset !important;
+    color: unset !important;
     visibility: visible !important;
     display: revert !important;
+    opacity: revert !important;
     width: revert !important;
     height: revert !important;
-    opacity: revert !important;
     position: revert !important;
     overflow: revert !important;
+    pointer-events: revert !important;
 }
 
-/* APPLY our fonts only to content areas, never buttons */
+/* FONTS - scoped only to content, never buttons */
 [data-testid="stMain"] p,
-[data-testid="stMain"] div:not([class*="button"]):not([class*="Button"]),
-[data-testid="stMain"] span:not([class*="button"]):not([class*="Button"]),
 [data-testid="stMain"] li,
 [data-testid="stMain"] a,
-[data-testid="stMain"] label,
 [data-testid="stSidebar"] p,
-[data-testid="stSidebar"] div:not([class*="button"]):not([class*="Button"]),
-[data-testid="stSidebar"] span:not([class*="button"]):not([class*="Button"]),
 [data-testid="stSidebar"] li,
 [data-testid="stSidebar"] label {
     font-family: 'BaronessKuffner', cursive !important;
     font-size: 28px !important;
+    color: #ff2200 !important;
 }
 
 [data-testid="stMain"] h1,
@@ -144,8 +135,6 @@ button, button *, button span, button p,
 }
 
 [data-testid="stMain"] a {
-    font-family: 'BaronessKuffner', cursive !important;
-    font-size: 28px !important;
     color: #ff2200 !important;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -153,13 +142,6 @@ button, button *, button span, button p,
 [data-testid="stMain"] a:hover {
     color: #ff5500 !important;
     text-shadow: 0 0 10px #ff2200;
-}
-
-[data-testid="stMain"] p,
-[data-testid="stMain"] label,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] label {
-    color: #ff2200 !important;
 }
 
 ::-webkit-scrollbar { width: 8px; }
@@ -180,6 +162,43 @@ button, button *, button span, button p,
     background-repeat: repeat;
 }
 img { transform: translateZ(0); }
+
+/* NAV HINT */
+@keyframes navPulse {
+    0%, 100% { opacity: 1; transform: translateX(0); }
+    50% { opacity: 0.6; transform: translateX(3px); }
+}
+#nav-hint {
+    position: fixed;
+    top: 80px;
+    left: 8px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid #ff2200;
+    border-radius: 6px;
+    padding: 6px 12px;
+    animation: navPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(255,34,0,0.5);
+    pointer-events: none;
+}
+#nav-hint .nh-arrow {
+    font-size: 20px;
+    color: #ff2200;
+    font-family: sans-serif !important;
+    font-weight: bold;
+    line-height: 1;
+}
+#nav-hint .nh-text {
+    font-family: 'DoctorGlitch', cursive !important;
+    font-size: 16px;
+    color: #ff2200;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    -webkit-text-stroke: 0.3px white;
+}
 
 @keyframes announcePulse {
     0%,100% { text-shadow: 0 0 10px #ff2200, 0 0 20px #ff2200, 0 0 40px #ff0000; letter-spacing: 4px; }
@@ -253,7 +272,12 @@ img { transform: translateZ(0); }
 """
 
 st.markdown(css, unsafe_allow_html=True)
+
 st.markdown("""
+<div id="nav-hint">
+    <span class="nh-arrow">☰</span>
+    <span class="nh-text">TAP ARROW TO NAVIGATE</span>
+</div>
 <div id="vhs-overlay"></div>
 <div id="vhs-rgb-r"></div>
 <div id="vhs-rgb-b"></div>
@@ -291,9 +315,7 @@ function triggerVHS() {
     });
 }
 
-doc.addEventListener('click', function(e) {
-    playShotty(); triggerVHS();
-});
+doc.addEventListener('click', function(e) { playShotty(); triggerVHS(); });
 
 function attachHoverSounds() {
     doc.querySelectorAll('a, button, [role="radio"], [role="button"], label').forEach(function(el) {
@@ -303,7 +325,6 @@ function attachHoverSounds() {
         }
     });
 }
-
 attachHoverSounds();
 setInterval(attachHoverSounds, 1500);
 </script>
