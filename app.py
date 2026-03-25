@@ -76,6 +76,8 @@ st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="w
 
 css = """
 <style>
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
 @font-face {
     font-family: 'BaronessKuffner';
     src: url("data:font/truetype;base64,""" + font_baroness + """") format('truetype');
@@ -93,16 +95,32 @@ css = """
     box-sizing: border-box;
 }
 
-/* NUCLEAR BUTTON RESET - this must come first */
-button, button p, button span, button div,
-button svg, button svg *,
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="stSidebarCollapsedControl"] *,
-[data-testid="stSidebarNavCollapseButton"],
-[data-testid="stSidebarNavCollapseButton"] *,
-[data-testid="collapsedControl"],
-[data-testid="collapsedControl"] * {
-    all: revert !important;
+/* FIX: restore Material Icons font on the sidebar button spans */
+[data-testid="stSidebarCollapsedControl"] span,
+[data-testid="stSidebarCollapsedControl"] button span,
+[data-testid="stSidebarNavCollapseButton"] span,
+[data-testid="collapsedControl"] span,
+button[aria-label="Close sidebar"] span,
+button[aria-label="Open sidebar"] span,
+button[aria-label="collapse sidebar"] span,
+button[aria-label="expand sidebar"] span,
+button[aria-label="Collapse sidebar"] span,
+button[aria-label="Expand sidebar"] span {
+    font-family: 'Material Icons' !important;
+    font-size: 24px !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    line-height: 1 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+    word-wrap: normal !important;
+    direction: ltr !important;
+    color: #ff2200 !important;
+    -webkit-font-feature-settings: 'liga' !important;
+    font-feature-settings: 'liga' !important;
+    -webkit-font-smoothing: antialiased !important;
 }
 
 /* NAV HINT */
@@ -125,7 +143,6 @@ button svg, button svg *,
     animation: navPulse 2s ease-in-out infinite;
     box-shadow: 0 0 10px rgba(255,34,0,0.5);
     pointer-events: none;
-    font-family: sans-serif !important;
 }
 #nav-hint .nh-arrow {
     font-size: 20px;
