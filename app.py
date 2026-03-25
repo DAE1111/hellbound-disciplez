@@ -205,6 +205,8 @@ img {{ transform:translateZ(0); }}
   font-size:28px !important;color:#ff2200 !important;
   -webkit-text-stroke:0.5px white;
   display:block;text-align:center;margin:10px 0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;
 }}
 .skull-divider {{ display:block;text-align:center;margin:6px 0 18px 0; }}
 
@@ -214,12 +216,34 @@ img {{ transform:translateZ(0); }}
   -webkit-text-stroke:0.5px white;
   animation:announcePulse 2s ease-in-out infinite;
   display:block;text-align:center;margin:10px 0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;
 }}
 .glitch-tape-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
   -webkit-text-stroke:0.5px white;
   display:block;text-align:center;margin:10px 0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;
+}}
+
+@media (max-width:600px) {{
+  .announce-text {{
+    font-size:20px !important;
+    animation:announcePulseMobile 2s ease-in-out infinite;
+  }}
+  .section-header {{
+    font-size:20px !important;
+  }}
+  .glitch-tape-text {{
+    font-size:20px !important;
+  }}
+}}
+
+@keyframes announcePulseMobile {{
+  0%,100% {{ text-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:1px; }}
+  50%      {{ text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:2px; }}
 }}
 
 @keyframes vhs-shake {{
