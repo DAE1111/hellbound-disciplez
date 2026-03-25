@@ -3,6 +3,8 @@ import base64
 import random
 from PIL import Image
 import io
+import wave
+import struct
 import streamlit.components.v1 as components
 
 # ─── Asset Loaders (all cached) ───────────────────────────────────────────────
@@ -37,6 +39,41 @@ def get_audio_base64(filename):
         return base64.b64encode(f.read()).decode("utf-8")
 
 @st.cache_data(show_spinner=False)
+def get_wav_trimmed_base64(filename):
+    """
+    Reads WAV, trims trailing silence to the last non-silent sample,
+    and returns base64. Uses only Python stdlib — no extra dependencies.
+    This gives the Web Audio API a clean loop point with zero gap.
+    """
+    with wave.open(filename, "rb") as wf:
+        n_channels = wf.getnchannels()
+        sampwidth  = wf.getsampwidth()
+        framerate  = wf.getframerate()
+        n_frames   = wf.getnframes()
+        raw_frames = wf.readframes(n_frames)
+
+    fmt = {1: "b", 2: "h", 4: "i"}.get(sampwidth, "h")
+    total_samples = n_frames * n_channels
+    samples = list(struct.unpack(f"<{total_samples}{fmt}", raw_frames))
+
+    threshold = 32 if sampwidth == 1 else 128
+    last_nonsilent = len(samples) - 1
+    while last_nonsilent > 0 and abs(samples[last_nonsilent]) < threshold:
+        last_nonsilent -= 1
+
+    trim_to     = ((last_nonsilent // n_channels) + 1) * n_channels
+    trimmed_raw = struct.pack(f"<{trim_to}{fmt}", *samples[:trim_to])
+
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as out:
+        out.setnchannels(n_channels)
+        out.setsampwidth(sampwidth)
+        out.setframerate(framerate)
+        out.writeframes(trimmed_raw)
+
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
 def get_font_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
@@ -58,22 +95,22 @@ def get_shuffled_photos():
 
 # ─── Load Assets (cached after first run) ─────────────────────────────────────
 
-bg_data        = get_image_base64("BGSKULLS.png")
-skull          = get_image_base64("SKULL1.png")
-shotgun        = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
-pistol         = get_image_base64("pistol-removebg-preview.png")
-logo           = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
-reload_snd     = get_audio_base64("reload.wav")
-shotty_snd     = get_audio_base64("shottyblast.wav")
-web_beat       = get_audio_base64("WEB_BEAT_001.wav")
-font_baroness  = get_font_base64("BaronessKuffner.ttf")
-font_glitch    = get_font_base64("DoctorGlitch.otf")
+bg_data       = get_image_base64("BGSKULLS.png")
+skull         = get_image_base64("SKULL1.png")
+shotgun       = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
+pistol        = get_image_base64("pistol-removebg-preview.png")
+logo          = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
+reload_snd    = get_audio_base64("reload.wav")
+shotty_snd    = get_audio_base64("shottyblast.wav")
+web_beat      = get_wav_trimmed_base64("WEB_BEAT_001.wav")
+font_baroness = get_font_base64("BaronessKuffner.ttf")
+font_glitch   = get_font_base64("DoctorGlitch.otf")
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
-# ─── Prebuilt reusable strings ─────────────────────────────────────────────────
+# ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
 BG_URL     = f'url("data:image/png;base64,{bg_data}")'
 CURSOR_URL = f'url("data:image/png;base64,{shotgun}") 10 4, auto'
@@ -200,6 +237,11 @@ img {{ transform:translateZ(0); }}
   50%      {{ text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:6px; }}
 }}
 
+@keyframes announcePulseMobile {{
+  0%,100% {{ text-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:1px; }}
+  50%      {{ text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:2px; }}
+}}
+
 .section-header {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
@@ -233,17 +275,8 @@ img {{ transform:translateZ(0); }}
     font-size:20px !important;
     animation:announcePulseMobile 2s ease-in-out infinite;
   }}
-  .section-header {{
-    font-size:20px !important;
-  }}
-  .glitch-tape-text {{
-    font-size:20px !important;
-  }}
-}}
-
-@keyframes announcePulseMobile {{
-  0%,100% {{ text-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:1px; }}
-  50%      {{ text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:2px; }}
+  .section-header   {{ font-size:20px !important; }}
+  .glitch-tape-text {{ font-size:20px !important; }}
 }}
 
 @keyframes vhs-shake {{
@@ -261,7 +294,7 @@ img {{ transform:translateZ(0); }}
 }}
 
 @keyframes scanline-flash {{
-  0%  {{ opacity:0; }}  20% {{ opacity:0.6; }} 40% {{ opacity:0.2; }}
+  0%  {{ opacity:0; }} 20% {{ opacity:0.6; }} 40% {{ opacity:0.2; }}
   60% {{ opacity:0.8; }} 80% {{ opacity:0.3; }} 100% {{ opacity:0; }}
 }}
 
@@ -290,7 +323,7 @@ img {{ transform:translateZ(0); }}
 
 st.markdown(css, unsafe_allow_html=True)
 
-# ─── Persistent overlays & nav hint ───────────────────────────────────────────
+# ─── Persistent overlays & nav hint ──────────────────────────────────────────
 
 st.markdown(
     '<div id="nav-hint"><span class="nh-text">TAP ARROW TO NAVIGATE</span></div>'
@@ -300,34 +333,51 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ─── Audio + interaction JS (deferred until first user gesture) ───────────────
+# ─── Audio + interaction JS ───────────────────────────────────────────────────
 
 components.html(
     f"""
     <script>
     (function() {{
-      var doc = window.parent.document;
+      var doc         = window.parent.document;
       var reloadAudio = null;
       var shottyAudio = null;
       var audioReady  = false;
+      var audioCtx    = null;
+      var bgBuffer    = null;
+      var bgSource    = null;
+      var bgGain      = null;
 
-      var bgMusic = new Audio("data:audio/wav;base64,{web_beat}");
-      bgMusic.loop   = true;
-      bgMusic.volume = 0.35;
+      function startGaplessLoop() {{
+        if (!audioCtx || !bgBuffer) return;
+        if (bgSource) {{ try {{ bgSource.stop(); }} catch(e) {{}} }}
+        bgSource          = audioCtx.createBufferSource();
+        bgSource.buffer   = bgBuffer;
+        bgSource.loop     = true;
+        bgGain            = audioCtx.createGain();
+        bgGain.gain.value = 0.35;
+        bgSource.connect(bgGain);
+        bgGain.connect(audioCtx.destination);
+        bgSource.start(0);
+      }}
 
       function initAudio() {{
         if (audioReady) return;
-        audioReady = true;
+        audioReady  = true;
         reloadAudio = new Audio("data:audio/wav;base64,{reload_snd}");
         shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
         reloadAudio.volume = 0.64;
         shottyAudio.volume = 0.64;
-        var playPromise = bgMusic.play();
-        if (playPromise !== undefined) {{
-          playPromise.catch(function(e) {{
-            console.log('BG music blocked, retrying on next click:', e);
-          }});
-        }}
+
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        var b64  = "{web_beat}";
+        var bin  = atob(b64);
+        var arr  = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) {{ arr[i] = bin.charCodeAt(i); }}
+        audioCtx.decodeAudioData(arr.buffer,
+          function(decoded) {{ bgBuffer = decoded; startGaplessLoop(); }},
+          function(e)        {{ console.warn("BG audio decode failed:", e); }}
+        );
       }}
 
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
@@ -358,7 +408,6 @@ components.html(
 
       doc.addEventListener('click', function() {{
         initAudio();
-        if (bgMusic.paused) {{ bgMusic.play().catch(function(){{}}); }}
         playShotty();
         triggerVHS();
       }}, {{ passive: true }});
@@ -371,7 +420,7 @@ components.html(
     height=0
 )
 
-# ─── Logo ──────────────────────────────────────────────────────────────────────
+# ─── Logo ─────────────────────────────────────────────────────────────────────
 
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
@@ -381,7 +430,7 @@ with col2:
         unsafe_allow_html=True
     )
 
-# ─── Sidebar ───────────────────────────────────────────────────────────────────
+# ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 with st.sidebar:
     st.header("THE VOID")
@@ -392,7 +441,7 @@ with st.sidebar:
         "The Catacombs (Photos)"
     ])
 
-# ─── Pages ─────────────────────────────────────────────────────────────────────
+# ─── Pages ────────────────────────────────────────────────────────────────────
 
 if menu == "The Ritual (Home)":
     st.markdown(
