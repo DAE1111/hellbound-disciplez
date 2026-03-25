@@ -184,8 +184,8 @@ components.html(f"""
 var reloadAudio = new Audio("data:audio/wav;base64,{reload_snd}");
 var shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
 
-reloadAudio.volume = 1.0;
-shottyAudio.volume = 1.0;
+reloadAudio.volume = 0.8;
+shottyAudio.volume = 0.8;
 
 function playReload() {{
     reloadAudio.currentTime = 0;
