@@ -123,7 +123,6 @@ img {{
     transform: translateZ(0);
 }}
 
-/* NAV HINT */
 @keyframes navPulse {{
     0%, 100% {{ opacity: 1; transform: translateX(0); }}
     50% {{ opacity: 0.6; transform: translateX(3px); }}
@@ -131,7 +130,7 @@ img {{
 
 #nav-hint {{
     position: fixed;
-    top: 55px;
+    top: 80px;
     left: 8px;
     z-index: 9999;
     display: flex;
@@ -161,7 +160,6 @@ img {{
     -webkit-text-stroke: 0.3px white;
 }}
 
-/* VHS GLITCH */
 @keyframes vhs-shake {{
     0%   {{ transform: translate(0,0) skewX(0deg); filter: none; }}
     10%  {{ transform: translate(-6px,3px) skewX(-3deg); filter: hue-rotate(90deg) saturate(3) brightness(1.4); }}
