@@ -72,7 +72,12 @@ shotty_snd = get_audio_base64("shottyblast.wav")
 font_baroness = get_font_base64("BaronessKuffner.ttf")
 font_glitch = get_font_base64("DoctorGlitch.otf")
 
-st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
+st.set_page_config(
+    page_title="HELLBOUND DISCIPLEZ",
+    page_icon="🤘",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 css = """
 <style>
@@ -93,49 +98,28 @@ css = """
     box-sizing: border-box;
 }
 
-.main *, [data-testid="stSidebar"] label {
-    font-family: 'BaronessKuffner', cursive !important;
-    font-size: 28px !important;
-}
-h1,h2,h3,h4,h5,h6,
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {
-    font-family: 'DoctorGlitch', cursive !important;
-    color: #ff2200 !important;
-}
-p, div, span, li, a, label {
-    font-family: 'BaronessKuffner', cursive !important;
-    font-size: 28px !important;
-    color: #ff2200;
-}
-a {
-    color: #ff2200 !important;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-a:hover {
-    color: #ff5500 !important;
-    text-shadow: 0 0 10px #ff2200;
-}
-
-/* HIDE STREAMLIT'S BROKEN BUTTON COMPLETELY */
+/* HIDE ALL STREAMLIT SIDEBAR TOGGLE BUTTONS */
 [data-testid="stSidebarCollapsedControl"],
 [data-testid="stSidebarNavCollapseButton"],
 [data-testid="collapsedControl"],
+[data-testid="stSidebarNavCollapseButton"],
 button[aria-label="Close sidebar"],
 button[aria-label="Open sidebar"],
 button[aria-label="collapse sidebar"],
-button[aria-label="expand sidebar"] {
-    opacity: 0 !important;
-    pointer-events: none !important;
+button[aria-label="expand sidebar"],
+button[aria-label="Collapse sidebar"],
+button[aria-label="Expand sidebar"] {
+    display: none !important;
+    visibility: hidden !important;
     width: 0 !important;
     height: 0 !important;
     overflow: hidden !important;
+    pointer-events: none !important;
     position: absolute !important;
+    opacity: 0 !important;
 }
 
-/* OUR CUSTOM BUTTON injected by JS into parent doc */
+/* CUSTOM BUTTON - built in parent doc by JS */
 #hbd-menu-btn {
     position: fixed;
     top: 50%;
@@ -150,42 +134,69 @@ button[aria-label="expand sidebar"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     box-shadow: 4px 0 18px rgba(255,34,0,0.5);
-    animation: btnPulse 2s ease-in-out infinite;
     cursor: pointer !important;
+    transition: all 0.3s ease;
 }
 #hbd-menu-btn:hover {
     background: rgba(120,0,0,0.95);
-    box-shadow: 4px 0 28px rgba(255,34,0,0.9);
-    animation: none;
-    padding-right: 14px;
+    box-shadow: 4px 0 30px rgba(255,34,0,0.95);
+    padding-right: 15px;
 }
-#hbd-menu-btn .hbd-bar {
+.hbd-bar {
     width: 24px;
     height: 2px;
     background: #ff2200;
     border-radius: 2px;
     box-shadow: 0 0 8px #ff2200;
+    display: block;
     transition: all 0.3s;
 }
 #hbd-menu-btn:hover .hbd-bar {
     background: #ff6600;
-    box-shadow: 0 0 12px #ff6600;
+    box-shadow: 0 0 14px #ff6600;
 }
-#hbd-menu-btn .hbd-arrow {
-    font-size: 16px;
+.hbd-arrow {
     color: #ff2200;
-    font-family: Arial, sans-serif !important;
-    text-shadow: 0 0 8px #ff2200;
-    margin-top: 5px;
+    font-size: 18px;
     line-height: 1;
-    font-size: 16px !important;
+    font-family: Arial, sans-serif;
+    text-shadow: 0 0 8px #ff2200;
+    display: block;
+    margin-top: 4px;
 }
 
-@keyframes btnPulse {
-    0%,100% { box-shadow: 4px 0 18px rgba(255,34,0,0.5); }
-    50% { box-shadow: 4px 0 28px rgba(255,34,0,0.9); }
+/* FONT RULES - carefully scoped to NOT hit buttons */
+.main p, .main div, .main span, .main li,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] div,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] li {
+    font-family: 'BaronessKuffner', cursive !important;
+    font-size: 28px !important;
+}
+h1, h2, h3, h4, h5, h6,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    font-family: 'DoctorGlitch', cursive !important;
+    color: #ff2200 !important;
+}
+a {
+    font-family: 'BaronessKuffner', cursive !important;
+    font-size: 28px !important;
+    color: #ff2200 !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+a:hover {
+    color: #ff5500 !important;
+    text-shadow: 0 0 10px #ff2200;
+}
+p, h1, h2, h3, h4, h5, h6, label {
+    color: #ff2200 !important;
 }
 
 ::-webkit-scrollbar { width: 8px; }
@@ -263,7 +274,7 @@ img { transform: translateZ(0); }
 }
 .vhs-glitch-active { animation: vhs-shake 0.5s steps(1,end) forwards !important; }
 #vhs-overlay {
-    position: fixed; top:0; left:0; width:100vw; height:100vh;
+    position:fixed; top:0; left:0; width:100vw; height:100vh;
     pointer-events:none; z-index:999998; display:none;
     background: repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0px,rgba(255,0,0,0.08) 1px,transparent 1px,transparent 3px);
 }
@@ -279,54 +290,50 @@ img { transform: translateZ(0); }
 """
 
 st.markdown(css, unsafe_allow_html=True)
-
 st.markdown("""
 <div id="vhs-overlay"></div>
 <div id="vhs-rgb-r"></div>
 <div id="vhs-rgb-b"></div>
 """, unsafe_allow_html=True)
 
-skull_img  = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:-4px;">'
-skull_img_r= '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">'
-skull_sm   = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-right:6px;">'
-skull_sm_r = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">'
-pistol_l   = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
-pistol_r   = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
+skull_img   = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:-4px;">'
+skull_img_r = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">'
+skull_sm    = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-right:6px;">'
+skull_sm_r  = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">'
+pistol_l    = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
+pistol_r    = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
 
 components.html("""
 <script>
 var doc = window.parent.document;
+var sidebarOpen = true;
 
-/* ── inject our custom menu button directly into the parent page ── */
 function injectBtn() {
     if (doc.getElementById('hbd-menu-btn')) return;
     var btn = doc.createElement('div');
     btn.id = 'hbd-menu-btn';
-    btn.title = 'Open / Close Menu';
     btn.innerHTML =
-        '<div class="hbd-bar"></div>' +
-        '<div class="hbd-bar"></div>' +
-        '<div class="hbd-bar"></div>' +
-        '<div class="hbd-arrow">&#9658;</div>';
+        '<span class="hbd-bar"></span>' +
+        '<span class="hbd-bar"></span>' +
+        '<span class="hbd-bar"></span>' +
+        '<span class="hbd-arrow">&#9664;</span>';
     btn.addEventListener('click', function() {
-        /* find and click Streamlit's real hidden toggle */
-        var btns = doc.querySelectorAll('button');
-        btns.forEach(function(b) {
-            var lbl = (b.getAttribute('aria-label') || '').toLowerCase();
-            var tid = b.getAttribute('data-testid') || '';
-            if (lbl.includes('sidebar') || lbl.includes('collapse') ||
-                lbl.includes('expand')  || tid.toLowerCase().includes('sidebar') ||
-                tid.toLowerCase().includes('collapsed')) {
-                b.click();
-            }
-        });
+        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
+        var mainArea = doc.querySelector('.main') || doc.querySelector('[data-testid="stMain"]');
         var arrow = btn.querySelector('.hbd-arrow');
-        arrow.innerHTML = arrow.innerHTML.trim() === '&#9658;' ? '&#9664;' : '&#9658;';
+        if (sidebarOpen) {
+            if (sidebar) sidebar.style.display = 'none';
+            arrow.innerHTML = '&#9658;';
+            sidebarOpen = false;
+        } else {
+            if (sidebar) sidebar.style.display = '';
+            arrow.innerHTML = '&#9664;';
+            sidebarOpen = true;
+        }
     });
     doc.body.appendChild(btn);
 }
 
-/* ── audio ── */
 var reloadAudio = new Audio("data:audio/wav;base64,""" + reload_snd + """");
 var shottyAudio = new Audio("data:audio/wav;base64,""" + shotty_snd + """");
 reloadAudio.volume = 0.64;
@@ -334,7 +341,6 @@ shottyAudio.volume = 0.64;
 function playReload() { reloadAudio.currentTime = 0; reloadAudio.play(); }
 function playShotty() { shottyAudio.currentTime = 0; shottyAudio.play(); }
 
-/* ── VHS ── */
 function triggerVHS() {
     var app     = doc.querySelector('.stApp');
     var overlay = doc.getElementById('vhs-overlay');
@@ -446,14 +452,12 @@ elif menu == "The Grimoires (Discography)":
 elif menu == "The Cult (Members)":
     st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE CULT ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
     st.markdown("---")
-
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.</p>', unsafe_allow_html=True)
-
     st.markdown("---")
     col1, col2 = st.columns([1, 3])
     with col1:
@@ -461,7 +465,6 @@ elif menu == "The Cult (Members)":
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.</p>', unsafe_allow_html=True)
-
     st.markdown("---")
     col1, col2 = st.columns([1, 3])
     with col1:
