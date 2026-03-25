@@ -215,6 +215,11 @@ img { transform: translateZ(0); }
     text-align: center;
     margin: 10px 0;
 }
+.skull-divider {
+    display: block;
+    text-align: center;
+    margin: 6px 0 18px 0;
+}
 .announce-text {
     font-family: 'DoctorGlitch', cursive !important;
     font-size: 28px !important;
@@ -284,12 +289,10 @@ st.markdown("""
 <div id="vhs-rgb-b"></div>
 """, unsafe_allow_html=True)
 
-skull_img   = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-right:-4px;">'
-skull_img_r = '<img src="data:image/png;base64,' + skull + '" width="78" style="vertical-align:middle;margin-left:-4px;transform:scaleX(-1);">'
-skull_sm    = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-right:6px;">'
-skull_sm_r  = '<img src="data:image/png;base64,' + skull + '" width="30" style="vertical-align:middle;margin-left:6px;transform:scaleX(-1);">'
-pistol_l    = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
-pistol_r    = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
+skull_divider = '<div class="skull-divider"><img src="data:image/png;base64,' + skull + '" width="40" style="margin:0 6px;"><img src="data:image/png;base64,' + skull + '" width="40" style="margin:0 6px;transform:scaleX(-1);"></div>'
+
+pistol_l = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;">'
+pistol_r = '<img src="data:image/png;base64,' + pistol + '" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
 
 components.html("""
 <script>
@@ -346,6 +349,7 @@ with st.sidebar:
 
 if menu == "The Ritual (Home)":
     st.markdown('<div style="text-align:center;"><span class="section-header">' + pistol_l + ' WHO ARE WE ' + pistol_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 Forged in the depths of the underground, Hellbound Disciplez is a formidable trio consisting of
@@ -357,15 +361,17 @@ The Snap Case, and the raw lyricism of the whole crew, their music is a haunting
 shadows that lurk just beyond the edge of society. Get ready to descend into the abyss with
 Hellbound Disciplez.
 </div>
-<br>
-<div style="text-align:center;"><span class="announce-text">ANNOUNCEMENTS</span></div>
-<br>
+<br><br>
 """, unsafe_allow_html=True)
-    st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">' + skull_sm + ' Glitch Tape Vol. 2 — Coming Soon ' + skull_sm_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="announce-text">ANNOUNCEMENTS</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="glitch-tape-text">Glitch Tape Vol. 2 — Coming Soon</span></div>', unsafe_allow_html=True)
 
 elif menu == "The Grimoires (Discography)":
-    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE GRIMOIRES (Discography) ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
-    st.markdown('<div style="text-align:center;margin-top:20px;"><span class="section-header">Albums / Mixtapes / EPs</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="section-header">THE GRIMOIRES (Discography)</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;"><span class="section-header">Albums / Mixtapes / EPs</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/6ZOUHhIAnS532EdK1ZaLtv" target="_blank">Tales From The Swamp</a> (2025) — 8 tracks<br>
@@ -376,7 +382,8 @@ elif menu == "The Grimoires (Discography)":
 <a href="https://open.spotify.com/album/1AoyhHGiy4PE6b9HIdfWRu" target="_blank">Pumpkin Patch Massacre</a> (2023)
 </div>
 """, unsafe_allow_html=True)
-    st.markdown('<div style="text-align:center;margin-top:25px;"><span class="section-header">' + skull_img + ' Singles ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;margin-top:25px;"><span class="section-header">Singles</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/album/03BObGWktQNHCLhoimV2lK" target="_blank">COUNTERFEIT</a> (2025)<br>
@@ -398,6 +405,7 @@ elif menu == "The Grimoires (Discography)":
 </div>
 """, unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;margin-top:25px;"><span class="section-header">Follow / Stream Hellbound Disciplez</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
     st.markdown("""
 <div style="text-align:center;font-family:'BaronessKuffner',cursive;font-size:28px;">
 <a href="https://open.spotify.com/artist/5hRvzAL7q1as1y5FqKEaGZ" target="_blank">Spotify</a><br>
@@ -409,22 +417,22 @@ elif menu == "The Grimoires (Discography)":
 """, unsafe_allow_html=True)
 
 elif menu == "The Cult (Members)":
-    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE CULT ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
-    st.markdown("---")
+    st.markdown('<div style="text-align:center;"><span class="section-header">THE CULT</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("pic5.jpg", width=150)
     with col2:
         st.subheader("🔥 Lord-K-Haos")
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness with razor sharp lyricism and an iron grip on the mic.</p>', unsafe_allow_html=True)
-    st.markdown("---")
+    st.markdown(skull_divider, unsafe_allow_html=True)
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img12.jpg", width=150)
     with col2:
         st.subheader("🔥 Crazy8 The Snap Case")
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft the sonic backbone of the group alongside Osomane.</p>', unsafe_allow_html=True)
-    st.markdown("---")
+    st.markdown(skull_divider, unsafe_allow_html=True)
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image("img11.jpg", width=150)
@@ -433,8 +441,8 @@ elif menu == "The Cult (Members)":
         st.markdown('<p style="font-family:BaronessKuffner,cursive;font-size:28px;">Producer | Member — The architect of the sound. Osomane works hand in hand with Crazy8 to build the dark, gritty beats that bring the Hellbound Disciplez vision to life.</p>', unsafe_allow_html=True)
 
 elif menu == "The Catacombs (Photos)":
-    st.markdown('<div style="text-align:center;"><span class="section-header">' + skull_img + ' THE CATACOMBS ' + skull_img_r + '</span></div>', unsafe_allow_html=True)
-    st.markdown("---")
+    st.markdown('<div style="text-align:center;"><span class="section-header">THE CATACOMBS</span></div>', unsafe_allow_html=True)
+    st.markdown(skull_divider, unsafe_allow_html=True)
     photos = get_shuffled_photos()
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
