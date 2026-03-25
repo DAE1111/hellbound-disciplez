@@ -8,6 +8,7 @@ def get_image_base64(filename):
         return base64.b64encode(f.read()).decode("utf-8")
 
 bg_data = get_image_base64("BGSKULLS.png")
+skull = get_image_base64("SKULL1.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
@@ -120,9 +121,9 @@ Hellbound Disciplez.
 
 elif menu == "The Grimoires (Discography)":
 
-    st.markdown("""
+    st.markdown(f"""
 <div style="text-align:center;font-size:28px;">
-💀 THE GRIMOIRES (Discography) 💀
+<img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;"> THE GRIMOIRES (Discography) <img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;">
 </div>
 
 <div style="text-align:center;margin-top:20px;">
@@ -141,7 +142,7 @@ elif menu == "The Grimoires (Discography)":
 </div>
 
 <div style="text-align:center;margin-top:25px;">
-💀 Singles
+<img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;"> Singles <img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;">
 </div>
 
 <div style="text-align:center;">
@@ -180,7 +181,7 @@ elif menu == "The Grimoires (Discography)":
 
 elif menu == "The Cult (Members)":
 
-    st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CULT 💀</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;"> THE CULT <img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
     col1, col2 = st.columns([1, 3])
@@ -210,7 +211,7 @@ elif menu == "The Cult (Members)":
 
 elif menu == "The Catacombs (Photos)":
 
-    st.markdown('<div style="text-align:center;font-size:28px;">💀 THE CATACOMBS 💀</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:center;font-size:28px;"><img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;"> THE CATACOMBS <img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;"></div>', unsafe_allow_html=True)
     st.markdown("---")
 
     photos = [
@@ -225,10 +226,6 @@ elif menu == "The Catacombs (Photos)":
 
     random.shuffle(photos)
 
-    cols = st.columns(2)
-    for i, photo_path in enumerate(photos):
-        with cols[i % 2]:
-            st.image(photo_path, use_container_width=True)
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
