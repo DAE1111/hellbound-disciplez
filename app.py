@@ -7,8 +7,7 @@ def get_image_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
-bg_data = get_image_base64("HBDBG.jpeg")
-bg_layer = get_image_base64("BGLAYER1.png")
+bg_data = get_image_base64("BGSKULLS.png")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
 
@@ -35,19 +34,16 @@ st.markdown(f"""
 }}
 
 .stApp {{
-    background-image:
-        url("data:image/png;base64,{bg_layer}"),
-        url("data:image/jpeg;base64,{bg_data}");
-    background-size: cover, cover;
-    background-repeat: repeat, repeat;
-    background-attachment: fixed, fixed;
+    background-image: url("data:image/png;base64,{bg_data}");
+    background-size: cover;
+    background-repeat: repeat;
+    background-attachment: fixed;
     color:#ff2200;
 }}
 [data-testid="stSidebar"] {{
-    background-image:
-        url("data:image/png;base64,{bg_layer}"),
-        url("data:image/jpeg;base64,{bg_data}");
-    background-size: cover, cover;
+    background-image: url("data:image/png;base64,{bg_data}");
+    background-size: cover;
+    background-repeat: repeat;
 }}
 h1,h2,h3,h4,h5,h6,p,label {{
     color:#ff2200 !important;
@@ -229,6 +225,10 @@ elif menu == "The Catacombs (Photos)":
 
     random.shuffle(photos)
 
+    cols = st.columns(2)
+    for i, photo_path in enumerate(photos):
+        with cols[i % 2]:
+            st.image(photo_path, use_container_width=True)
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
