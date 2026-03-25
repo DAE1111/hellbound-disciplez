@@ -116,6 +116,41 @@ p, div, span, li, a, label {{
     font-size: 28px !important;
 }}
 
+/* NUCLEAR ARROW FIX — hide all text in sidebar toggle, show only SVG */
+[data-testid="stSidebarCollapsedControl"] *,
+[data-testid="stSidebarNavCollapseButton"] *,
+[data-testid="collapsedControl"] * {{
+    font-size: 0 !important;
+    color: transparent !important;
+    background: transparent !important;
+}}
+[data-testid="stSidebarCollapsedControl"] svg *,
+[data-testid="stSidebarNavCollapseButton"] svg *,
+[data-testid="collapsedControl"] svg * {{
+    color: #ff2200 !important;
+    fill: #ff2200 !important;
+    font-size: initial !important;
+}}
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarNavCollapseButton"] svg,
+[data-testid="collapsedControl"] svg {{
+    width: 24px !important;
+    height: 24px !important;
+    display: block !important;
+    color: #ff2200 !important;
+    fill: #ff2200 !important;
+}}
+
+/* Also target by button kind attribute */
+[data-testid="baseButton-header"] p,
+[data-testid="baseButton-header"] span,
+[data-testid="baseButton-headerNoBorder"] p,
+[data-testid="baseButton-headerNoBorder"] span {{
+    font-size: 0 !important;
+    color: transparent !important;
+    display: none !important;
+}}
+
 ::-webkit-scrollbar {{ width: 8px; }}
 ::-webkit-scrollbar-track {{ background: #000000; }}
 ::-webkit-scrollbar-thumb {{ background: #ff2200; border-radius: 4px; }}
@@ -328,31 +363,26 @@ function triggerVHS() {{
 
 function fixSidebarButton() {{
     var doc = window.parent.document;
-    var selectors = [
-        "[data-testid='stSidebarCollapsedControl']",
-        "[data-testid='stSidebarNavCollapseButton']",
-        "[data-testid='collapsedControl']",
-        "button[aria-label='Close sidebar']",
-        "button[aria-label='Open sidebar']",
-        "button[aria-label='collapse sidebar']",
-        "button[aria-label='expand sidebar']"
-    ];
-    selectors.forEach(function(sel) {{
-        var btns = doc.querySelectorAll(sel);
-        btns.forEach(function(btn) {{
-            btn.querySelectorAll("span, p, div").forEach(function(el) {{
-                if (!el.querySelector("svg") && el.tagName !== "svg" && !el.closest("svg")) {{
-                    var txt = el.innerText || el.textContent || "";
-                    if (txt.trim().length > 0 && !el.querySelector("svg")) {{
-                        el.style.cssText = "display:none!important;visibility:hidden!important;font-size:0!important;width:0!important;height:0!important;overflow:hidden!important;";
-                    }}
+    var allButtons = doc.querySelectorAll("button");
+    allButtons.forEach(function(btn) {{
+        var txt = (btn.innerText || btn.textContent || "").trim().toLowerCase();
+        if (txt.includes("collapse") || txt.includes("expand") || txt.includes("sidebar") || txt.includes("arrow") || txt.includes("double")) {{
+            var svgs = btn.querySelectorAll("svg");
+            var hasSvg = svgs.length > 0;
+            btn.querySelectorAll("p, span, div").forEach(function(el) {{
+                if (!el.querySelector("svg") && el.tagName !== "SVG") {{
+                    el.style.cssText = "font-size:0!important;color:transparent!important;display:none!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;";
                 }}
             }});
-            var svgs = btn.querySelectorAll("svg");
             svgs.forEach(function(svg) {{
-                svg.style.cssText = "display:block!important;visibility:visible!important;color:#ff2200!important;fill:#ff2200!important;width:1.5rem!important;height:1.5rem!important;";
+                svg.style.cssText = "display:block!important;visibility:visible!important;color:#ff2200!important;fill:#ff2200!important;stroke:#ff2200!important;width:24px!important;height:24px!important;";
+                svg.querySelectorAll("*").forEach(function(el) {{
+                    el.style.color = "#ff2200";
+                    el.style.fill = "#ff2200";
+                    el.style.stroke = "#ff2200";
+                }});
             }});
-        }});
+        }}
     }});
 }}
 
@@ -374,7 +404,7 @@ attachHoverSounds();
 setInterval(function() {{
     fixSidebarButton();
     attachHoverSounds();
-}}, 800);
+}}, 500);
 </script>
 """, height=0)
 
@@ -416,15 +446,11 @@ The Snap Case, and the raw lyricism of the whole crew, their music is a haunting
 shadows that lurk just beyond the edge of society. Get ready to descend into the abyss with
 Hellbound Disciplez.
 </div>
-
 <br>
-
 <div style="text-align:center;">
     <span class="announce-text">🔥 ANNOUNCEMENTS 🔥</span>
 </div>
-
 <br>
-
 <div style="text-align:center;">
     <span class="glitch-tape-text">
         <img src="data:image/png;base64,{skull}" width="30" style="vertical-align:middle;margin-right:6px;">
