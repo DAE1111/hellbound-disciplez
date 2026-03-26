@@ -305,12 +305,13 @@ img {{ transform:translateZ(0); }}
 
 #vhs-rgb-r,#vhs-rgb-b {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
-  pointer-events:none;z-index:999997;display:none;mix-blend-mode:screen;
+  pointer-events:none;z-index:999997;display:none;
+  mix-blend-mode:screen;opacity:0;
 }}
 #vhs-rgb-r {{ background:rgba(255,0,0,0.15); }}
 #vhs-rgb-b {{ background:rgba(0,0,255,0.15); }}
 #vhs-rgb-r.active,#vhs-rgb-b.active {{
-  display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
+  display:block;opacity:1;animation:scanline-flash 0.5s steps(1,end) forwards;
 }}
 
 /* Hide all page content until intro dismisses */
