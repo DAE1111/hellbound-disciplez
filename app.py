@@ -611,27 +611,8 @@ components.html(
 
       // ── Sidebar collapse ──
       function collapseSidebar() {{
-        // Try every possible selector
-        var selectors = [
-          '[data-testid="stSidebarCollapseButton"] button',
-          '[data-testid="stSidebarNavCollapseButton"]',
-          'button[aria-label="Collapse sidebar"]',
-          'button[aria-label="collapse sidebar"]',
-          'button[aria-label="Close sidebar"]',
-          'button[kind="header"]',
-          '[data-testid="stSidebar"] button'
-        ];
-        for (var i = 0; i < selectors.length; i++) {{
-          var btn = doc.querySelector(selectors[i]);
-          if (btn) {{
-            btn.dispatchEvent(new MouseEvent('click', {{bubbles:true, cancelable:true}}));
-            return;
-          }}
-        }}
-        // Last resort: keyboard shortcut
-        doc.dispatchEvent(new KeyboardEvent('keydown', {{
-          key:'[', code:'BracketLeft', keyCode:219, bubbles:true
-        }}));
+        var btn = doc.querySelector('[data-testid="stSidebarCollapseButton"] button');
+        if (btn) {{ btn.dispatchEvent(new MouseEvent('click', {{bubbles:true, cancelable:true}})); }}
       }}
 
       function attachSidebarCollapse() {{
