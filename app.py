@@ -342,13 +342,12 @@ st.markdown(
       <canvas id="vhs-static-canvas"></canvas>
       <div id="vhs-intro-scanlines"></div>
       <div id="vhs-intro-text">HELLBOUND DISCIPLEZ</div>
-      <div id="vhs-intro-sub">&#9654; LOADING... TAP TO ENTER</div>
+      <div id="vhs-intro-sub">&#9654; LOADING...</div>
     </div>
     <script>
     (function() {
       var canvas = document.getElementById('vhs-static-canvas');
       var ctx    = canvas.getContext('2d');
-      var intro  = document.getElementById('vhs-intro');
       var animId;
 
       function resize() {
@@ -391,24 +390,6 @@ st.markdown(
       }
 
       drawStatic();
-
-      function dismissIntro() {
-        if (intro._dismissed) return;
-        intro._dismissed = true;
-        cancelAnimationFrame(animId);
-        intro.classList.add('fadeout');
-        setTimeout(function() { intro.style.display = 'none'; }, 1000);
-      }
-
-      // Auto dismiss after 9 seconds
-      setTimeout(dismissIntro, 9000);
-
-      // Click anywhere to dismiss after 3 seconds minimum
-      var clickReady = false;
-      setTimeout(function() { clickReady = true; }, 3000);
-      intro.addEventListener('click', function() {
-        if (clickReady) dismissIntro();
-      });
     })();
     </script>
     """,
@@ -521,6 +502,18 @@ components.html(
           }}
         }});
       }}
+
+      // ── Dismiss VHS intro from parent document ──
+      function dismissIntro() {{
+        var intro = doc.getElementById('vhs-intro');
+        if (!intro || intro._dismissed) return;
+        intro._dismissed = true;
+        intro.style.transition = 'opacity 1s ease';
+        intro.style.opacity = '0';
+        intro.style.pointerEvents = 'none';
+        setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
+      }}
+      setTimeout(dismissIntro, 9000);
 
       doc.addEventListener('click', function() {{
         initAudio();
