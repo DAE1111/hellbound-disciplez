@@ -113,6 +113,12 @@ css = f"""
   box-sizing:border-box;
 }}
 
+iframe {{
+  border:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+}}
+
 [data-testid="stSidebarCollapsedControl"] span,
 [data-testid="stSidebarCollapsedControl"] button span,
 [data-testid="stSidebarNavCollapseButton"] span,
@@ -412,8 +418,8 @@ components.html(
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, W, H);
 
-        // Blast radius = ~1/4 of screen diagonal
-        var RADIUS = Math.min(W, H) * 0.28;
+        // Blast radius = ~1/3 of screen — shotgun spread
+        var RADIUS = Math.min(W, H) * 0.34;
 
         // Clip everything to the blast circle using radial gradient mask
         // We draw into a temp canvas then composite with fade at edges
@@ -424,22 +430,22 @@ components.html(
         // ── 1. Voronoi seeds packed inside the blast radius ──
         var seeds = [];
 
-        // Epicenter — very tight tiny shards
-        for (var i = 0; i < 10; i++) {{
-          var a = Math.random() * Math.PI * 2;
-          var d = Math.random() * RADIUS * 0.12;
-          seeds.push({{ x: cx + Math.cos(a)*d, y: cy + Math.sin(a)*d }});
-        }}
-        // Inner zone — dense medium shards
+        // Epicenter — ultra tight micro shards
         for (var i = 0; i < 18; i++) {{
           var a = Math.random() * Math.PI * 2;
-          var d = RADIUS * 0.1 + Math.random() * RADIUS * 0.35;
+          var d = Math.random() * RADIUS * 0.1;
           seeds.push({{ x: cx + Math.cos(a)*d, y: cy + Math.sin(a)*d }});
         }}
-        // Outer zone — larger shards near the rim
-        for (var i = 0; i < 14; i++) {{
+        // Inner zone — dense jagged shards
+        for (var i = 0; i < 28; i++) {{
           var a = Math.random() * Math.PI * 2;
-          var d = RADIUS * 0.45 + Math.random() * RADIUS * 0.55;
+          var d = RADIUS * 0.08 + Math.random() * RADIUS * 0.38;
+          seeds.push({{ x: cx + Math.cos(a)*d, y: cy + Math.sin(a)*d }});
+        }}
+        // Outer zone — larger blown-out shards at rim
+        for (var i = 0; i < 18; i++) {{
+          var a = Math.random() * Math.PI * 2;
+          var d = RADIUS * 0.42 + Math.random() * RADIUS * 0.58;
           seeds.push({{ x: cx + Math.cos(a)*d, y: cy + Math.sin(a)*d }});
         }}
 
@@ -508,44 +514,51 @@ components.html(
 
           // Crack outline — bright white, glowing, thicker near center
           tc.strokeStyle = 'rgba(255,255,255,'+strokeA+')';
-          tc.lineWidth   = 0.5 + (1-t) * 2.5;
+          tc.lineWidth   = 1.0 + (1-t) * 3.5;
           tc.shadowColor = 'rgba(255,255,255,0.9)';
-          tc.shadowBlur  = 3 + (1-t) * 12;
+          tc.shadowBlur  = 5 + (1-t) * 18;
           tc.stroke();
           tc.shadowBlur  = 0;
         }}
 
         // ── 4. Radial spider-web crack lines FROM center ──
-        var numSpokes = 10 + Math.floor(Math.random()*6);
+        var numSpokes = 16 + Math.floor(Math.random()*8);
         for (var s=0; s<numSpokes; s++) {{
           var baseAngle = (s/numSpokes)*Math.PI*2 + (Math.random()-0.5)*0.3;
-          var spokeDist = RADIUS * (0.6 + Math.random()*0.4);
+          var spokeDist = RADIUS * (0.7 + Math.random()*0.3);
           tc.beginPath();
           tc.moveTo(cx, cy);
           var px=cx, py=cy, angle=baseAngle;
-          var steps = 5 + Math.floor(Math.random()*4);
+          var steps = 6 + Math.floor(Math.random()*5);
           for (var k=0; k<steps; k++) {{
-            angle += (Math.random()-0.5)*0.35;
+            angle += (Math.random()-0.5)*0.4;
             var segLen = spokeDist/steps;
             px += Math.cos(angle)*segLen;
             py += Math.sin(angle)*segLen;
             tc.lineTo(px,py);
-            // branch
-            if (Math.random()<0.5) {{
-              var ba=angle+(Math.random()-0.5)*1.2;
+            // aggressive branching
+            if (Math.random()<0.65) {{
+              var ba=angle+(Math.random()-0.5)*1.4;
               var bx=px,by=py;
               tc.moveTo(bx,by);
-              var blen=(spokeDist/steps)*(0.3+Math.random()*0.5);
+              var blen=(spokeDist/steps)*(0.4+Math.random()*0.6);
               bx+=Math.cos(ba)*blen; by+=Math.sin(ba)*blen;
               tc.lineTo(bx,by);
+              // sub-branch
+              if (Math.random()<0.4) {{
+                var ba2=ba+(Math.random()-0.5)*1.0;
+                var blen2=blen*0.5;
+                tc.moveTo(bx,by);
+                tc.lineTo(bx+Math.cos(ba2)*blen2, by+Math.sin(ba2)*blen2);
+              }}
               tc.moveTo(px,py);
             }}
           }}
           var distFade = Math.min(spokeDist/RADIUS,1);
-          tc.strokeStyle='rgba(255,255,255,'+(0.9-distFade*0.5)+')';
-          tc.lineWidth  = 1.5 - distFade*0.8;
-          tc.shadowColor='rgba(255,255,255,0.8)';
-          tc.shadowBlur =8;
+          tc.strokeStyle='rgba(255,255,255,'+(1.0-distFade*0.4)+')';
+          tc.lineWidth  = 2.0 - distFade*1.2;
+          tc.shadowColor='rgba(255,255,255,1)';
+          tc.shadowBlur =12;
           tc.stroke();
           tc.shadowBlur=0;
         }}
@@ -566,34 +579,34 @@ components.html(
           }}
         }});
 
-        // ── 6. Composite tmp onto main canvas with radial clip mask ──
-        // Draw the shatter
+        // ── 6. Composite with hard circular clip — no square edge ──
         ctx.drawImage(tmp, 0, 0);
 
-        // Cut off hard at radius using destination-out radial gradient
+        // Punch out everything outside the blast circle cleanly
         ctx.save();
-        ctx.globalCompositeOperation = 'destination-out';
-        var mask = ctx.createRadialGradient(cx, cy, RADIUS*0.6, cx, cy, RADIUS*1.05);
-        mask.addColorStop(0,   'rgba(0,0,0,0)');
-        mask.addColorStop(0.7, 'rgba(0,0,0,0.4)');
-        mask.addColorStop(1,   'rgba(0,0,0,1)');
+        ctx.globalCompositeOperation = 'destination-in';
+        var mask = ctx.createRadialGradient(cx, cy, RADIUS*0.55, cx, cy, RADIUS);
+        mask.addColorStop(0,   'rgba(0,0,0,1)');
+        mask.addColorStop(0.75,'rgba(0,0,0,1)');
+        mask.addColorStop(1,   'rgba(0,0,0,0)');
         ctx.fillStyle = mask;
         ctx.beginPath();
-        ctx.arc(cx, cy, RADIUS*1.1, 0, Math.PI*2);
+        ctx.arc(cx, cy, RADIUS, 0, Math.PI*2);
         ctx.fill();
         ctx.restore();
 
-        // ── 7. Impact starburst at click point ──
+        // ── 7. Violent shotgun starburst at click point ──
         ctx.save();
         ctx.translate(cx, cy);
-        var burst = ctx.createRadialGradient(0,0,0, 0,0,32);
+        var burst = ctx.createRadialGradient(0,0,0, 0,0,60);
         burst.addColorStop(0,   'rgba(255,255,255,1)');
-        burst.addColorStop(0.25,'rgba(255,140,0,0.85)');
-        burst.addColorStop(0.6, 'rgba(255,30,0,0.4)');
+        burst.addColorStop(0.15,'rgba(255,255,255,0.95)');
+        burst.addColorStop(0.3, 'rgba(255,160,0,0.9)');
+        burst.addColorStop(0.6, 'rgba(255,30,0,0.55)');
         burst.addColorStop(1,   'rgba(255,0,0,0)');
         ctx.fillStyle = burst;
         ctx.beginPath();
-        ctx.arc(0,0,32,0,Math.PI*2);
+        ctx.arc(0,0,60,0,Math.PI*2);
         ctx.fill();
         ctx.restore();
       }}
