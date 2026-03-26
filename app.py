@@ -253,6 +253,26 @@ img {{ transform:translateZ(0); }}
 }}
 #vhs-rgb-r.active,#vhs-rgb-b.active {{ display:block;animation:scanline-flash 0.5s steps(1,end) forwards; }}
 
+/* ── Shattered Glass Crack Overlay ── */
+@keyframes crack-flash {{
+  0%   {{ opacity:0; }}
+  5%   {{ opacity:1; }}
+  60%  {{ opacity:0.85; }}
+  100% {{ opacity:0; }}
+}}
+#crack-overlay {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  pointer-events:none;z-index:999999;
+  display:none;
+}}
+#crack-overlay.active {{
+  display:block;
+  animation:crack-flash 0.55s ease-out forwards;
+}}
+#crack-overlay canvas {{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+}}
+
 /* ── VHS Intro ── */
 #vhs-intro {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
@@ -332,7 +352,8 @@ st.markdown(
     '<div id="nav-hint"><span class="nh-text">TAP THE ARROW TO NAVIGATE</span></div>'
     '<div id="vhs-overlay"></div>'
     '<div id="vhs-rgb-r"></div>'
-    '<div id="vhs-rgb-b"></div>',
+    '<div id="vhs-rgb-b"></div>'
+    '<div id="crack-overlay"><canvas id="crack-canvas"></canvas></div>',
     unsafe_allow_html=True
 )
 
@@ -385,6 +406,104 @@ components.html(
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
       function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
 
+      // ── Shattered Glass Crack Drawing ──
+      function drawCracks(canvas) {{
+        var W = window.parent.innerWidth;
+        var H = window.parent.innerHeight;
+        canvas.width  = W;
+        canvas.height = H;
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, W, H);
+
+        // red tint flash
+        ctx.fillStyle = 'rgba(255,10,0,0.08)';
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+        ctx.shadowColor = '#ff2200';
+        ctx.shadowBlur  = 6;
+        ctx.lineWidth   = 1.5;
+
+        // 7-10 random impact points spread across the full screen
+        var numImpacts = 7 + Math.floor(Math.random() * 4);
+        var impacts = [];
+        for (var i = 0; i < numImpacts; i++) {{
+          impacts.push({{
+            x: Math.random() * W,
+            y: Math.random() * H
+          }});
+        }}
+
+        impacts.forEach(function(pt) {{
+          // 8-14 main cracks radiating out from each impact point
+          var numCracks = 8 + Math.floor(Math.random() * 7);
+          for (var c = 0; c < numCracks; c++) {{
+            var angle  = (c / numCracks) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+            var length = 80 + Math.random() * (Math.max(W, H) * 0.55);
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y);
+            var x = pt.x;
+            var y = pt.y;
+            var segs = 4 + Math.floor(Math.random() * 5);
+            for (var s = 0; s < segs; s++) {{
+              var segLen = length / segs;
+              angle += (Math.random() - 0.5) * 0.45;
+              x += Math.cos(angle) * segLen;
+              y += Math.sin(angle) * segLen;
+              ctx.lineTo(x, y);
+              // branch cracks off main lines
+              if (Math.random() < 0.55) {{
+                var bAngle = angle + (Math.random() - 0.5) * 1.4;
+                var bLen   = segLen * (0.3 + Math.random() * 0.6);
+                var bx = x, by = y;
+                ctx.moveTo(bx, by);
+                var bSegs = 2 + Math.floor(Math.random() * 3);
+                for (var bs = 0; bs < bSegs; bs++) {{
+                  bAngle += (Math.random() - 0.5) * 0.4;
+                  bx += Math.cos(bAngle) * (bLen / bSegs);
+                  by += Math.sin(bAngle) * (bLen / bSegs);
+                  ctx.lineTo(bx, by);
+                }}
+                ctx.moveTo(x, y);
+              }}
+            }}
+            ctx.stroke();
+          }}
+
+          // impact point circle
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 4 + Math.random() * 6, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(255,255,255,1)';
+          ctx.lineWidth   = 2;
+          ctx.stroke();
+          ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+          ctx.lineWidth   = 1.5;
+        }});
+
+        // thin arc rings connecting cracks for spider-web feel
+        ctx.lineWidth   = 0.5;
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        for (var r = 0; r < 18; r++) {{
+          var rx = Math.random() * W;
+          var ry = Math.random() * H;
+          var rr = 30 + Math.random() * 120;
+          ctx.beginPath();
+          ctx.arc(rx, ry, rr, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
+          ctx.stroke();
+        }}
+      }}
+
+      function triggerCrack() {{
+        var overlay = doc.getElementById('crack-overlay');
+        var canvas  = doc.getElementById('crack-canvas');
+        if (!overlay || !canvas) return;
+        drawCracks(canvas);
+        overlay.classList.remove('active');
+        void overlay.offsetWidth;
+        overlay.classList.add('active');
+        setTimeout(function() {{ overlay.classList.remove('active'); }}, 560);
+      }}
+
       function triggerVHS() {{
         var app     = doc.querySelector('.stApp');
         var overlay = doc.getElementById('vhs-overlay');
@@ -397,6 +516,7 @@ components.html(
           el.classList.add(el === app ? 'vhs-glitch-active' : 'active');
           setTimeout(function() {{ el.classList.remove('vhs-glitch-active', 'active'); }}, 500);
         }});
+        triggerCrack();
       }}
 
       function attachHoverSounds() {{
@@ -496,10 +616,8 @@ components.html(
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
         }}
 
-        // Start static immediately
         drawStatic();
 
-        // Show load button once JS is ready
         var loadBtn = doc.getElementById('vhs-load-btn');
         if (loadBtn) {{
           loadBtn.addEventListener('click', function(e) {{
