@@ -3,8 +3,6 @@ import base64
 import random
 from PIL import Image
 import io
-import wave
-import struct
 import streamlit.components.v1 as components
 
 @st.cache_data(show_spinner=False)
@@ -256,18 +254,17 @@ img {{ transform:translateZ(0); }}
 /* ── Shattered Glass Crack Overlay ── */
 @keyframes crack-flash {{
   0%   {{ opacity:0; }}
-  5%   {{ opacity:1; }}
-  60%  {{ opacity:0.85; }}
+  4%   {{ opacity:1; }}
+  65%  {{ opacity:1; }}
   100% {{ opacity:0; }}
 }}
 #crack-overlay {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
-  pointer-events:none;z-index:999999;
-  display:none;
+  pointer-events:none;z-index:999999;display:none;
 }}
 #crack-overlay.active {{
   display:block;
-  animation:crack-flash 0.55s ease-out forwards;
+  animation:crack-flash 0.75s ease-out forwards;
 }}
 #crack-overlay canvas {{
   position:absolute;top:0;left:0;width:100%;height:100%;
@@ -406,8 +403,28 @@ components.html(
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
       function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
 
-      // ── Shattered Glass Crack Drawing ──
-      function drawCracks(canvas) {{
+      // ── Voronoi shatter centered on click position ──
+      function clipPolygonByHalfPlane(poly, ax, ay, bx, by) {{
+        var result = [];
+        var n = poly.length;
+        for (var i = 0; i < n; i++) {{
+          var cur  = poly[i];
+          var next = poly[(i + 1) % n];
+          var d1 = (bx - ax) * (cur.y  - ay) - (by - ay) * (cur.x  - ax);
+          var d2 = (bx - ax) * (next.y - ay) - (by - ay) * (next.x - ax);
+          if (d1 >= 0) result.push(cur);
+          if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) {{
+            var t = d1 / (d1 - d2);
+            result.push({{
+              x: cur.x + t * (next.x - cur.x),
+              y: cur.y + t * (next.y - cur.y)
+            }});
+          }}
+        }}
+        return result;
+      }}
+
+      function drawCracks(canvas, clickX, clickY) {{
         var W = window.parent.innerWidth;
         var H = window.parent.innerHeight;
         canvas.width  = W;
@@ -415,96 +432,131 @@ components.html(
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, W, H);
 
-        // red tint flash
-        ctx.fillStyle = 'rgba(255,10,0,0.08)';
-        ctx.fillRect(0, 0, W, H);
+        var cx = clickX, cy = clickY;
 
-        ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-        ctx.shadowColor = '#ff2200';
-        ctx.shadowBlur  = 6;
-        ctx.lineWidth   = 1.5;
+        // Seeds: very dense right at click, spreading outward
+        var seeds = [];
 
-        // 7-10 random impact points spread across the full screen
-        var numImpacts = 7 + Math.floor(Math.random() * 4);
-        var impacts = [];
-        for (var i = 0; i < numImpacts; i++) {{
-          impacts.push({{
-            x: Math.random() * W,
-            y: Math.random() * H
+        // Tight cluster at impact — tiny shards
+        for (var i = 0; i < 12; i++) {{
+          seeds.push({{
+            x: cx + (Math.random() - 0.5) * 80,
+            y: cy + (Math.random() - 0.5) * 80
+          }});
+        }}
+        // Medium ring — medium shards
+        for (var i = 0; i < 20; i++) {{
+          var angle = Math.random() * Math.PI * 2;
+          var dist  = 60 + Math.random() * 180;
+          seeds.push({{
+            x: cx + Math.cos(angle) * dist,
+            y: cy + Math.sin(angle) * dist
+          }});
+        }}
+        // Outer spread — larger shards fading out
+        for (var i = 0; i < 22; i++) {{
+          var angle = Math.random() * Math.PI * 2;
+          var dist  = 180 + Math.random() * Math.max(W, H) * 0.5;
+          seeds.push({{
+            x: cx + Math.cos(angle) * dist,
+            y: cy + Math.sin(angle) * dist
           }});
         }}
 
-        impacts.forEach(function(pt) {{
-          // 8-14 main cracks radiating out from each impact point
-          var numCracks = 8 + Math.floor(Math.random() * 7);
-          for (var c = 0; c < numCracks; c++) {{
-            var angle  = (c / numCracks) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
-            var length = 80 + Math.random() * (Math.max(W, H) * 0.55);
-            ctx.beginPath();
-            ctx.moveTo(pt.x, pt.y);
-            var x = pt.x;
-            var y = pt.y;
-            var segs = 4 + Math.floor(Math.random() * 5);
-            for (var s = 0; s < segs; s++) {{
-              var segLen = length / segs;
-              angle += (Math.random() - 0.5) * 0.45;
-              x += Math.cos(angle) * segLen;
-              y += Math.sin(angle) * segLen;
-              ctx.lineTo(x, y);
-              // branch cracks off main lines
-              if (Math.random() < 0.55) {{
-                var bAngle = angle + (Math.random() - 0.5) * 1.4;
-                var bLen   = segLen * (0.3 + Math.random() * 0.6);
-                var bx = x, by = y;
-                ctx.moveTo(bx, by);
-                var bSegs = 2 + Math.floor(Math.random() * 3);
-                for (var bs = 0; bs < bSegs; bs++) {{
-                  bAngle += (Math.random() - 0.5) * 0.4;
-                  bx += Math.cos(bAngle) * (bLen / bSegs);
-                  by += Math.sin(bAngle) * (bLen / bSegs);
-                  ctx.lineTo(bx, by);
-                }}
-                ctx.moveTo(x, y);
-              }}
-            }}
-            ctx.stroke();
+        // Build Voronoi cells via half-plane clipping
+        var cells = [];
+        for (var si = 0; si < seeds.length; si++) {{
+          var cell = [
+            {{x: -100,    y: -100}},
+            {{x: W + 100, y: -100}},
+            {{x: W + 100, y: H + 100}},
+            {{x: -100,    y: H + 100}}
+          ];
+          var sx = seeds[si].x, sy = seeds[si].y;
+          for (var sj = 0; sj < seeds.length; sj++) {{
+            if (si === sj) continue;
+            var ox = seeds[sj].x, oy = seeds[sj].y;
+            var mx = (sx + ox) / 2, my = (sy + oy) / 2;
+            cell = clipPolygonByHalfPlane(cell, mx, my, mx + (oy - sy), my - (ox - sx));
+            if (cell.length === 0) break;
           }}
+          if (cell.length >= 3) cells.push({{ poly: cell, seed: seeds[si] }});
+        }}
 
-          // impact point circle
+        // Draw each shard
+        cells.forEach(function(cell) {{
+          var poly = cell.poly;
+          var onScreen = poly.some(function(p) {{
+            return p.x > 0 && p.x < W && p.y > 0 && p.y < H;
+          }});
+          if (!onScreen) return;
+
+          // Distance from impact determines shard opacity + brightness
+          var dist = Math.hypot(cell.seed.x - cx, cell.seed.y - cy);
+          var maxDist = Math.max(W, H) * 0.6;
+          var t = Math.min(dist / maxDist, 1); // 0=near, 1=far
+
+          // Only draw shards within a reasonable radius — fades to nothing at edges
+          if (t > 0.85) return;
+
+          var fillAlpha = (0.35 - t * 0.3);
+          var strokeAlpha = (1.0 - t * 0.5);
+
+          // Glass shard fill — blue-white tint like real glass
+          var cellCx = poly.reduce(function(s, p) {{ return s + p.x; }}, 0) / poly.length;
+          var cellCy = poly.reduce(function(s, p) {{ return s + p.y; }}, 0) / poly.length;
+
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 4 + Math.random() * 6, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(255,255,255,1)';
-          ctx.lineWidth   = 2;
+          ctx.moveTo(poly[0].x, poly[0].y);
+          for (var pi = 1; pi < poly.length; pi++) ctx.lineTo(poly[pi].x, poly[pi].y);
+          ctx.closePath();
+
+          try {{
+            var grad = ctx.createRadialGradient(cellCx, cellCy, 0, cellCx, cellCy, 60);
+            grad.addColorStop(0, 'rgba(230,240,255,' + (fillAlpha + 0.12) + ')');
+            grad.addColorStop(1, 'rgba(150,180,220,' + fillAlpha + ')');
+            ctx.fillStyle = grad;
+          }} catch(e) {{
+            ctx.fillStyle = 'rgba(180,210,255,' + fillAlpha + ')';
+          }}
+          ctx.fill();
+
+          // Crack lines
+          ctx.strokeStyle = 'rgba(255,255,255,' + strokeAlpha + ')';
+          ctx.lineWidth   = 0.8 + (1 - t) * 2;
+          ctx.shadowColor = 'rgba(255,255,255,0.8)';
+          ctx.shadowBlur  = 2 + (1 - t) * 10;
           ctx.stroke();
-          ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-          ctx.lineWidth   = 1.5;
+          ctx.shadowBlur  = 0;
         }});
 
-        // thin arc rings connecting cracks for spider-web feel
-        ctx.lineWidth   = 0.5;
-        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-        for (var r = 0; r < 18; r++) {{
-          var rx = Math.random() * W;
-          var ry = Math.random() * H;
-          var rr = 30 + Math.random() * 120;
-          ctx.beginPath();
-          ctx.arc(rx, ry, rr, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
-          ctx.stroke();
-        }}
+        // Bright starburst at the exact click point
+        ctx.save();
+        ctx.translate(cx, cy);
+        var burst = ctx.createRadialGradient(0, 0, 0, 0, 0, 40);
+        burst.addColorStop(0,   'rgba(255,255,255,1)');
+        burst.addColorStop(0.2, 'rgba(255,120,0,0.8)');
+        burst.addColorStop(0.6, 'rgba(255,30,0,0.3)');
+        burst.addColorStop(1,   'rgba(255,0,0,0)');
+        ctx.fillStyle = burst;
+        ctx.beginPath();
+        ctx.arc(0, 0, 40, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }}
 
-      function triggerCrack() {{
+      function triggerCrack(clickX, clickY) {{
         var overlay = doc.getElementById('crack-overlay');
         var canvas  = doc.getElementById('crack-canvas');
         if (!overlay || !canvas) return;
-        drawCracks(canvas);
+        drawCracks(canvas, clickX, clickY);
         overlay.classList.remove('active');
         void overlay.offsetWidth;
         overlay.classList.add('active');
-        setTimeout(function() {{ overlay.classList.remove('active'); }}, 560);
+        setTimeout(function() {{ overlay.classList.remove('active'); }}, 760);
       }}
 
-      function triggerVHS() {{
+      function triggerVHS(clickX, clickY) {{
         var app     = doc.querySelector('.stApp');
         var overlay = doc.getElementById('vhs-overlay');
         var rgbR    = doc.getElementById('vhs-rgb-r');
@@ -516,7 +568,7 @@ components.html(
           el.classList.add(el === app ? 'vhs-glitch-active' : 'active');
           setTimeout(function() {{ el.classList.remove('vhs-glitch-active', 'active'); }}, 500);
         }});
-        triggerCrack();
+        triggerCrack(clickX, clickY);
       }}
 
       function attachHoverSounds() {{
@@ -639,9 +691,9 @@ components.html(
                   initAudio();
                   dismissIntro();
                   setTimeout(function() {{
-                    doc.addEventListener('click', function() {{
+                    doc.addEventListener('click', function(e) {{
                       playShotty();
-                      triggerVHS();
+                      triggerVHS(e.clientX, e.clientY);
                     }}, {{ passive: true }});
                     attachHoverSounds();
                     setInterval(attachHoverSounds, 1500);
