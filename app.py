@@ -111,6 +111,8 @@ if "menu" not in st.session_state:
     st.session_state.menu = "The Ritual (Home)"
 if "prev_menu" not in st.session_state:
     st.session_state.prev_menu = "The Ritual (Home)"
+if "do_collapse" not in st.session_state:
+    st.session_state.do_collapse = False
 
 # ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
@@ -574,6 +576,35 @@ components.html(
       setInterval(function() {{
         attachHoverSounds();
       }}, 1500);
+
+      // ── Sidebar collapse on label click ──
+      function clickCollapseArrow() {{
+        var selectors = [
+          '[data-testid="stSidebarCollapseButton"] button',
+          '[data-testid="stSidebarNavCollapseButton"]',
+          'button[aria-label="Collapse sidebar"]',
+          'button[aria-label="collapse sidebar"]',
+          'button[aria-label="Close sidebar"]'
+        ];
+        for (var i = 0; i < selectors.length; i++) {{
+          var btn = doc.querySelector(selectors[i]);
+          if (btn) {{ btn.click(); return; }}
+        }}
+      }}
+
+      function attachSidebarCollapse() {{
+        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
+          if (!el.dataset.collapseAttached) {{
+            el.addEventListener('mousedown', function() {{
+              setTimeout(clickCollapseArrow, 800);
+            }});
+            el.dataset.collapseAttached = 'true';
+          }}
+        }});
+      }}
+
+      attachSidebarCollapse();
+      setInterval(attachSidebarCollapse, 1500);
     }})();
     </script>
     """,
@@ -600,33 +631,6 @@ with st.sidebar:
         "The Cult (Members)",
         "The Catacombs (Photos)"
     ], key="menu")
-
-# After navigation rerun, inject collapse JS into main page context
-if st.session_state.menu != st.session_state.prev_menu:
-    st.session_state.prev_menu = st.session_state.menu
-    st.markdown(
-        """<script>
-        (function() {
-          var tries = 0;
-          var selectors = [
-            '[data-testid="stSidebarCollapseButton"] button',
-            '[data-testid="stSidebarNavCollapseButton"]',
-            'button[aria-label="Collapse sidebar"]',
-            'button[aria-label="collapse sidebar"]',
-            'button[aria-label="Close sidebar"]'
-          ];
-          function tryCollapse() {
-            for (var i = 0; i < selectors.length; i++) {
-              var b = document.querySelector(selectors[i]);
-              if (b) { b.click(); return; }
-            }
-            if (tries++ < 20) setTimeout(tryCollapse, 50);
-          }
-          tryCollapse();
-        })();
-        </script>""",
-        unsafe_allow_html=True
-    )
 
 menu = st.session_state.menu
 
