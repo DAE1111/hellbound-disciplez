@@ -612,7 +612,15 @@ components.html(
       // ── Sidebar collapse ──
       function collapseSidebar() {{
         var btn = doc.querySelector('[data-testid="stSidebarCollapseButton"] button');
-        if (btn) {{ btn.dispatchEvent(new MouseEvent('click', {{bubbles:true, cancelable:true}})); }}
+        if (!btn) return;
+        // Fire full sequence of events React needs to register a click
+        ['mousedown','mouseup','click'].forEach(function(evtType) {{
+          btn.dispatchEvent(new MouseEvent(evtType, {{
+            bubbles: true,
+            cancelable: true,
+            view: window.parent
+          }}));
+        }});
       }}
 
       function attachSidebarCollapse() {{
