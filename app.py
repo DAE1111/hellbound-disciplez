@@ -188,7 +188,7 @@ button[aria-label="Expand sidebar"] span {{
 }}
 
 #nav-hint {{
-  position:fixed;top:14px;left:8px;z-index:9999;
+  position:fixed;top:72px;left:8px;z-index:9999;
   display:flex;align-items:center;gap:8px;
   background:rgba(0,0,0,0.85);border:1px solid #ff2200;
   border-radius:6px;padding:8px 14px;
