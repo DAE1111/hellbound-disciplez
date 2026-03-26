@@ -187,7 +187,7 @@ button[aria-label="Expand sidebar"] span {{
   50%      {{ opacity:0.8;box-shadow:0 0 25px rgba(255,34,0,0.9); }}
 }}
 
-#nav-hint {{
+#nav-hint-open, #nav-hint-close {{
   position:fixed;top:72px;left:8px;z-index:9999;
   display:flex;align-items:center;gap:8px;
   background:rgba(0,0,0,0.85);border:1px solid #ff2200;
@@ -195,20 +195,11 @@ button[aria-label="Expand sidebar"] span {{
   animation:navPulse 1.5s ease-in-out infinite;
   box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
 }}
-#nav-hint .nh-arrow {{
-  font-size:22px;color:#ff2200;
-  animation:arrowBounce 0.8s ease-in-out infinite;
-  display:inline-block;
-}}
-#nav-hint .nh-text {{
+#nav-hint-open .nh-text, #nav-hint-close .nh-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:13px;color:#ff2200;letter-spacing:2px;
   white-space:nowrap;-webkit-text-stroke:0.3px white;
-  line-height:1.3;
-}}
-#nav-hint .nh-text span {{
-  display:inline-block;
-  animation:arrowBounce 0.8s ease-in-out infinite;
+  line-height:1.4;
 }}
 
 ::-webkit-scrollbar       {{ width:8px; }}
@@ -420,8 +411,11 @@ st.markdown(
 # ─── Overlays + nav hint ──────────────────────────────────────────────────────
 
 st.markdown(
-    '<div id="nav-hint">'
-    '<span class="nh-text">☰ TAP HERE TO NAVIGATE</span>'
+    '<div id="nav-hint-open">'
+    '<span class="nh-text">TAP THE ARROW TO OPEN MENU</span>'
+    '</div>'
+    '<div id="nav-hint-close" style="display:none;">'
+    '<span class="nh-text">TAP THE ARROW TO CLOSE MENU</span>'
     '</div>'
     '<div id="vhs-overlay"></div>'
     '<div id="vhs-rgb-r"></div>'
@@ -443,25 +437,6 @@ components.html(
       var bgBuffer    = null;
       var bgSource    = null;
       var bgGain      = null;
-
-      // ── Collapse sidebar on load ──
-      function collapseOnLoad() {{
-        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        if (sidebar) {{
-          sidebar.style.transform = 'translateX(-110%)';
-          sidebar.style.transition = 'transform 0.3s ease';
-          // When Streamlit's own toggle button is clicked, slide back in
-          var toggleArea = doc.querySelector('[data-testid="stSidebarCollapsedControl"]');
-          if (toggleArea) {{
-            toggleArea.addEventListener('click', function() {{
-              sidebar.style.transform = 'translateX(0%)';
-            }});
-          }}
-        }} else {{
-          setTimeout(collapseOnLoad, 100);
-        }}
-      }}
-      collapseOnLoad();
 
       // ── Gapless background music ──
       function startGaplessLoop() {{
@@ -642,7 +617,16 @@ components.html(
       attachHoverSounds();
       setInterval(function() {{
         attachHoverSounds();
-      }}, 1500);
+        // Toggle hints based on sidebar state
+        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
+        var hintOpen  = doc.getElementById('nav-hint-open');
+        var hintClose = doc.getElementById('nav-hint-close');
+        if (!sidebar || !hintOpen || !hintClose) return;
+        var rect = sidebar.getBoundingClientRect();
+        var isOpen = rect.left > -50;
+        hintOpen.style.display  = isOpen ? 'none' : 'flex';
+        hintClose.style.display = isOpen ? 'flex' : 'none';
+      }}, 500);
     }})();
     </script>
     """,
