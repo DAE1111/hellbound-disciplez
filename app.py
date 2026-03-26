@@ -485,17 +485,22 @@ components.html(
         var loctx = lo.getContext('2d');
         var SCALE = 8;
 
-        // Muted autoplay is allowed by all browsers
-        // We unmute immediately after — seamless audio from load
-        var glitchAudio = doc.createElement('audio');
-        glitchAudio.src    = "data:audio/mp3;base64,{glitch_snd}";
-        glitchAudio.loop   = true;
-        glitchAudio.muted  = true;
-        glitchAudio.volume = 0.7;
-        doc.body.appendChild(glitchAudio);
-        glitchAudio.play().then(function() {{
-          glitchAudio.muted = false;
-        }}).catch(function() {{}});
+        // Generate white noise via Web Audio API — no file, no autoplay block
+        var noiseCtx  = new (window.AudioContext || window.webkitAudioContext)();
+        var bufSize   = noiseCtx.sampleRate * 2;
+        var noiseBuf  = noiseCtx.createBuffer(1, bufSize, noiseCtx.sampleRate);
+        var noiseData = noiseBuf.getChannelData(0);
+        for (var n = 0; n < bufSize; n++) {{
+          noiseData[n] = Math.random() * 2 - 1;
+        }}
+        var noiseSource = noiseCtx.createBufferSource();
+        noiseSource.buffer = noiseBuf;
+        noiseSource.loop   = true;
+        var noiseGain      = noiseCtx.createGain();
+        noiseGain.gain.value = 0.15;
+        noiseSource.connect(noiseGain);
+        noiseGain.connect(noiseCtx.destination);
+        noiseSource.start(0);
 
         function resize() {{
           canvas.width  = window.parent.innerWidth;
@@ -557,9 +562,11 @@ components.html(
         setTimeout(function() {{
           var btn = doc.getElementById('vhs-enter-btn');
           if (btn) {{
-            // Stop glitch sound when button appears
-            glitchAudio.pause();
-            glitchAudio.currentTime = 0;
+            // Fade out white noise when button appears
+            try {{
+              noiseGain.gain.setTargetAtTime(0, noiseCtx.currentTime, 0.5);
+              setTimeout(function() {{ noiseSource.stop(); }}, 1500);
+            }} catch(e) {{}}
             btn.style.display = 'block';
             btn.addEventListener('click', function() {{
               initAudio();
