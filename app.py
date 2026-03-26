@@ -46,14 +46,14 @@ def get_wav_trimmed_base64(filename):
         framerate  = wf.getframerate()
         n_frames   = wf.getnframes()
         raw_frames = wf.readframes(n_frames)
-    fmt = {1: "b", 2: "h", 4: "i"}.get(sampwidth, "h")
+    fmt           = {1: "b", 2: "h", 4: "i"}.get(sampwidth, "h")
     total_samples = n_frames * n_channels
-    samples = list(struct.unpack(f"<{total_samples}{fmt}", raw_frames))
-    threshold = 32 if sampwidth == 1 else 128
-    last_nonsilent = len(samples) - 1
-    while last_nonsilent > 0 and abs(samples[last_nonsilent]) < threshold:
-        last_nonsilent -= 1
-    trim_to     = ((last_nonsilent // n_channels) + 1) * n_channels
+    samples       = list(struct.unpack(f"<{total_samples}{fmt}", raw_frames))
+    threshold     = 32 if sampwidth == 1 else 128
+    last          = len(samples) - 1
+    while last > 0 and abs(samples[last]) < threshold:
+        last -= 1
+    trim_to     = ((last // n_channels) + 1) * n_channels
     trimmed_raw = struct.pack(f"<{trim_to}{fmt}", *samples[:trim_to])
     buf = io.BytesIO()
     with wave.open(buf, "wb") as out:
@@ -98,7 +98,19 @@ font_glitch   = get_font_base64("DoctorGlitch.otf")
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 
-st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(
+    page_title="HELLBOUND DISCIPLEZ",
+    page_icon="🤘",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# ─── Session State ────────────────────────────────────────────────────────────
+
+if "menu" not in st.session_state:
+    st.session_state.menu = "The Ritual (Home)"
+if "prev_menu" not in st.session_state:
+    st.session_state.prev_menu = "The Ritual (Home)"
 
 # ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
@@ -242,7 +254,6 @@ img {{ transform:translateZ(0); }}
   animation:announcePulse 2s ease-in-out infinite;
   display:block;text-align:center;margin:10px 0;
 }}
-
 .glitch-tape-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
@@ -290,6 +301,7 @@ img {{ transform:translateZ(0); }}
   display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
 }}
 
+/* ── VHS Intro ── */
 #vhs-intro {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
   background:#000;z-index:9999999;
@@ -333,55 +345,32 @@ img {{ transform:translateZ(0); }}
   0%,100% {{ box-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:6px; }}
   50%     {{ box-shadow:0 0 30px #ff5500,0 0 60px #ff2200,0 0 100px #ff0000;letter-spacing:10px; }}
 }}
-
 @keyframes btnFlicker {{
   0%,90%,100% {{ opacity:1; }}
   92%          {{ opacity:0.3; }}
   95%          {{ opacity:0.8; }}
   97%          {{ opacity:0.2; }}
 }}
-
-@keyframes borderSpin {{
-  0%   {{ border-color:#ff2200 transparent transparent transparent; }}
-  25%  {{ border-color:transparent #ff2200 transparent transparent; }}
-  50%  {{ border-color:transparent transparent #ff2200 transparent; }}
-  75%  {{ border-color:transparent transparent transparent #ff2200; }}
-  100% {{ border-color:#ff2200 transparent transparent transparent; }}
-}}
-
 #vhs-enter-btn {{
   display:none;
   position:relative;z-index:3;
   margin-top:50px;
   font-family:'DoctorGlitch',cursive;
-  font-size:26px;
-  color:#ff2200;
+  font-size:26px;color:#ff2200;
   background:rgba(0,0,0,0.85);
   border:2px solid #ff2200;
   padding:18px 60px;
-  letter-spacing:6px;
-  cursor:pointer;
+  letter-spacing:6px;cursor:pointer;
   -webkit-text-stroke:0.5px rgba(255,255,255,0.6);
   text-shadow:0 0 10px #ff2200,0 0 20px #ff0000;
-  animation:btnPulse 1.8s ease-in-out infinite, btnFlicker 4s steps(1,end) infinite;
-  clip-path:polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  animation:btnPulse 1.8s ease-in-out infinite,btnFlicker 4s steps(1,end) infinite;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
   outline:none;
 }}
-
-#vhs-enter-btn::before {{
-  content:'';
-  position:absolute;
-  top:-4px;left:-4px;right:-4px;bottom:-4px;
-  border:1px solid rgba(255,34,0,0.4);
-  clip-path:polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-  animation:btnPulse 1.8s ease-in-out infinite reverse;
-}}
-
 #vhs-enter-btn:hover {{
   background:rgba(255,34,0,0.15);
   color:#fff;
   text-shadow:0 0 20px #fff,0 0 40px #ff2200;
-  letter-spacing:10px;
   transition:all 0.2s ease;
 }}
 </style>
@@ -389,7 +378,7 @@ img {{ transform:translateZ(0); }}
 
 st.markdown(css, unsafe_allow_html=True)
 
-# ─── VHS Intro HTML (no script — JS lives in components.html below) ───────────
+# ─── VHS Intro HTML ───────────────────────────────────────────────────────────
 
 st.markdown(
     '<div id="vhs-intro">'
@@ -402,7 +391,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ─── Persistent overlays & nav hint ──────────────────────────────────────────
+# ─── Overlays + nav hint ──────────────────────────────────────────────────────
 
 st.markdown(
     '<div id="nav-hint"><span class="nh-text">TAP ARROW TO NAVIGATE</span></div>'
@@ -412,7 +401,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ─── Audio + interaction JS ───────────────────────────────────────────────────
+# ─── All JS in components.html (has window.parent.document access) ────────────
 
 components.html(
     f"""
@@ -427,6 +416,7 @@ components.html(
       var bgSource    = null;
       var bgGain      = null;
 
+      // ── Gapless background music ──
       function startGaplessLoop() {{
         if (!audioCtx || !bgBuffer) return;
         if (bgSource) {{ try {{ bgSource.stop(); }} catch(e) {{}} }}
@@ -454,13 +444,14 @@ components.html(
         for (var i = 0; i < bin.length; i++) {{ arr[i] = bin.charCodeAt(i); }}
         audioCtx.decodeAudioData(arr.buffer,
           function(decoded) {{ bgBuffer = decoded; startGaplessLoop(); }},
-          function(e)        {{ console.warn("BG audio decode failed:", e); }}
+          function(e) {{ console.warn("BG audio decode failed:", e); }}
         );
       }}
 
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
       function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
 
+      // ── VHS click glitch ──
       function triggerVHS() {{
         var app     = doc.querySelector('.stApp');
         var overlay = doc.getElementById('vhs-overlay');
@@ -475,6 +466,17 @@ components.html(
         }});
       }}
 
+      // ── Hover sounds ──
+      function attachHoverSounds() {{
+        doc.querySelectorAll('a,button,[role="radio"],[role="button"],label').forEach(function(el) {{
+          if (!el.dataset.soundAttached) {{
+            el.addEventListener('mouseenter', playReload);
+            el.dataset.soundAttached = 'true';
+          }}
+        }});
+      }}
+
+      // ── Sidebar collapse ──
       function clickCollapseArrow() {{
         var selectors = [
           '[data-testid="stSidebarCollapseButton"] button',
@@ -489,18 +491,27 @@ components.html(
         }}
       }}
 
-      // ── VHS Intro: draw static + dismiss ──
+      function attachSidebarCollapse() {{
+        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
+          if (!el.dataset.collapseAttached) {{
+            el.addEventListener('click', function() {{
+              setTimeout(clickCollapseArrow, 600);
+            }});
+            el.dataset.collapseAttached = 'true';
+          }}
+        }});
+      }}
+
+      // ── VHS Intro: optimized static canvas ──
       (function() {{
         var canvas = doc.getElementById('vhs-static-canvas');
         if (!canvas) return;
         var ctx    = canvas.getContext('2d');
         var animId;
         var frame  = 0;
-
-        // Offscreen low-res canvas for performance
         var lo     = document.createElement('canvas');
         var loctx  = lo.getContext('2d');
-        var SCALE  = 4; // draw at 1/4 res, scale up = way faster
+        var SCALE  = 4;
 
         function resize() {{
           canvas.width  = window.parent.innerWidth;
@@ -513,7 +524,6 @@ components.html(
 
         function drawStatic() {{
           frame++;
-          // Only redraw every 2 frames for smoother feel
           if (frame % 2 === 0) {{
             animId = window.parent.requestAnimationFrame(drawStatic);
             return;
@@ -528,7 +538,6 @@ components.html(
             data[i + 2] = Math.floor(v * 0.1);
             data[i + 3] = 180;
           }}
-          // Glitch bars — fewer iterations at low res
           for (var y = 0; y < h; y++) {{
             if (Math.random() < 0.04) {{
               var barH  = Math.floor(Math.random() * 4) + 1;
@@ -547,7 +556,6 @@ components.html(
             }}
           }}
           loctx.putImageData(imageData, 0, 0);
-          // Scale up to full canvas with pixelated look
           ctx.imageSmoothingEnabled = false;
           ctx.drawImage(lo, 0, 0, canvas.width, canvas.height);
           animId = window.parent.requestAnimationFrame(drawStatic);
@@ -559,8 +567,8 @@ components.html(
           if (!intro || intro._dismissed) return;
           intro._dismissed = true;
           window.parent.cancelAnimationFrame(animId);
-          intro.style.transition = 'opacity 1s ease';
-          intro.style.opacity    = '0';
+          intro.style.transition    = 'opacity 1s ease';
+          intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
         }}
@@ -570,34 +578,18 @@ components.html(
           var btn = doc.getElementById('vhs-enter-btn');
           if (btn) {{
             btn.style.display = 'block';
-            btn.addEventListener('click', dismissIntro);
+            btn.addEventListener('click', function() {{
+              initAudio();
+              dismissIntro();
+            }});
           }}
         }}, 7000);
 
-        // Hard fallback dismiss at 15 seconds
+        // Hard fallback at 15 seconds
         setTimeout(dismissIntro, 15000);
       }})();
 
-      function attachHoverSounds() {{
-        doc.querySelectorAll('a,button,[role="radio"],[role="button"],label').forEach(function(el) {{
-          if (!el.dataset.soundAttached) {{
-            el.addEventListener('mouseenter', playReload);
-            el.dataset.soundAttached = 'true';
-          }}
-        }});
-      }}
-
-      function attachSidebarCollapse() {{
-        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
-          if (!el.dataset.collapseAttached) {{
-            el.addEventListener('mousedown', function() {{
-              clickCollapseArrow();
-            }});
-            el.dataset.collapseAttached = 'true';
-          }}
-        }});
-      }}
-
+      // ── Main click handler ──
       doc.addEventListener('click', function() {{
         initAudio();
         playShotty();
@@ -628,11 +620,6 @@ with col2:
 
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
 
-if "menu" not in st.session_state:
-    st.session_state.menu = "The Ritual (Home)"
-if "prev_menu" not in st.session_state:
-    st.session_state.prev_menu = "The Ritual (Home)"
-
 with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("", [
@@ -641,32 +628,6 @@ with st.sidebar:
         "The Cult (Members)",
         "The Catacombs (Photos)"
     ], key="menu")
-
-if st.session_state.menu != st.session_state.prev_menu:
-    st.session_state.prev_menu = st.session_state.menu
-    st.markdown(
-        """<script>
-        (function() {
-          var tries = 0;
-          function tryCollapse() {
-            var btns = [
-              '[data-testid="stSidebarCollapseButton"] button',
-              '[data-testid="stSidebarNavCollapseButton"]',
-              'button[aria-label="Collapse sidebar"]',
-              'button[aria-label="collapse sidebar"]',
-              'button[aria-label="Close sidebar"]'
-            ];
-            for (var i = 0; i < btns.length; i++) {
-              var b = document.querySelector(btns[i]);
-              if (b) { b.click(); return; }
-            }
-            if (tries++ < 20) setTimeout(tryCollapse, 50);
-          }
-          tryCollapse();
-        })();
-        </script>""",
-        unsafe_allow_html=True
-    )
 
 menu = st.session_state.menu
 
