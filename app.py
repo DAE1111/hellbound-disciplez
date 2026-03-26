@@ -289,10 +289,119 @@ img {{ transform:translateZ(0); }}
 #vhs-rgb-r.active,#vhs-rgb-b.active {{
   display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
 }}
+
+/* ── VHS Intro Screen ── */
+#vhs-intro {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:#000;z-index:9999999;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;transition:opacity 1s ease;
+}}
+#vhs-intro.fadeout {{ opacity:0;pointer-events:none; }}
+#vhs-intro canvas {{ position:absolute;top:0;left:0;width:100%;height:100%; }}
+#vhs-intro-text {{
+  position:relative;z-index:2;
+  font-family:'DoctorGlitch',cursive;
+  font-size:48px;color:#ff2200;
+  -webkit-text-stroke:1px white;
+  text-align:center;letter-spacing:6px;
+  animation:introFlicker 0.15s steps(1,end) infinite;
+  text-shadow:0 0 20px #ff2200,0 0 40px #ff0000;
+}}
+#vhs-intro-sub {{
+  position:relative;z-index:2;
+  font-family:'DoctorGlitch',cursive;
+  font-size:18px;color:#ff2200;
+  letter-spacing:4px;margin-top:16px;
+  opacity:0.7;animation:introFlicker 0.3s steps(1,end) infinite;
+}}
+#vhs-intro-scanlines {{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(
+    0deg,rgba(0,0,0,0.4) 0px,rgba(0,0,0,0.4) 1px,
+    transparent 1px,transparent 4px);
+  z-index:1;pointer-events:none;
+}}
+@keyframes introFlicker {{
+  0%,89%  {{ opacity:1; }}
+  90%     {{ opacity:0.2; }}
+  91%     {{ opacity:1; }}
+  94%     {{ opacity:0.4; }}
+  95%     {{ opacity:1; }}
+}}
 </style>
 """
 
 st.markdown(css, unsafe_allow_html=True)
+
+# ─── VHS Intro Screen ─────────────────────────────────────────────────────────
+
+st.markdown(
+    """
+    <div id="vhs-intro">
+      <canvas id="vhs-static-canvas"></canvas>
+      <div id="vhs-intro-scanlines"></div>
+      <div id="vhs-intro-text">HELLBOUND DISCIPLEZ</div>
+      <div id="vhs-intro-sub">&#9654; LOADING...</div>
+    </div>
+    <script>
+    (function() {
+      var canvas = document.getElementById('vhs-static-canvas');
+      var ctx    = canvas.getContext('2d');
+      var intro  = document.getElementById('vhs-intro');
+      var animId;
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      function drawStatic() {
+        var w = canvas.width, h = canvas.height;
+        var imageData = ctx.createImageData(w, h);
+        var data = imageData.data;
+        for (var i = 0; i < data.length; i += 4) {
+          var v = Math.random() > 0.5 ? Math.floor(Math.random() * 80) : 0;
+          data[i]     = v + Math.floor(Math.random() * 40);
+          data[i + 1] = Math.floor(v * 0.1);
+          data[i + 2] = Math.floor(v * 0.1);
+          data[i + 3] = 180;
+        }
+        for (var y = 0; y < h; y++) {
+          if (Math.random() < 0.04) {
+            var barH  = Math.floor(Math.random() * 6) + 1;
+            var shift = Math.floor(Math.random() * 40) - 20;
+            for (var by = y; by < Math.min(y + barH, h); by++) {
+              for (var x = 0; x < w; x++) {
+                var srcX = (x + shift + w) % w;
+                var si = (by * w + srcX) * 4;
+                var di = (by * w + x) * 4;
+                data[di]     = data[si] + 80;
+                data[di + 1] = 0;
+                data[di + 2] = 0;
+                data[di + 3] = 220;
+              }
+            }
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        animId = requestAnimationFrame(drawStatic);
+      }
+
+      drawStatic();
+
+      setTimeout(function() {
+        cancelAnimationFrame(animId);
+        intro.classList.add('fadeout');
+        setTimeout(function() { intro.style.display = 'none'; }, 1000);
+      }, 9000);
+    })();
+    </script>
+    """,
+    unsafe_allow_html=True
+)
 
 # ─── Persistent overlays & nav hint ──────────────────────────────────────────
 
