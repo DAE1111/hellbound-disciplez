@@ -345,7 +345,7 @@ st.markdown(
     '<div id="vhs-intro-scanlines"></div>'
     '<div id="vhs-intro-text" style="display:none;">HELLBOUND DISCIPLEZ</div>'
     '<div id="vhs-intro-sub" style="display:none;">&#9654; LOADING...</div>'
-    '<button id="vhs-load-btn">&#9760; CLICK TO LOAD &#9760;</button>'
+    '<button id="vhs-load-btn" style="display:none;">&#9760; CLICK TO LOAD &#9760;</button>'
     '<button id="vhs-enter-btn">&#9760; ENTER THE VOID &#9760;</button>'
     '</div>',
     unsafe_allow_html=True
@@ -543,7 +543,6 @@ components.html(
               doc.getElementById('vhs-intro-sub').style.display  = 'block';
             }}, 50);
 
-            // After 7 seconds show ENTER THE VOID
             setTimeout(function() {{
               stopNoise();
               var enterBtn = doc.getElementById('vhs-enter-btn');
@@ -551,10 +550,8 @@ components.html(
                 enterBtn.style.display = 'block';
                 enterBtn.addEventListener('click', function(e) {{
                   e.stopPropagation();
-                  // Start all site audio now
                   initAudio();
                   dismissIntro();
-                  // Activate all sounds and interactions after intro gone
                   setTimeout(function() {{
                     doc.addEventListener('click', function() {{
                       playShotty();
@@ -569,6 +566,8 @@ components.html(
 
             setTimeout(dismissIntro, 15000);
           }});
+          // Show button only now that listener is attached
+          loadBtn.style.display = 'block';
         }}
       }})();
 
