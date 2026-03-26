@@ -623,8 +623,7 @@ components.html(
       function attachSidebarCollapse() {{
         doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
           if (!el.dataset.collapseAttached) {{
-            el.addEventListener('mousedown', function(e) {{
-              e.stopPropagation();
+            el.addEventListener('click', function() {{
               setTimeout(clickCollapseArrow, 300);
             }});
             el.dataset.collapseAttached = 'true';
@@ -791,6 +790,10 @@ elif menu == "The Catacombs (Photos)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE CATACOMBS</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
     photos = get_shuffled_photos()
+    cols = st.columns(2)
+    for i, photo_path in enumerate(photos):
+        with cols[i % 2]:
+            st.image(photo_path, use_container_width=True)
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
