@@ -178,23 +178,33 @@ button[aria-label="Expand sidebar"] span {{
   -webkit-font-smoothing:antialiased !important;
 }}
 
+@keyframes arrowBounce {{
+  0%,100% {{ transform:translateX(0); }}
+  50%      {{ transform:translateX(-6px); }}
+}}
 @keyframes navPulse {{
-  0%,100% {{ opacity:1; transform:translateX(0); }}
-  50%      {{ opacity:0.6; transform:translateX(3px); }}
+  0%,100% {{ opacity:1;box-shadow:0 0 10px rgba(255,34,0,0.5); }}
+  50%      {{ opacity:0.8;box-shadow:0 0 25px rgba(255,34,0,0.9); }}
 }}
 
 #nav-hint {{
-  position:fixed;top:80px;left:8px;z-index:9999;
-  display:flex;align-items:center;gap:6px;
-  background:rgba(0,0,0,0.75);border:1px solid #ff2200;
-  border-radius:6px;padding:6px 12px;
-  animation:navPulse 2s ease-in-out infinite;
+  position:fixed;top:14px;left:8px;z-index:9999;
+  display:flex;align-items:center;gap:8px;
+  background:rgba(0,0,0,0.85);border:1px solid #ff2200;
+  border-radius:6px;padding:8px 14px;
+  animation:navPulse 1.5s ease-in-out infinite;
   box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
+}}
+#nav-hint .nh-arrow {{
+  font-size:22px;color:#ff2200;
+  animation:arrowBounce 0.8s ease-in-out infinite;
+  display:inline-block;
 }}
 #nav-hint .nh-text {{
   font-family:'DoctorGlitch',cursive !important;
-  font-size:16px;color:#ff2200;letter-spacing:1px;
+  font-size:13px;color:#ff2200;letter-spacing:2px;
   white-space:nowrap;-webkit-text-stroke:0.3px white;
+  line-height:1.3;
 }}
 
 ::-webkit-scrollbar       {{ width:8px; }}
@@ -406,7 +416,10 @@ st.markdown(
 # ─── Overlays + nav hint ──────────────────────────────────────────────────────
 
 st.markdown(
-    '<div id="nav-hint"><span class="nh-text">TAP ARROW TO NAVIGATE</span></div>'
+    '<div id="nav-hint">'
+    '<span class="nh-arrow">&#9664;</span>'
+    '<span class="nh-text">CLICK ARROW<br>TO NAVIGATE</span>'
+    '</div>'
     '<div id="vhs-overlay"></div>'
     '<div id="vhs-rgb-r"></div>'
     '<div id="vhs-rgb-b"></div>',
@@ -608,77 +621,11 @@ components.html(
       setInterval(function() {{
         attachHoverSounds();
       }}, 1500);
-
-      // ── Sidebar collapse — CSS slide + custom toggle button ──
-      var sidebarOpen = true;
-
-      function createToggleBtn() {{
-        if (doc.getElementById('hbd-sidebar-toggle')) return;
-        var btn = doc.createElement('button');
-        btn.id = 'hbd-sidebar-toggle';
-        btn.innerHTML = '&#9776;';
-        btn.style.cssText = [
-          'position:fixed',
-          'top:12px',
-          'left:12px',
-          'z-index:9999998',
-          'background:rgba(0,0,0,0.8)',
-          'border:1px solid #ff2200',
-          'color:#ff2200',
-          'font-size:22px',
-          'width:40px',
-          'height:40px',
-          'cursor:pointer',
-          'border-radius:4px',
-          'display:flex',
-          'align-items:center',
-          'justify-content:center',
-          'box-shadow:0 0 10px rgba(255,34,0,0.5)'
-        ].join(';');
-        btn.addEventListener('click', function(e) {{
-          e.stopPropagation();
-          toggleSidebar();
-        }});
-        doc.body.appendChild(btn);
-      }}
-
-      function toggleSidebar() {{
-        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        if (!sidebar) return;
-        sidebarOpen = !sidebarOpen;
-        sidebar.style.transition = 'transform 0.3s ease';
-        sidebar.style.transform = sidebarOpen ? 'translateX(0%)' : 'translateX(-110%)';
-        var btn = doc.getElementById('hbd-sidebar-toggle');
-        if (btn) btn.innerHTML = sidebarOpen ? '&#x2716;' : '&#9776;';
-      }}
-
-      function collapseSidebar() {{
-        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        if (!sidebar || !sidebarOpen) return;
-        sidebarOpen = false;
-        sidebar.style.transition = 'transform 0.3s ease';
-        sidebar.style.transform = 'translateX(-110%)';
-        var btn = doc.getElementById('hbd-sidebar-toggle');
-        if (btn) btn.innerHTML = '&#9776;';
-      }}
-
-      function attachSidebarCollapse() {{
-        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
-          if (!el.dataset.collapseAttached) {{
-            el.addEventListener('click', function() {{
-              setTimeout(collapseSidebar, 500);
-            }});
-            el.dataset.collapseAttached = 'true';
-          }}
-        }});
-      }}
-
-      createToggleBtn();
-      attachSidebarCollapse();
-      setInterval(function() {{
-        createToggleBtn();
-        attachSidebarCollapse();
-      }}, 1500);
+    }})();
+    </script>
+    """,
+    height=0
+)
     }})();
     </script>
     """,
