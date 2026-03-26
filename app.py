@@ -183,8 +183,8 @@ button[aria-label="Expand sidebar"] span {{
   50%      {{ opacity:0.8;box-shadow:0 0 25px rgba(255,34,0,0.9); }}
 }}
 
-#nav-hint-open, #nav-hint-close {{
-  position:fixed;z-index:9999;
+#nav-hint-open {{
+  position:fixed;top:100px;left:8px;z-index:9999;
   display:flex;align-items:center;
   background:rgba(0,0,0,0.85);border:1px solid #ff2200;
   padding:6px 16px;
@@ -192,9 +192,8 @@ button[aria-label="Expand sidebar"] span {{
   box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
   clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
 }}
-#nav-hint-open  {{ top:50px;left:8px; }}
-#nav-hint-close {{ top:50px;left:8px; }}
-#nav-hint-open .nh-text, #nav-hint-close .nh-text {{
+#nav-hint-close {{ display:none !important; }}
+#nav-hint-open .nh-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:11px;color:#ff2200;letter-spacing:2px;
   white-space:nowrap;-webkit-text-stroke:0.3px white;
