@@ -37,31 +37,6 @@ def get_audio_base64(filename):
         return base64.b64encode(f.read()).decode("utf-8")
 
 @st.cache_data(show_spinner=False)
-def get_wav_trimmed_base64(filename):
-    with wave.open(filename, "rb") as wf:
-        n_channels = wf.getnchannels()
-        sampwidth  = wf.getsampwidth()
-        framerate  = wf.getframerate()
-        n_frames   = wf.getnframes()
-        raw_frames = wf.readframes(n_frames)
-    fmt           = {1: "b", 2: "h", 4: "i"}.get(sampwidth, "h")
-    total_samples = n_frames * n_channels
-    samples       = list(struct.unpack(f"<{total_samples}{fmt}", raw_frames))
-    threshold     = 32 if sampwidth == 1 else 128
-    last          = len(samples) - 1
-    while last > 0 and abs(samples[last]) < threshold:
-        last -= 1
-    trim_to     = ((last // n_channels) + 1) * n_channels
-    trimmed_raw = struct.pack(f"<{trim_to}{fmt}", *samples[:trim_to])
-    buf = io.BytesIO()
-    with wave.open(buf, "wb") as out:
-        out.setnchannels(n_channels)
-        out.setsampwidth(sampwidth)
-        out.setframerate(framerate)
-        out.writeframes(trimmed_raw)
-    return base64.b64encode(buf.getvalue()).decode("utf-8")
-
-@st.cache_data(show_spinner=False)
 def get_font_base64(filename):
     with open(filename, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
@@ -91,7 +66,6 @@ logo          = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
 reload_snd    = get_audio_base64("reload.wav")
 shotty_snd    = get_audio_base64("shottyblast.wav")
 web_beat      = get_audio_base64("WEB_BEAT_001.mp3")
-glitch_snd    = get_audio_base64("glitch.mp3")
 font_baroness = get_font_base64("BaronessKuffner.ttf")
 font_glitch   = get_font_base64("DoctorGlitch.otf")
 
@@ -327,6 +301,7 @@ img {{ transform:translateZ(0); }}
   animation:btnPulse 1.8s ease-in-out infinite,btnFlicker 4s steps(1,end) infinite;
   clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);outline:none;
 }}
+#vhs-load-btn {{ display:none; }}
 #vhs-enter-btn {{ display:none; }}
 #vhs-load-btn:hover, #vhs-enter-btn:hover {{
   background:rgba(255,34,0,0.15);color:#fff;
@@ -345,7 +320,7 @@ st.markdown(
     '<div id="vhs-intro-scanlines"></div>'
     '<div id="vhs-intro-text" style="display:none;">HELLBOUND DISCIPLEZ</div>'
     '<div id="vhs-intro-sub" style="display:none;">&#9654; LOADING...</div>'
-    '<button id="vhs-load-btn" style="display:none;">&#9760; CLICK TO LOAD &#9760;</button>'
+    '<button id="vhs-load-btn">&#9760; CLICK TO LOAD &#9760;</button>'
     '<button id="vhs-enter-btn">&#9760; ENTER THE VOID &#9760;</button>'
     '</div>',
     unsafe_allow_html=True
@@ -361,132 +336,20 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ─── Intro JS (tiny, no audio data, loads instantly) ─────────────────────────
+# ─── All JS ───────────────────────────────────────────────────────────────────
 
 components.html(
-    """
+    f"""
     <script>
-    (function() {
-      var doc = window.parent.document;
-
-      var canvas = doc.getElementById('vhs-static-canvas');
-      if (!canvas) return;
-      var ctx   = canvas.getContext('2d');
-      var animId = null, frame = 0;
-      var lo    = document.createElement('canvas');
-      var loctx = lo.getContext('2d');
-      var SCALE = 12;
-
-      function resize() {
-        canvas.width  = window.parent.innerWidth;
-        canvas.height = window.parent.innerHeight;
-        lo.width      = Math.ceil(canvas.width  / SCALE);
-        lo.height     = Math.ceil(canvas.height / SCALE);
-      }
-      resize();
-      window.parent.addEventListener('resize', resize);
-
-      function drawStatic() {
-        frame++;
-        if (frame % 6 !== 0) { animId = window.parent.requestAnimationFrame(drawStatic); return; }
-        var w = lo.width, h = lo.height;
-        var imageData = loctx.createImageData(w, h);
-        var data = imageData.data;
-        for (var i = 0; i < data.length; i += 4) {
-          var v = Math.random() > 0.5 ? (Math.random() * 180)|0 : 0;
-          data[i]     = v;
-          data[i + 1] = (v * 0.05)|0;
-          data[i + 2] = (v * 0.05)|0;
-          data[i + 3] = 210;
-        }
-        if (Math.random() < 0.3) {
-          var gy = (Math.random() * h)|0;
-          var gi = gy * w * 4;
-          for (var gx = 0; gx < w * 4; gx += 4) {
-            data[gi + gx]     = 220;
-            data[gi + gx + 1] = 0;
-            data[gi + gx + 2] = 0;
-            data[gi + gx + 3] = 255;
-          }
-        }
-        loctx.putImageData(imageData, 0, 0);
-        ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(lo, 0, 0, canvas.width, canvas.height);
-        animId = window.parent.requestAnimationFrame(drawStatic);
-      }
-
-      // Start static immediately
-      drawStatic();
-
-      // Show load button immediately
-      var loadBtn = doc.getElementById('vhs-load-btn');
-      if (loadBtn) loadBtn.style.display = 'block';
-
-      // Noise functions
-      var noiseCtx, noiseSource, noiseGain;
-      function startNoise() {
-        noiseCtx = new (window.AudioContext || window.webkitAudioContext)();
-        var bufSize   = noiseCtx.sampleRate * 2;
-        var noiseBuf  = noiseCtx.createBuffer(1, bufSize, noiseCtx.sampleRate);
-        var noiseData = noiseBuf.getChannelData(0);
-        for (var n = 0; n < bufSize; n++) { noiseData[n] = Math.random() * 2 - 1; }
-        noiseSource          = noiseCtx.createBufferSource();
-        noiseSource.buffer   = noiseBuf;
-        noiseSource.loop     = true;
-        noiseGain            = noiseCtx.createGain();
-        noiseGain.gain.value = 0.2;
-        noiseSource.connect(noiseGain);
-        noiseGain.connect(noiseCtx.destination);
-        noiseSource.start(0);
-      }
-      function stopNoise() {
-        if (!noiseCtx || !noiseGain || !noiseSource) return;
-        try {
-          noiseGain.gain.setTargetAtTime(0, noiseCtx.currentTime, 0.5);
-          setTimeout(function() { try { noiseSource.stop(); } catch(e) {} }, 1500);
-        } catch(e) {}
-      }
-      function dismissIntro() {
-        var intro = doc.getElementById('vhs-intro');
-        if (!intro || intro._dismissed) return;
-        intro._dismissed = true;
-        window.parent.cancelAnimationFrame(animId);
-        intro.style.transition    = 'opacity 1s ease';
-        intro.style.opacity       = '0';
-        intro.style.pointerEvents = 'none';
-        setTimeout(function() { intro.style.display = 'none'; }, 1000);
-      }
-
-      if (loadBtn) {
-        loadBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          startNoise();
-          setTimeout(function() {
-            loadBtn.style.display = 'none';
-            doc.getElementById('vhs-intro-text').style.display = 'block';
-            doc.getElementById('vhs-intro-sub').style.display  = 'block';
-          }, 50);
-          setTimeout(function() {
-            stopNoise();
-            var enterBtn = doc.getElementById('vhs-enter-btn');
-            if (enterBtn) {
-              enterBtn.style.display = 'block';
-              enterBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dismissIntro();
-                // Signal main audio JS to start
-                window.parent._introComplete = true;
-              });
-            }
-          }, 7000);
-          setTimeout(dismissIntro, 15000);
-        });
-      }
-    })();
-    </script>
-    """,
-    height=0
-)
+    (function() {{
+      var doc         = window.parent.document;
+      var reloadAudio = null;
+      var shottyAudio = null;
+      var audioReady  = false;
+      var audioCtx    = null;
+      var bgBuffer    = null;
+      var bgSource    = null;
+      var bgGain      = null;
 
       function startGaplessLoop() {{
         if (!audioCtx || !bgBuffer) return;
@@ -582,7 +445,6 @@ components.html(
             data[i + 2] = (v * 0.05)|0;
             data[i + 3] = 210;
           }}
-          // Occasional horizontal glitch line — cheap version
           if (Math.random() < 0.3) {{
             var gy = (Math.random() * h)|0;
             var gi = gy * w * 4;
@@ -634,10 +496,10 @@ components.html(
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
         }}
 
-        // Static runs immediately on load
+        // Start static immediately
         drawStatic();
 
-        // CLICK TO LOAD button — starts noise and reveals text
+        // Show load button once JS is ready
         var loadBtn = doc.getElementById('vhs-load-btn');
         if (loadBtn) {{
           loadBtn.addEventListener('click', function(e) {{
@@ -672,7 +534,6 @@ components.html(
 
             setTimeout(dismissIntro, 15000);
           }});
-          // Show button only now that listener is attached
           loadBtn.style.display = 'block';
         }}
       }})();
