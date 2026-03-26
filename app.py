@@ -94,6 +94,21 @@ pistol_r      = f'<img src="data:image/png;base64,{pistol}" width="60" style="ve
 
 # ─── CSS ──────────────────────────────────────────────────────────────────────
 
+st.markdown(
+    """
+    <style>
+    /* Fire immediately before anything renders */
+    html, body { background:#000 !important; }
+    [data-testid="stAppViewContainer"],
+    [data-testid="stHeader"],
+    [data-testid="stMain"],
+    [data-testid="stSidebarCollapsedControl"],
+    .stApp { opacity:0 !important; }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 css = f"""
 <style>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
@@ -490,6 +505,10 @@ components.html(
           if (!intro || intro._dismissed) return;
           intro._dismissed = true;
           window.parent.cancelAnimationFrame(animId);
+          // Reveal page content
+          var style = doc.createElement('style');
+          style.innerHTML = '[data-testid="stAppViewContainer"],[data-testid="stHeader"],[data-testid="stMain"],[data-testid="stSidebarCollapsedControl"],.stApp{{opacity:1 !important;transition:opacity 0.5s ease;}}';
+          doc.head.appendChild(style);
           intro.style.transition    = 'opacity 1s ease';
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
