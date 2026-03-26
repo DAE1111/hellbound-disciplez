@@ -442,7 +442,7 @@ components.html(
         var frame  = 0;
         var lo     = document.createElement('canvas');
         var loctx  = lo.getContext('2d');
-        var SCALE  = 8;
+        var SCALE  = 12;
         var noiseCtx, noiseSource, noiseGain;
 
         function resize() {{
@@ -456,7 +456,7 @@ components.html(
 
         function drawStatic() {{
           frame++;
-          if (frame % 4 !== 0) {{
+          if (frame % 6 !== 0) {{
             animId = window.parent.requestAnimationFrame(drawStatic);
             return;
           }}
@@ -464,27 +464,21 @@ components.html(
           var imageData = loctx.createImageData(w, h);
           var data = imageData.data;
           for (var i = 0; i < data.length; i += 4) {{
-            var v = Math.random() > 0.4 ? Math.floor(Math.random() * 100) : 0;
-            data[i]     = v + Math.floor(Math.random() * 60);
-            data[i + 1] = Math.floor(v * 0.08);
-            data[i + 2] = Math.floor(v * 0.08);
-            data[i + 3] = 200;
+            var v = Math.random() > 0.5 ? (Math.random() * 180)|0 : 0;
+            data[i]     = v;
+            data[i + 1] = (v * 0.05)|0;
+            data[i + 2] = (v * 0.05)|0;
+            data[i + 3] = 210;
           }}
-          for (var y = 0; y < h; y++) {{
-            if (Math.random() < 0.05) {{
-              var barH  = Math.floor(Math.random() * 3) + 1;
-              var shift = Math.floor(Math.random() * 8) - 4;
-              for (var by = y; by < Math.min(y + barH, h); by++) {{
-                for (var x = 0; x < w; x++) {{
-                  var srcX = (x + shift + w) % w;
-                  var si = (by * w + srcX) * 4;
-                  var di = (by * w + x) * 4;
-                  data[di]     = Math.min(255, data[si] + 100);
-                  data[di + 1] = 0;
-                  data[di + 2] = 0;
-                  data[di + 3] = 255;
-                }}
-              }}
+          // Occasional horizontal glitch line — cheap version
+          if (Math.random() < 0.3) {{
+            var gy = (Math.random() * h)|0;
+            var gi = gy * w * 4;
+            for (var gx = 0; gx < w * 4; gx += 4) {{
+              data[gi + gx]     = 220;
+              data[gi + gx + 1] = 0;
+              data[gi + gx + 2] = 0;
+              data[gi + gx + 3] = 255;
             }}
           }}
           loctx.putImageData(imageData, 0, 0);
