@@ -376,6 +376,31 @@ components.html(
         }});
       }}
 
+      function clickCollapseArrow() {{
+        var selectors = [
+          '[data-testid="stSidebarCollapseButton"] button',
+          '[data-testid="stSidebarNavCollapseButton"]',
+          'button[aria-label="Collapse sidebar"]',
+          'button[aria-label="collapse sidebar"]',
+          'button[aria-label="Close sidebar"]'
+        ];
+        for (var i = 0; i < selectors.length; i++) {{
+          var btn = doc.querySelector(selectors[i]);
+          if (btn) {{ btn.click(); return; }}
+        }}
+      }}
+
+      function attachSidebarRadioCollapse() {{
+        doc.querySelectorAll('[data-testid="stSidebar"] [role="radio"]').forEach(function(el) {{
+          if (!el.dataset.collapseAttached) {{
+            el.addEventListener('click', function() {{
+              setTimeout(clickCollapseArrow, 400);
+            }});
+            el.dataset.collapseAttached = 'true';
+          }}
+        }});
+      }}
+
       doc.addEventListener('click', function() {{
         initAudio();
         playShotty();
@@ -383,7 +408,11 @@ components.html(
       }}, {{ passive: true }});
 
       attachHoverSounds();
-      setInterval(attachHoverSounds, 1500);
+      attachSidebarRadioCollapse();
+      setInterval(function() {{
+        attachHoverSounds();
+        attachSidebarRadioCollapse();
+      }}, 1000);
     }})();
     </script>
     """,
