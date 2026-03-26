@@ -187,7 +187,7 @@ button[aria-label="Expand sidebar"] span {{
   position:fixed;top:100px;left:8px;z-index:9999;
   display:flex;align-items:center;
   background:rgba(0,0,0,0.85);border:1px solid #ff2200;
-  padding:6px 16px;
+  padding:6px 10px;width:80px;
   animation:navPulse 1.5s ease-in-out infinite;
   box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
   clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
@@ -195,8 +195,10 @@ button[aria-label="Expand sidebar"] span {{
 #nav-hint-open .nh-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:11px;color:#ff2200;letter-spacing:2px;
-  white-space:nowrap;-webkit-text-stroke:0.3px white;
+  white-space:normal;word-break:break-word;
+  -webkit-text-stroke:0.3px white;
   text-shadow:0 0 8px #ff2200;
+  text-align:center;line-height:1.4;
 }}
 
 ::-webkit-scrollbar       {{ width:8px; }}
