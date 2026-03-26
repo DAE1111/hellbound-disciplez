@@ -579,19 +579,34 @@ components.html(
           }}
         }});
 
-        // ── 6. Composite with hard circular clip — no square edge ──
+        // ── 6. Composite with IRREGULAR jagged boundary — no perfect circle ──
         ctx.drawImage(tmp, 0, 0);
 
-        // Punch out everything outside the blast circle cleanly
+        // Build a spiky uneven polygon boundary for the blast zone
         ctx.save();
         ctx.globalCompositeOperation = 'destination-in';
-        var mask = ctx.createRadialGradient(cx, cy, RADIUS*0.55, cx, cy, RADIUS);
-        mask.addColorStop(0,   'rgba(0,0,0,1)');
-        mask.addColorStop(0.75,'rgba(0,0,0,1)');
-        mask.addColorStop(1,   'rgba(0,0,0,0)');
-        ctx.fillStyle = mask;
+        var boundaryPts = 38;
         ctx.beginPath();
-        ctx.arc(cx, cy, RADIUS, 0, Math.PI*2);
+        for (var bi = 0; bi < boundaryPts; bi++) {{
+          var ba = (bi / boundaryPts) * Math.PI * 2;
+          // Jagged radius — spikes and dips, uneven like real broken glass
+          var spike = 0.55 + Math.random() * 0.55;
+          // Every few points punch outward hard for a crack-tip spike
+          if (Math.random() < 0.25) spike = 1.1 + Math.random() * 0.25;
+          // Occasional deep inward notch
+          if (Math.random() < 0.15) spike = 0.38 + Math.random() * 0.2;
+          var bx = cx + Math.cos(ba) * RADIUS * spike;
+          var by = cy + Math.sin(ba) * RADIUS * spike;
+          if (bi === 0) ctx.moveTo(bx, by);
+          else ctx.lineTo(bx, by);
+        }}
+        ctx.closePath();
+        // Gradient fill inside the jagged shape — fades at edges
+        var mask = ctx.createRadialGradient(cx, cy, RADIUS*0.3, cx, cy, RADIUS*1.1);
+        mask.addColorStop(0,    'rgba(0,0,0,1)');
+        mask.addColorStop(0.72, 'rgba(0,0,0,1)');
+        mask.addColorStop(1,    'rgba(0,0,0,0)');
+        ctx.fillStyle = mask;
         ctx.fill();
         ctx.restore();
 
