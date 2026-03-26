@@ -7,8 +7,6 @@ import wave
 import struct
 import streamlit.components.v1 as components
 
-# ─── Asset Loaders (all cached) ───────────────────────────────────────────────
-
 @st.cache_data(show_spinner=False)
 def get_image_base64(filename):
     with open(filename, "rb") as f:
@@ -106,8 +104,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ─── Session State ────────────────────────────────────────────────────────────
-
 if "menu" not in st.session_state:
     st.session_state.menu = "The Ritual (Home)"
 
@@ -190,8 +186,7 @@ button[aria-label="Expand sidebar"] span {{
   font-size:11px;color:#ff2200;letter-spacing:1px;
   white-space:normal;word-break:break-word;
   width:70px;text-align:center;
-  -webkit-text-stroke:0.3px white;
-  line-height:1.4;
+  -webkit-text-stroke:0.3px white;line-height:1.4;
 }}
 
 ::-webkit-scrollbar       {{ width:8px; }}
@@ -211,21 +206,15 @@ button[aria-label="Expand sidebar"] span {{
 
 img {{ transform:translateZ(0); }}
 
-[data-testid="stMain"] p,
-[data-testid="stMain"] li,
-[data-testid="stMain"] a,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] li,
-[data-testid="stSidebar"] label {{
+[data-testid="stMain"] p,[data-testid="stMain"] li,[data-testid="stMain"] a,
+[data-testid="stSidebar"] p,[data-testid="stSidebar"] li,[data-testid="stSidebar"] label {{
   font-family:'BaronessKuffner',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
 }}
 
-[data-testid="stMain"] h1,[data-testid="stMain"] h2,
-[data-testid="stMain"] h3,[data-testid="stMain"] h4,
-[data-testid="stMain"] h5,[data-testid="stMain"] h6,
-[data-testid="stSidebar"] h1,[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {{
+[data-testid="stMain"] h1,[data-testid="stMain"] h2,[data-testid="stMain"] h3,
+[data-testid="stMain"] h4,[data-testid="stMain"] h5,[data-testid="stMain"] h6,
+[data-testid="stSidebar"] h1,[data-testid="stSidebar"] h2,[data-testid="stSidebar"] h3 {{
   font-family:'DoctorGlitch',cursive !important;color:#ff2200 !important;
 }}
 
@@ -244,11 +233,9 @@ img {{ transform:translateZ(0); }}
 .section-header {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
-  -webkit-text-stroke:0.5px white;
-  display:block;text-align:center;margin:10px 0;
+  -webkit-text-stroke:0.5px white;display:block;text-align:center;margin:10px 0;
 }}
 .skull-divider {{ display:block;text-align:center;margin:6px 0 18px 0; }}
-
 .announce-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
@@ -259,8 +246,7 @@ img {{ transform:translateZ(0); }}
 .glitch-tape-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
-  -webkit-text-stroke:0.5px white;
-  display:block;text-align:center;margin:10px 0;
+  -webkit-text-stroke:0.5px white;display:block;text-align:center;margin:10px 0;
 }}
 
 @keyframes vhs-shake {{
@@ -276,117 +262,75 @@ img {{ transform:translateZ(0); }}
   90%  {{ transform:translate(-3px,4px) skewX(-1deg);filter:hue-rotate(300deg) saturate(2) brightness(0.9); }}
   100% {{ transform:translate(0,0) skewX(0deg);filter:none; }}
 }}
-
 @keyframes scanline-flash {{
   0%  {{ opacity:0; }} 20% {{ opacity:0.6; }} 40% {{ opacity:0.2; }}
   60% {{ opacity:0.8; }} 80% {{ opacity:0.3; }} 100% {{ opacity:0; }}
 }}
-
 .vhs-glitch-active {{ animation:vhs-shake 0.5s steps(1,end) forwards !important; }}
-
 #vhs-overlay {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
   pointer-events:none;z-index:999998;display:none;
-  background:repeating-linear-gradient(
-    0deg,rgba(255,0,0,0.08) 0px,rgba(255,0,0,0.08) 1px,
-    transparent 1px,transparent 3px);
+  background:repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0px,rgba(255,0,0,0.08) 1px,transparent 1px,transparent 3px);
 }}
 #vhs-overlay.active {{ display:block;animation:scanline-flash 0.5s steps(1,end) forwards; }}
-
 #vhs-rgb-r,#vhs-rgb-b {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
   pointer-events:none;z-index:999997;display:none;
 }}
-#vhs-rgb-r.active,#vhs-rgb-b.active {{
-  display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
-}}
+#vhs-rgb-r.active,#vhs-rgb-b.active {{ display:block;animation:scanline-flash 0.5s steps(1,end) forwards; }}
 
-/* ── VHS Intro — sits on top of everything via z-index ── */
+/* ── VHS Intro ── */
 #vhs-intro {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
-  background:#000 !important;
-  z-index:2147483647;
+  background:#000;z-index:2147483647;
   display:flex;align-items:center;justify-content:center;
   flex-direction:column;transition:opacity 1s ease;
 }}
 #vhs-intro.fadeout {{ opacity:0;pointer-events:none; }}
-#vhs-intro canvas {{
-  position:absolute;top:0;left:0;width:100%;height:100%;
-}}
+#vhs-intro canvas {{ position:absolute;top:0;left:0;width:100%;height:100%; }}
 #vhs-intro-scanlines {{
   position:absolute;top:0;left:0;width:100%;height:100%;
-  background:repeating-linear-gradient(
-    0deg,rgba(0,0,0,0.4) 0px,rgba(0,0,0,0.4) 1px,
-    transparent 1px,transparent 4px);
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0.4) 0px,rgba(0,0,0,0.4) 1px,transparent 1px,transparent 4px);
   z-index:1;pointer-events:none;
 }}
 #vhs-intro-text {{
-  position:relative;z-index:2;
-  font-family:'DoctorGlitch',cursive;
-  font-size:48px;color:#ff2200;
-  -webkit-text-stroke:1px white;
+  position:relative;z-index:2;font-family:'DoctorGlitch',cursive;
+  font-size:48px;color:#ff2200;-webkit-text-stroke:1px white;
   text-align:center;letter-spacing:6px;
   animation:introFlicker 0.15s steps(1,end) infinite;
   text-shadow:0 0 20px #ff2200,0 0 40px #ff0000;
 }}
 #vhs-intro-sub {{
-  position:relative;z-index:2;
-  font-family:'DoctorGlitch',cursive;
-  font-size:18px;color:#ff2200;
-  letter-spacing:4px;margin-top:16px;
+  position:relative;z-index:2;font-family:'DoctorGlitch',cursive;
+  font-size:18px;color:#ff2200;letter-spacing:4px;margin-top:16px;
   opacity:0.7;animation:introFlicker 0.3s steps(1,end) infinite;
 }}
 @keyframes introFlicker {{
-  0%,89%  {{ opacity:1; }}
-  90%     {{ opacity:0.2; }}
-  91%     {{ opacity:1; }}
-  94%     {{ opacity:0.4; }}
-  95%     {{ opacity:1; }}
+  0%,89% {{ opacity:1; }} 90% {{ opacity:0.2; }}
+  91% {{ opacity:1; }} 94% {{ opacity:0.4; }} 95% {{ opacity:1; }}
 }}
-
-#vhs-load-btn {{
-  position:relative;z-index:3;
-  font-family:'DoctorGlitch',cursive;
-  font-size:26px;color:#ff2200;
-  background:rgba(0,0,0,0.85);
-  border:2px solid #ff2200;
-  padding:18px 60px;letter-spacing:6px;
-  cursor:pointer;
-  -webkit-text-stroke:0.5px rgba(255,255,255,0.6);
-  text-shadow:0 0 10px #ff2200,0 0 20px #ff0000;
-  animation:btnPulse 1.8s ease-in-out infinite,btnFlicker 4s steps(1,end) infinite;
-  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
-  outline:none;
-}}
+@keyframes btnPulse {{
   0%,100% {{ box-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:6px; }}
-  50%     {{ box-shadow:0 0 30px #ff5500,0 0 60px #ff2200,0 0 100px #ff0000;letter-spacing:10px; }}
+  50%      {{ box-shadow:0 0 30px #ff5500,0 0 60px #ff2200,0 0 100px #ff0000;letter-spacing:10px; }}
 }}
 @keyframes btnFlicker {{
-  0%,90%,100% {{ opacity:1; }}
-  92%         {{ opacity:0.3; }}
-  95%         {{ opacity:0.8; }}
-  97%         {{ opacity:0.2; }}
+  0%,90%,100% {{ opacity:1; }} 92% {{ opacity:0.3; }}
+  95% {{ opacity:0.8; }} 97% {{ opacity:0.2; }}
 }}
-#vhs-enter-btn {{
-  display:none;
-  position:relative;z-index:3;
-  margin-top:50px;
-  font-family:'DoctorGlitch',cursive;
-  font-size:26px;color:#ff2200;
-  background:rgba(0,0,0,0.85);
-  border:2px solid #ff2200;
-  padding:18px 60px;letter-spacing:6px;
-  cursor:pointer;
+#vhs-load-btn, #vhs-enter-btn {{
+  position:relative;z-index:3;margin-top:50px;
+  font-family:'DoctorGlitch',cursive;font-size:26px;color:#ff2200;
+  background:rgba(0,0,0,0.85);border:2px solid #ff2200;
+  padding:18px 60px;letter-spacing:6px;cursor:pointer;
   -webkit-text-stroke:0.5px rgba(255,255,255,0.6);
   text-shadow:0 0 10px #ff2200,0 0 20px #ff0000;
   animation:btnPulse 1.8s ease-in-out infinite,btnFlicker 4s steps(1,end) infinite;
-  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
-  outline:none;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);outline:none;
 }}
-#vhs-enter-btn:hover {{
+#vhs-enter-btn {{ display:none; }}
+#vhs-load-btn:hover, #vhs-enter-btn:hover {{
   background:rgba(255,34,0,0.15);color:#fff;
-  text-shadow:0 0 20px #fff,0 0 40px #ff2200;
-  transition:all 0.2s ease;
+  text-shadow:0 0 20px #fff,0 0 40px #ff2200;transition:all 0.2s ease;
 }}
 </style>
 """
@@ -493,63 +437,13 @@ components.html(
       (function() {{
         var canvas = doc.getElementById('vhs-static-canvas');
         if (!canvas) return;
-        var ctx   = canvas.getContext('2d');
-        var animId, frame = 0;
-        var lo    = document.createElement('canvas');
-        var loctx = lo.getContext('2d');
-        var SCALE = 8;
+        var ctx    = canvas.getContext('2d');
+        var animId = null;
+        var frame  = 0;
+        var lo     = document.createElement('canvas');
+        var loctx  = lo.getContext('2d');
+        var SCALE  = 8;
         var noiseCtx, noiseSource, noiseGain;
-
-        function startNoise() {{
-          noiseCtx  = new (window.AudioContext || window.webkitAudioContext)();
-          var bufSize   = noiseCtx.sampleRate * 2;
-          var noiseBuf  = noiseCtx.createBuffer(1, bufSize, noiseCtx.sampleRate);
-          var noiseData = noiseBuf.getChannelData(0);
-          for (var n = 0; n < bufSize; n++) {{ noiseData[n] = Math.random() * 2 - 1; }}
-          noiseSource          = noiseCtx.createBufferSource();
-          noiseSource.buffer   = noiseBuf;
-          noiseSource.loop     = true;
-          noiseGain            = noiseCtx.createGain();
-          noiseGain.gain.value = 0.2;
-          noiseSource.connect(noiseGain);
-          noiseGain.connect(noiseCtx.destination);
-          noiseSource.start(0);
-        }}
-
-        function startStatic() {{
-          doc.getElementById('vhs-intro-text').style.display = 'block';
-          doc.getElementById('vhs-intro-sub').style.display  = 'block';
-          doc.getElementById('vhs-load-btn').style.display   = 'none';
-          // Show enter button after 7 seconds
-          setTimeout(function() {{
-            var btn = doc.getElementById('vhs-enter-btn');
-            if (btn) {{
-              try {{
-                noiseGain.gain.setTargetAtTime(0, noiseCtx.currentTime, 0.5);
-                setTimeout(function() {{ try {{ noiseSource.stop(); }} catch(e) {{}} }}, 1500);
-              }} catch(e) {{}}
-              btn.style.display = 'block';
-              btn.addEventListener('click', function() {{
-                initAudio();
-                dismissIntro();
-              }});
-            }}
-          }}, 7000);
-          setTimeout(dismissIntro, 15000);
-        }}
-
-        // Click to load button
-        var loadBtn = doc.getElementById('vhs-load-btn');
-        if (loadBtn) {{
-          loadBtn.addEventListener('click', function() {{
-            startNoise();
-            startStatic();
-          }});
-        }}
-
-        // Canvas runs immediately from the start
-        resize();
-        drawStatic();
 
         function resize() {{
           canvas.width  = window.parent.innerWidth;
@@ -562,7 +456,10 @@ components.html(
 
         function drawStatic() {{
           frame++;
-          if (frame % 4 !== 0) {{ animId = window.parent.requestAnimationFrame(drawStatic); return; }}
+          if (frame % 4 !== 0) {{
+            animId = window.parent.requestAnimationFrame(drawStatic);
+            return;
+          }}
           var w = lo.width, h = lo.height;
           var imageData = loctx.createImageData(w, h);
           var data = imageData.data;
@@ -595,13 +492,32 @@ components.html(
           ctx.drawImage(lo, 0, 0, canvas.width, canvas.height);
           animId = window.parent.requestAnimationFrame(drawStatic);
         }}
-        function resize() {{
-          canvas.width  = window.parent.innerWidth;
-          canvas.height = window.parent.innerHeight;
-          lo.width      = Math.ceil(canvas.width  / SCALE);
-          lo.height     = Math.ceil(canvas.height / SCALE);
+
+        function startNoise() {{
+          noiseCtx = new (window.AudioContext || window.webkitAudioContext)();
+          var bufSize   = noiseCtx.sampleRate * 2;
+          var noiseBuf  = noiseCtx.createBuffer(1, bufSize, noiseCtx.sampleRate);
+          var noiseData = noiseBuf.getChannelData(0);
+          for (var n = 0; n < bufSize; n++) {{ noiseData[n] = Math.random() * 2 - 1; }}
+          noiseSource          = noiseCtx.createBufferSource();
+          noiseSource.buffer   = noiseBuf;
+          noiseSource.loop     = true;
+          noiseGain            = noiseCtx.createGain();
+          noiseGain.gain.value = 0.2;
+          noiseSource.connect(noiseGain);
+          noiseGain.connect(noiseCtx.destination);
+          noiseSource.start(0);
         }}
-        window.parent.addEventListener('resize', resize);
+
+        function stopNoise() {{
+          if (!noiseCtx || !noiseGain || !noiseSource) return;
+          try {{
+            noiseGain.gain.setTargetAtTime(0, noiseCtx.currentTime, 0.5);
+            setTimeout(function() {{ try {{ noiseSource.stop(); }} catch(e) {{}} }}, 1500);
+          }} catch(e) {{}}
+        }}
+
+        function dismissIntro() {{
           var intro = doc.getElementById('vhs-intro');
           if (!intro || intro._dismissed) return;
           intro._dismissed = true;
@@ -610,6 +526,35 @@ components.html(
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
+        }}
+
+        // Static runs immediately on load
+        drawStatic();
+
+        // CLICK TO LOAD button — starts noise and reveals text
+        var loadBtn = doc.getElementById('vhs-load-btn');
+        if (loadBtn) {{
+          loadBtn.addEventListener('click', function() {{
+            startNoise();
+            loadBtn.style.display = 'none';
+            doc.getElementById('vhs-intro-text').style.display = 'block';
+            doc.getElementById('vhs-intro-sub').style.display  = 'block';
+
+            // After 7 seconds show ENTER THE VOID
+            setTimeout(function() {{
+              stopNoise();
+              var enterBtn = doc.getElementById('vhs-enter-btn');
+              if (enterBtn) {{
+                enterBtn.style.display = 'block';
+                enterBtn.addEventListener('click', function() {{
+                  initAudio();
+                  dismissIntro();
+                }});
+              }}
+            }}, 7000);
+
+            setTimeout(dismissIntro, 15000);
+          }});
         }}
       }})();
 
