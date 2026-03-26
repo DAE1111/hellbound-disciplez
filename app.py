@@ -613,8 +613,8 @@ components.html(
         attachHoverSounds();
       }}, 1500);
 
-      // ── Sidebar collapse on label click ──
-      function clickCollapseArrow() {{
+      // ── Sidebar collapse - hotspot on arrow button ──
+      function attachSidebarCollapse() {{
         var selectors = [
           '[data-testid="stSidebarCollapseButton"] button',
           '[data-testid="stSidebarNavCollapseButton"]',
@@ -622,17 +622,15 @@ components.html(
           'button[aria-label="collapse sidebar"]',
           'button[aria-label="Close sidebar"]'
         ];
-        for (var i = 0; i < selectors.length; i++) {{
-          var btn = doc.querySelector(selectors[i]);
-          if (btn) {{ btn.click(); return; }}
-        }}
-      }}
-
-      function attachSidebarCollapse() {{
         doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
           if (!el.dataset.collapseAttached) {{
             el.addEventListener('click', function() {{
-              setTimeout(clickCollapseArrow, 300);
+              setTimeout(function() {{
+                for (var i = 0; i < selectors.length; i++) {{
+                  var btn = doc.querySelector(selectors[i]);
+                  if (btn) {{ btn.click(); return; }}
+                }}
+              }}, 300);
             }});
             el.dataset.collapseAttached = 'true';
           }}
