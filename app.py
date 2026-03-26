@@ -351,6 +351,359 @@ st.markdown(
     '<div id="vhs-rgb-r"></div>'
     '<div id="vhs-rgb-b"></div>'
     '<div id="crack-overlay"><canvas id="crack-canvas"></canvas></div>',
+    unsafe_allow_html=Trueimport streamlit as st
+import base64
+import random
+from PIL import Image
+import io
+import streamlit.components.v1 as components
+
+@st.cache_data(show_spinner=False)
+def get_image_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_image_base64_resized_flipped(filename, size=(64, 64)):
+    img = Image.open(filename).convert("RGBA")
+    img = img.resize(size, Image.LANCZOS)
+    img = img.transpose(Image.FLIP_LEFT_RIGHT)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_image_base64_transparent(filename, opacity=0.5):
+    img = Image.open(filename).convert("RGBA")
+    r, g, b, a = img.split()
+    a = a.point(lambda x: int(x * opacity))
+    img = Image.merge("RGBA", (r, g, b, a))
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_audio_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_font_base64(filename):
+    with open(filename, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+@st.cache_data(show_spinner=False)
+def get_shuffled_photos():
+    photos = [
+        "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
+        "pic9.jpeg","pic10.png","pic11.jpeg","pic12.jpeg","pic13.jpeg","pic14.jpeg","pic15.jpeg",
+        "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic19.png","pic20.png","pic21.png","pic22.png","pic23.jpg",
+        "pic24.png","pic25.jpg","pic26.jpg","pic27.jpg","pic28.jpg","pic29.jpg","pic30.jpg",
+        "pic31.jpg","pic32.jpg","pic33.jpg","pic34.jpg","pic35.jpg","pic36.jpg","pic37.jpg",
+        "pic39.jpg","pic40.jpg","pic41.jpg",
+        "img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg","img6.jpg",
+        "img7.jpg","img8.jpg","img9 - Copy.jpg","img10.jpg","img11.jpg","img12.jpg",
+    ]
+    random.shuffle(photos)
+    return photos
+
+# ─── Load Assets ──────────────────────────────────────────────────────────────
+
+bg_data       = get_image_base64("BGSKULLS.png")
+skull         = get_image_base64("SKULL1.png")
+shotgun       = get_image_base64_resized_flipped("shotgun.png", size=(64, 64))
+pistol        = get_image_base64("pistol-removebg-preview.png")
+logo          = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
+reload_snd    = get_audio_base64("reload.wav")
+shotty_snd    = get_audio_base64("shottyblast.wav")
+web_beat      = get_audio_base64("WEB_BEAT_001.mp3")
+font_baroness = get_font_base64("BaronessKuffner.ttf")
+font_glitch   = get_font_base64("DoctorGlitch.otf")
+
+# ─── Page Config ──────────────────────────────────────────────────────────────
+
+st.set_page_config(
+    page_title="HELLBOUND DISCIPLEZ",
+    page_icon="🤘",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+if "menu" not in st.session_state:
+    st.session_state.menu = "The Ritual (Home)"
+
+# ─── Prebuilt reusable strings ────────────────────────────────────────────────
+
+BG_URL     = f'url("data:image/png;base64,{bg_data}")'
+CURSOR_URL = f'url("data:image/png;base64,{shotgun}") 10 4, auto'
+
+skull_s       = f'<img src="data:image/png;base64,{skull}" width="80" style="margin:0 8px;">'
+skull_s_r     = f'<img src="data:image/png;base64,{skull}" width="80" style="margin:0 8px;transform:scaleX(-1);">'
+skull_divider = f'<div class="skull-divider">{skull_s_r}{skull_s}{skull_s_r}</div>'
+pistol_l      = f'<img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;">'
+pistol_r      = f'<img src="data:image/png;base64,{pistol}" width="60" style="vertical-align:middle;transform:scaleX(-1);">'
+
+# ─── CSS ──────────────────────────────────────────────────────────────────────
+
+css = f"""
+<style>
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+@font-face {{
+  font-family:'BaronessKuffner';
+  src:url("data:font/truetype;base64,{font_baroness}") format('truetype');
+  font-display:swap;
+}}
+@font-face {{
+  font-family:'DoctorGlitch';
+  src:url("data:font/otf;base64,{font_glitch}") format('opentype');
+  font-display:swap;
+}}
+
+*,html,body,.stApp,[data-testid="stSidebar"],.stApp * {{
+  cursor:{CURSOR_URL} !important;
+  -webkit-font-smoothing:antialiased;
+  box-sizing:border-box;
+}}
+
+[data-testid="stSidebarCollapsedControl"] span,
+[data-testid="stSidebarCollapsedControl"] button span,
+[data-testid="stSidebarNavCollapseButton"] span,
+[data-testid="collapsedControl"] span,
+button[aria-label="Close sidebar"] span,
+button[aria-label="Open sidebar"] span,
+button[aria-label="collapse sidebar"] span,
+button[aria-label="expand sidebar"] span,
+button[aria-label="Collapse sidebar"] span,
+button[aria-label="Expand sidebar"] span {{
+  font-family:'Material Icons' !important;
+  font-size:24px !important;
+  font-style:normal !important;
+  font-weight:normal !important;
+  line-height:1 !important;
+  letter-spacing:normal !important;
+  text-transform:none !important;
+  display:inline-block !important;
+  white-space:nowrap !important;
+  word-wrap:normal !important;
+  direction:ltr !important;
+  color:#ff2200 !important;
+  -webkit-font-feature-settings:'liga' !important;
+  font-feature-settings:'liga' !important;
+  -webkit-font-smoothing:antialiased !important;
+}}
+
+@keyframes navPulse {{
+  0%,100% {{ opacity:1; transform:translateX(0); }}
+  50%      {{ opacity:0.6; transform:translateX(3px); }}
+}}
+
+#nav-hint {{
+  position:fixed;top:70px;left:8px;z-index:9999;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,0.75);border:1px solid #ff2200;
+  border-radius:4px;padding:5px 10px;
+  animation:navPulse 2s ease-in-out infinite;
+  box-shadow:0 0 8px rgba(255,34,0,0.4);pointer-events:none;
+}}
+#nav-hint .nh-text {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:11px;color:#ff2200;letter-spacing:1px;
+  white-space:normal;word-break:break-word;
+  width:70px;text-align:center;
+  -webkit-text-stroke:0.3px white;line-height:1.4;
+}}
+
+::-webkit-scrollbar       {{ width:8px; }}
+::-webkit-scrollbar-track {{ background:#000; }}
+::-webkit-scrollbar-thumb {{ background:#ff2200;border-radius:4px; }}
+::-webkit-scrollbar-thumb:hover {{ background:#ff5500; }}
+
+.stApp {{
+  background-image:{BG_URL};
+  background-size:cover;background-repeat:repeat;
+  background-attachment:fixed;color:#ff2200;
+}}
+[data-testid="stSidebar"] {{
+  background-image:{BG_URL};
+  background-size:cover;background-repeat:repeat;
+}}
+
+img {{ transform:translateZ(0); }}
+
+[data-testid="stMain"] p,[data-testid="stMain"] li,[data-testid="stMain"] a,
+[data-testid="stSidebar"] p,[data-testid="stSidebar"] li,[data-testid="stSidebar"] label {{
+  font-family:'BaronessKuffner',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+}}
+
+[data-testid="stMain"] h1,[data-testid="stMain"] h2,[data-testid="stMain"] h3,
+[data-testid="stMain"] h4,[data-testid="stMain"] h5,[data-testid="stMain"] h6,
+[data-testid="stSidebar"] h1,[data-testid="stSidebar"] h2,[data-testid="stSidebar"] h3 {{
+  font-family:'DoctorGlitch',cursive !important;color:#ff2200 !important;
+}}
+
+[data-testid="stMain"] a {{
+  color:#ff2200 !important;text-decoration:none;transition:color 0.2s ease;
+}}
+[data-testid="stMain"] a:hover {{
+  color:#ff5500 !important;text-shadow:0 0 10px #ff2200;
+}}
+
+@keyframes announcePulse {{
+  0%,100% {{ text-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:4px; }}
+  50%      {{ text-shadow:0 0 20px #ff5500,0 0 40px #ff2200,0 0 80px #ff0000;letter-spacing:6px; }}
+}}
+
+.section-header {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+  -webkit-text-stroke:0.5px white;display:block;text-align:center;margin:10px 0;
+}}
+.skull-divider {{ display:block;text-align:center;margin:6px 0 18px 0; }}
+.announce-text {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+  -webkit-text-stroke:0.5px white;
+  animation:announcePulse 2s ease-in-out infinite;
+  display:block;text-align:center;margin:10px 0;
+}}
+.glitch-tape-text {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:28px !important;color:#ff2200 !important;
+  -webkit-text-stroke:0.5px white;display:block;text-align:center;margin:10px 0;
+}}
+
+@keyframes vhs-shake {{
+  0%   {{ transform:translate(0,0) skewX(0deg);filter:none; }}
+  10%  {{ transform:translate(-6px,3px) skewX(-3deg);filter:hue-rotate(90deg) saturate(3) brightness(1.4); }}
+  20%  {{ transform:translate(6px,-3px) skewX(3deg);filter:hue-rotate(180deg) saturate(4) brightness(0.8); }}
+  30%  {{ transform:translate(-4px,5px) skewX(-2deg);filter:hue-rotate(270deg) saturate(5) brightness(1.6) blur(1px); }}
+  40%  {{ transform:translate(8px,-2px) skewX(4deg);filter:hue-rotate(0deg) saturate(6) brightness(0.6) blur(2px); }}
+  50%  {{ transform:translate(-8px,4px) skewX(-4deg);filter:hue-rotate(120deg) saturate(8) brightness(1.8) blur(1px); }}
+  60%  {{ transform:translate(4px,-5px) skewX(2deg);filter:hue-rotate(240deg) saturate(5) brightness(0.7); }}
+  70%  {{ transform:translate(-6px,2px) skewX(-3deg);filter:hue-rotate(60deg) saturate(3) brightness(1.3); }}
+  80%  {{ transform:translate(5px,-3px) skewX(2deg);filter:hue-rotate(180deg) saturate(4) brightness(1.1) blur(1px); }}
+  90%  {{ transform:translate(-3px,4px) skewX(-1deg);filter:hue-rotate(300deg) saturate(2) brightness(0.9); }}
+  100% {{ transform:translate(0,0) skewX(0deg);filter:none; }}
+}}
+@keyframes scanline-flash {{
+  0%  {{ opacity:0; }} 20% {{ opacity:0.6; }} 40% {{ opacity:0.2; }}
+  60% {{ opacity:0.8; }} 80% {{ opacity:0.3; }} 100% {{ opacity:0; }}
+}}
+.vhs-glitch-active {{ animation:vhs-shake 0.5s steps(1,end) forwards !important; }}
+#vhs-overlay {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  pointer-events:none;z-index:999998;display:none;
+  background:repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0px,rgba(255,0,0,0.08) 1px,transparent 1px,transparent 3px);
+}}
+#vhs-overlay.active {{ display:block;animation:scanline-flash 0.5s steps(1,end) forwards; }}
+#vhs-rgb-r,#vhs-rgb-b {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  pointer-events:none;z-index:999997;display:none;
+}}
+#vhs-rgb-r.active,#vhs-rgb-b.active {{ display:block;animation:scanline-flash 0.5s steps(1,end) forwards; }}
+
+/* ── Shattered Glass Crack Overlay ── */
+@keyframes crack-flash {{
+  0%   {{ opacity:0; }}
+  3%   {{ opacity:1; }}
+  60%  {{ opacity:1; }}
+  100% {{ opacity:0; }}
+}}
+#crack-overlay {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  pointer-events:none;z-index:999999;display:none;
+}}
+#crack-overlay.active {{
+  display:block;
+  animation:crack-flash 0.75s ease-out forwards;
+}}
+#crack-overlay canvas {{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+}}
+
+/* ── VHS Intro ── */
+#vhs-intro {{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:#000;z-index:2147483647;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;transition:opacity 1s ease;
+}}
+#vhs-intro.fadeout {{ opacity:0;pointer-events:none; }}
+#vhs-intro canvas {{ position:absolute;top:0;left:0;width:100%;height:100%; }}
+#vhs-intro-scanlines {{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0.4) 0px,rgba(0,0,0,0.4) 1px,transparent 1px,transparent 4px);
+  z-index:1;pointer-events:none;
+}}
+#vhs-intro-text {{
+  position:relative;z-index:2;font-family:'DoctorGlitch',cursive;
+  font-size:48px;color:#ff2200;-webkit-text-stroke:1px white;
+  text-align:center;letter-spacing:6px;
+  animation:introFlicker 0.15s steps(1,end) infinite;
+  text-shadow:0 0 20px #ff2200,0 0 40px #ff0000;
+}}
+#vhs-intro-sub {{
+  position:relative;z-index:2;font-family:'DoctorGlitch',cursive;
+  font-size:18px;color:#ff2200;letter-spacing:4px;margin-top:16px;
+  opacity:0.7;animation:introFlicker 0.3s steps(1,end) infinite;
+}}
+@keyframes introFlicker {{
+  0%,89% {{ opacity:1; }} 90% {{ opacity:0.2; }}
+  91% {{ opacity:1; }} 94% {{ opacity:0.4; }} 95% {{ opacity:1; }}
+}}
+@keyframes btnPulse {{
+  0%,100% {{ box-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:6px; }}
+  50%      {{ box-shadow:0 0 30px #ff5500,0 0 60px #ff2200,0 0 100px #ff0000;letter-spacing:10px; }}
+}}
+@keyframes btnFlicker {{
+  0%,90%,100% {{ opacity:1; }} 92% {{ opacity:0.3; }}
+  95% {{ opacity:0.8; }} 97% {{ opacity:0.2; }}
+}}
+#vhs-load-btn, #vhs-enter-btn {{
+  position:relative;z-index:3;margin-top:50px;
+  font-family:'DoctorGlitch',cursive;font-size:26px;color:#ff2200;
+  background:rgba(0,0,0,0.85);border:2px solid #ff2200;
+  padding:18px 60px;letter-spacing:6px;cursor:pointer;
+  -webkit-text-stroke:0.5px rgba(255,255,255,0.6);
+  text-shadow:0 0 10px #ff2200,0 0 20px #ff0000;
+  animation:btnPulse 1.8s ease-in-out infinite,btnFlicker 4s steps(1,end) infinite;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);outline:none;
+}}
+#vhs-load-btn {{ display:none; }}
+#vhs-enter-btn {{ display:none; }}
+#vhs-load-btn:hover, #vhs-enter-btn:hover {{
+  background:rgba(255,34,0,0.15);color:#fff;
+  text-shadow:0 0 20px #fff,0 0 40px #ff2200;transition:all 0.2s ease;
+}}
+</style>
+"""
+
+st.markdown(css, unsafe_allow_html=True)
+
+# ─── VHS Intro HTML ───────────────────────────────────────────────────────────
+
+st.markdown(
+    '<div id="vhs-intro">'
+    '<canvas id="vhs-static-canvas"></canvas>'
+    '<div id="vhs-intro-scanlines"></div>'
+    '<div id="vhs-intro-text" style="display:none;">HELLBOUND DISCIPLEZ</div>'
+    '<div id="vhs-intro-sub" style="display:none;">&#9654; LOADING...</div>'
+    '<button id="vhs-load-btn">&#9760; CLICK TO LOAD &#9760;</button>'
+    '<button id="vhs-enter-btn">&#9760; ENTER THE VOID &#9760;</button>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+# ─── Nav hint + overlays ──────────────────────────────────────────────────────
+
+st.markdown(
+    '<div id="nav-hint"><span class="nh-text">TAP THE ARROW TO NAVIGATE</span></div>'
+    '<div id="vhs-overlay"></div>'
+    '<div id="vhs-rgb-r"></div>'
+    '<div id="vhs-rgb-b"></div>'
+    '<div id="crack-overlay"><canvas id="crack-canvas"></canvas></div>',
     unsafe_allow_html=True
 )
 
@@ -403,28 +756,8 @@ components.html(
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
       function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
 
-      // ── Voronoi shatter centered on click position ──
-      function clipPolygonByHalfPlane(poly, ax, ay, bx, by) {{
-        var result = [];
-        var n = poly.length;
-        for (var i = 0; i < n; i++) {{
-          var cur  = poly[i];
-          var next = poly[(i + 1) % n];
-          var d1 = (bx - ax) * (cur.y  - ay) - (by - ay) * (cur.x  - ax);
-          var d2 = (bx - ax) * (next.y - ay) - (by - ay) * (next.x - ax);
-          if (d1 >= 0) result.push(cur);
-          if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) {{
-            var t = d1 / (d1 - d2);
-            result.push({{
-              x: cur.x + t * (next.x - cur.x),
-              y: cur.y + t * (next.y - cur.y)
-            }});
-          }}
-        }}
-        return result;
-      }}
-
-      function drawCracks(canvas, clickX, clickY) {{
+      // ── Concentrated spiderweb shatter at click point ──
+      function drawCracks(canvas, cx, cy) {{
         var W = window.parent.innerWidth;
         var H = window.parent.innerHeight;
         canvas.width  = W;
@@ -432,115 +765,188 @@ components.html(
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, W, H);
 
-        var cx = clickX, cy = clickY;
+        // Blast radius = ~1/4 of screen diagonal
+        var RADIUS = Math.min(W, H) * 0.28;
 
-        // Seeds: very dense right at click, spreading outward
+        // Clip everything to the blast circle using radial gradient mask
+        // We draw into a temp canvas then composite with fade at edges
+        var tmp = document.createElement('canvas');
+        tmp.width = W; tmp.height = H;
+        var tc = tmp.getContext('2d');
+
+        // ── 1. Voronoi seeds packed inside the blast radius ──
         var seeds = [];
 
-        // Tight cluster at impact — tiny shards
-        for (var i = 0; i < 12; i++) {{
-          seeds.push({{
-            x: cx + (Math.random() - 0.5) * 80,
-            y: cy + (Math.random() - 0.5) * 80
-          }});
+        // Epicenter — very tight tiny shards
+        for (var i = 0; i < 10; i++) {{
+          var a = Math.random() * Math.PI * 2;
+          var d = Math.random() * RADIUS * 0.12;
+          seeds.push({{ x: cx + Math.cos(a)*d, y: cy + Math.sin(a)*d }});
         }}
-        // Medium ring — medium shards
-        for (var i = 0; i < 20; i++) {{
-          var angle = Math.random() * Math.PI * 2;
-          var dist  = 60 + Math.random() * 180;
-          seeds.push({{
-            x: cx + Math.cos(angle) * dist,
-            y: cy + Math.sin(angle) * dist
-          }});
+        // Inner zone — dense medium shards
+        for (var i = 0; i < 18; i++) {{
+          var a = Math.random() * Math.PI * 2;
+          var d = RADIUS * 0.1 + Math.random() * RADIUS * 0.35;
+          seeds.push({{ x: cx + Math.cos(a)*d, y: cy + Math.sin(a)*d }});
         }}
-        // Outer spread — larger shards fading out
-        for (var i = 0; i < 22; i++) {{
-          var angle = Math.random() * Math.PI * 2;
-          var dist  = 180 + Math.random() * Math.max(W, H) * 0.5;
-          seeds.push({{
-            x: cx + Math.cos(angle) * dist,
-            y: cy + Math.sin(angle) * dist
-          }});
+        // Outer zone — larger shards near the rim
+        for (var i = 0; i < 14; i++) {{
+          var a = Math.random() * Math.PI * 2;
+          var d = RADIUS * 0.45 + Math.random() * RADIUS * 0.55;
+          seeds.push({{ x: cx + Math.cos(a)*d, y: cy + Math.sin(a)*d }});
         }}
 
-        // Build Voronoi cells via half-plane clipping
-        var cells = [];
+        // ── 2. Clip half-plane helper ──
+        function clipPoly(poly, ax, ay, bx, by) {{
+          var out = [], n = poly.length;
+          for (var i = 0; i < n; i++) {{
+            var c = poly[i], nx = poly[(i+1)%n];
+            var d1 = (bx-ax)*(c.y-ay)  - (by-ay)*(c.x-ax);
+            var d2 = (bx-ax)*(nx.y-ay) - (by-ay)*(nx.x-ax);
+            if (d1 >= 0) out.push(c);
+            if ((d1>0&&d2<0)||(d1<0&&d2>0)) {{
+              var t = d1/(d1-d2);
+              out.push({{ x: c.x+t*(nx.x-c.x), y: c.y+t*(nx.y-c.y) }});
+            }}
+          }}
+          return out;
+        }}
+
+        // ── 3. Build Voronoi cells, clipped to blast circle boundary ──
+        var PAD = RADIUS * 1.1;
         for (var si = 0; si < seeds.length; si++) {{
           var cell = [
-            {{x: -100,    y: -100}},
-            {{x: W + 100, y: -100}},
-            {{x: W + 100, y: H + 100}},
-            {{x: -100,    y: H + 100}}
+            {{x: cx-PAD, y: cy-PAD}},
+            {{x: cx+PAD, y: cy-PAD}},
+            {{x: cx+PAD, y: cy+PAD}},
+            {{x: cx-PAD, y: cy+PAD}}
           ];
           var sx = seeds[si].x, sy = seeds[si].y;
           for (var sj = 0; sj < seeds.length; sj++) {{
-            if (si === sj) continue;
+            if (si===sj) continue;
             var ox = seeds[sj].x, oy = seeds[sj].y;
-            var mx = (sx + ox) / 2, my = (sy + oy) / 2;
-            cell = clipPolygonByHalfPlane(cell, mx, my, mx + (oy - sy), my - (ox - sx));
-            if (cell.length === 0) break;
+            var mx = (sx+ox)/2, my = (sy+oy)/2;
+            cell = clipPoly(cell, mx, my, mx+(oy-sy), my-(ox-sx));
+            if (cell.length===0) break;
           }}
-          if (cell.length >= 3) cells.push({{ poly: cell, seed: seeds[si] }});
+          if (cell.length < 3) continue;
+
+          // Distance from center for fade
+          var dist = Math.hypot(sx-cx, sy-cy);
+          var t    = Math.min(dist/RADIUS, 1); // 0=center 1=edge
+
+          // Shard fill — bright glassy blue-white, fades with distance
+          var fillA   = 0.55 - t * 0.5;
+          var strokeA = 1.0  - t * 0.6;
+          if (fillA <= 0) continue;
+
+          var ccx = cell.reduce(function(s,p){{return s+p.x;}},0)/cell.length;
+          var ccy = cell.reduce(function(s,p){{return s+p.y;}},0)/cell.length;
+
+          tc.beginPath();
+          tc.moveTo(cell[0].x, cell[0].y);
+          for (var pi=1; pi<cell.length; pi++) tc.lineTo(cell[pi].x, cell[pi].y);
+          tc.closePath();
+
+          // Glass gradient per shard — more opaque near center
+          try {{
+            var g = tc.createRadialGradient(ccx, ccy, 0, ccx, ccy, 55);
+            g.addColorStop(0, 'rgba(235,245,255,'+(fillA+0.15)+')');
+            g.addColorStop(1, 'rgba(160,195,230,'+fillA+')');
+            tc.fillStyle = g;
+          }} catch(e) {{
+            tc.fillStyle = 'rgba(200,220,255,'+fillA+')';
+          }}
+          tc.fill();
+
+          // Crack outline — bright white, glowing, thicker near center
+          tc.strokeStyle = 'rgba(255,255,255,'+strokeA+')';
+          tc.lineWidth   = 0.5 + (1-t) * 2.5;
+          tc.shadowColor = 'rgba(255,255,255,0.9)';
+          tc.shadowBlur  = 3 + (1-t) * 12;
+          tc.stroke();
+          tc.shadowBlur  = 0;
         }}
 
-        // Draw each shard
-        cells.forEach(function(cell) {{
-          var poly = cell.poly;
-          var onScreen = poly.some(function(p) {{
-            return p.x > 0 && p.x < W && p.y > 0 && p.y < H;
-          }});
-          if (!onScreen) return;
-
-          // Distance from impact determines shard opacity + brightness
-          var dist = Math.hypot(cell.seed.x - cx, cell.seed.y - cy);
-          var maxDist = Math.max(W, H) * 0.6;
-          var t = Math.min(dist / maxDist, 1); // 0=near, 1=far
-
-          // Only draw shards within a reasonable radius — fades to nothing at edges
-          if (t > 0.85) return;
-
-          var fillAlpha = (0.35 - t * 0.3);
-          var strokeAlpha = (1.0 - t * 0.5);
-
-          // Glass shard fill — blue-white tint like real glass
-          var cellCx = poly.reduce(function(s, p) {{ return s + p.x; }}, 0) / poly.length;
-          var cellCy = poly.reduce(function(s, p) {{ return s + p.y; }}, 0) / poly.length;
-
-          ctx.beginPath();
-          ctx.moveTo(poly[0].x, poly[0].y);
-          for (var pi = 1; pi < poly.length; pi++) ctx.lineTo(poly[pi].x, poly[pi].y);
-          ctx.closePath();
-
-          try {{
-            var grad = ctx.createRadialGradient(cellCx, cellCy, 0, cellCx, cellCy, 60);
-            grad.addColorStop(0, 'rgba(230,240,255,' + (fillAlpha + 0.12) + ')');
-            grad.addColorStop(1, 'rgba(150,180,220,' + fillAlpha + ')');
-            ctx.fillStyle = grad;
-          }} catch(e) {{
-            ctx.fillStyle = 'rgba(180,210,255,' + fillAlpha + ')';
+        // ── 4. Radial spider-web crack lines FROM center ──
+        var numSpokes = 10 + Math.floor(Math.random()*6);
+        for (var s=0; s<numSpokes; s++) {{
+          var baseAngle = (s/numSpokes)*Math.PI*2 + (Math.random()-0.5)*0.3;
+          var spokeDist = RADIUS * (0.6 + Math.random()*0.4);
+          tc.beginPath();
+          tc.moveTo(cx, cy);
+          var px=cx, py=cy, angle=baseAngle;
+          var steps = 5 + Math.floor(Math.random()*4);
+          for (var k=0; k<steps; k++) {{
+            angle += (Math.random()-0.5)*0.35;
+            var segLen = spokeDist/steps;
+            px += Math.cos(angle)*segLen;
+            py += Math.sin(angle)*segLen;
+            tc.lineTo(px,py);
+            // branch
+            if (Math.random()<0.5) {{
+              var ba=angle+(Math.random()-0.5)*1.2;
+              var bx=px,by=py;
+              tc.moveTo(bx,by);
+              var blen=(spokeDist/steps)*(0.3+Math.random()*0.5);
+              bx+=Math.cos(ba)*blen; by+=Math.sin(ba)*blen;
+              tc.lineTo(bx,by);
+              tc.moveTo(px,py);
+            }}
           }}
-          ctx.fill();
+          var distFade = Math.min(spokeDist/RADIUS,1);
+          tc.strokeStyle='rgba(255,255,255,'+(0.9-distFade*0.5)+')';
+          tc.lineWidth  = 1.5 - distFade*0.8;
+          tc.shadowColor='rgba(255,255,255,0.8)';
+          tc.shadowBlur =8;
+          tc.stroke();
+          tc.shadowBlur=0;
+        }}
 
-          // Crack lines
-          ctx.strokeStyle = 'rgba(255,255,255,' + strokeAlpha + ')';
-          ctx.lineWidth   = 0.8 + (1 - t) * 2;
-          ctx.shadowColor = 'rgba(255,255,255,0.8)';
-          ctx.shadowBlur  = 2 + (1 - t) * 10;
-          ctx.stroke();
-          ctx.shadowBlur  = 0;
+        // ── 5. Concentric ring fractures ──
+        var rings = [0.25, 0.5, 0.75, 1.0];
+        rings.forEach(function(rf) {{
+          var rr = RADIUS * rf;
+          var segs = 8 + Math.floor(Math.random()*6);
+          for (var s=0; s<segs; s++) {{
+            var a1 = (s/segs)*Math.PI*2 + (Math.random()-0.5)*0.2;
+            var a2 = ((s+0.6+Math.random()*0.3)/segs)*Math.PI*2;
+            tc.beginPath();
+            tc.arc(cx, cy, rr+(Math.random()-0.5)*12, a1, a2);
+            tc.strokeStyle='rgba(255,255,255,'+(0.5*(1-rf)+0.15)+')';
+            tc.lineWidth=0.6;
+            tc.stroke();
+          }}
         }});
 
-        // Bright starburst at the exact click point
+        // ── 6. Composite tmp onto main canvas with radial clip mask ──
+        // Draw the shatter
+        ctx.drawImage(tmp, 0, 0);
+
+        // Cut off hard at radius using destination-out radial gradient
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
+        var mask = ctx.createRadialGradient(cx, cy, RADIUS*0.6, cx, cy, RADIUS*1.05);
+        mask.addColorStop(0,   'rgba(0,0,0,0)');
+        mask.addColorStop(0.7, 'rgba(0,0,0,0.4)');
+        mask.addColorStop(1,   'rgba(0,0,0,1)');
+        ctx.fillStyle = mask;
+        ctx.beginPath();
+        ctx.arc(cx, cy, RADIUS*1.1, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+
+        // ── 7. Impact starburst at click point ──
         ctx.save();
         ctx.translate(cx, cy);
-        var burst = ctx.createRadialGradient(0, 0, 0, 0, 0, 40);
+        var burst = ctx.createRadialGradient(0,0,0, 0,0,32);
         burst.addColorStop(0,   'rgba(255,255,255,1)');
-        burst.addColorStop(0.2, 'rgba(255,120,0,0.8)');
-        burst.addColorStop(0.6, 'rgba(255,30,0,0.3)');
+        burst.addColorStop(0.25,'rgba(255,140,0,0.85)');
+        burst.addColorStop(0.6, 'rgba(255,30,0,0.4)');
         burst.addColorStop(1,   'rgba(255,0,0,0)');
         ctx.fillStyle = burst;
         ctx.beginPath();
-        ctx.arc(0, 0, 40, 0, Math.PI * 2);
+        ctx.arc(0,0,32,0,Math.PI*2);
         ctx.fill();
         ctx.restore();
       }}
