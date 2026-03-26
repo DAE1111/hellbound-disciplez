@@ -367,11 +367,36 @@ components.html(
         }});
       }}
 
+      function clickCollapseArrow() {{
+        var selectors = [
+          '[data-testid="stSidebarCollapseButton"] button',
+          '[data-testid="stSidebarNavCollapseButton"]',
+          'button[aria-label="Collapse sidebar"]',
+          'button[aria-label="collapse sidebar"]',
+          'button[aria-label="Close sidebar"]'
+        ];
+        for (var i = 0; i < selectors.length; i++) {{
+          var btn = doc.querySelector(selectors[i]);
+          if (btn) {{ btn.click(); return; }}
+        }}
+      }}
+
       function attachHoverSounds() {{
         doc.querySelectorAll('a,button,[role="radio"],[role="button"],label').forEach(function(el) {{
           if (!el.dataset.soundAttached) {{
             el.addEventListener('mouseenter', playReload);
             el.dataset.soundAttached = 'true';
+          }}
+        }});
+      }}
+
+      function attachSidebarCollapse() {{
+        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
+          if (!el.dataset.collapseAttached) {{
+            el.addEventListener('mousedown', function() {{
+              clickCollapseArrow();
+            }});
+            el.dataset.collapseAttached = 'true';
           }}
         }});
       }}
@@ -383,7 +408,11 @@ components.html(
       }}, {{ passive: true }});
 
       attachHoverSounds();
-      setInterval(attachHoverSounds, 1500);
+      attachSidebarCollapse();
+      setInterval(function() {{
+        attachHoverSounds();
+        attachSidebarCollapse();
+      }}, 1500);
     }})();
     </script>
     """,
@@ -404,9 +433,8 @@ with col2:
 
 if "menu" not in st.session_state:
     st.session_state.menu = "The Ritual (Home)"
-
-def on_menu_change():
-    st.session_state.sidebar_open = False
+if "prev_menu" not in st.session_state:
+    st.session_state.prev_menu = "The Ritual (Home)"
 
 with st.sidebar:
     st.header("THE VOID")
@@ -415,13 +443,31 @@ with st.sidebar:
         "The Grimoires (Discography)",
         "The Cult (Members)",
         "The Catacombs (Photos)"
-    ], key="menu", on_change=on_menu_change)
+    ], key="menu")
 
-if not st.session_state.get("sidebar_open", True):
-    st.session_state.sidebar_open = True
+if st.session_state.menu != st.session_state.prev_menu:
+    st.session_state.prev_menu = st.session_state.menu
     st.markdown(
-        "<script>window.parent.document.querySelector('[data-testid=\"stSidebar\"]')"
-        ".setAttribute('aria-expanded','false');</script>",
+        """<script>
+        (function() {
+          var tries = 0;
+          function tryCollapse() {
+            var btns = [
+              '[data-testid="stSidebarCollapseButton"] button',
+              '[data-testid="stSidebarNavCollapseButton"]',
+              'button[aria-label="Collapse sidebar"]',
+              'button[aria-label="collapse sidebar"]',
+              'button[aria-label="Close sidebar"]'
+            ];
+            for (var i = 0; i < btns.length; i++) {
+              var b = document.querySelector(btns[i]);
+              if (b) { b.click(); return; }
+            }
+            if (tries++ < 20) setTimeout(tryCollapse, 50);
+          }
+          tryCollapse();
+        })();
+        </script>""",
         unsafe_allow_html=True
     )
 
