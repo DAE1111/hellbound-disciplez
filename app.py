@@ -97,13 +97,13 @@ pistol_r      = f'<img src="data:image/png;base64,{pistol}" width="60" style="ve
 st.markdown(
     """
     <style>
-    /* Fire immediately before anything renders */
     html, body { background:#000 !important; }
-    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewContainer"] > *:not(#vhs-intro),
     [data-testid="stHeader"],
-    [data-testid="stMain"],
-    [data-testid="stSidebarCollapsedControl"],
-    .stApp { opacity:0 !important; }
+    [data-testid="stSidebarCollapsedControl"] {
+      opacity:0 !important;
+      pointer-events:none !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
