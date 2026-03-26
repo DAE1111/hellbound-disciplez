@@ -534,11 +534,14 @@ components.html(
         // CLICK TO LOAD button — starts noise and reveals text
         var loadBtn = doc.getElementById('vhs-load-btn');
         if (loadBtn) {{
-          loadBtn.addEventListener('click', function() {{
+          loadBtn.addEventListener('click', function(e) {{
+            e.stopPropagation();
             startNoise();
-            loadBtn.style.display = 'none';
-            doc.getElementById('vhs-intro-text').style.display = 'block';
-            doc.getElementById('vhs-intro-sub').style.display  = 'block';
+            setTimeout(function() {{
+              loadBtn.style.display = 'none';
+              doc.getElementById('vhs-intro-text').style.display = 'block';
+              doc.getElementById('vhs-intro-sub').style.display  = 'block';
+            }}, 50);
 
             // After 7 seconds show ENTER THE VOID
             setTimeout(function() {{
@@ -558,10 +561,14 @@ components.html(
         }}
       }})();
 
-      doc.addEventListener('click', function() {{
+      doc.addEventListener('click', function(e) {{
+        var loadBtn  = doc.getElementById('vhs-load-btn');
+        var enterBtn = doc.getElementById('vhs-enter-btn');
+        var onIntroBtn = (loadBtn && loadBtn.contains(e.target)) ||
+                         (enterBtn && enterBtn.contains(e.target));
         initAudio();
         playShotty();
-        triggerVHS();
+        if (!onIntroBtn) triggerVHS();
       }}, {{ passive: true }});
 
       attachHoverSounds();
