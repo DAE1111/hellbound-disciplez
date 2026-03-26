@@ -330,24 +330,59 @@ img {{ transform:translateZ(0); }}
 }}
 
 @keyframes btnPulse {{
-  0%,100% {{ box-shadow:0 0 10px #ff2200,0 0 20px #ff2200;letter-spacing:4px; }}
-  50%     {{ box-shadow:0 0 25px #ff5500,0 0 50px #ff2200;letter-spacing:6px; }}
+  0%,100% {{ box-shadow:0 0 10px #ff2200,0 0 20px #ff2200,0 0 40px #ff0000;letter-spacing:6px; }}
+  50%     {{ box-shadow:0 0 30px #ff5500,0 0 60px #ff2200,0 0 100px #ff0000;letter-spacing:10px; }}
+}}
+
+@keyframes btnFlicker {{
+  0%,90%,100% {{ opacity:1; }}
+  92%          {{ opacity:0.3; }}
+  95%          {{ opacity:0.8; }}
+  97%          {{ opacity:0.2; }}
+}}
+
+@keyframes borderSpin {{
+  0%   {{ border-color:#ff2200 transparent transparent transparent; }}
+  25%  {{ border-color:transparent #ff2200 transparent transparent; }}
+  50%  {{ border-color:transparent transparent #ff2200 transparent; }}
+  75%  {{ border-color:transparent transparent transparent #ff2200; }}
+  100% {{ border-color:#ff2200 transparent transparent transparent; }}
 }}
 
 #vhs-enter-btn {{
   display:none;
   position:relative;z-index:3;
-  margin-top:40px;
+  margin-top:50px;
   font-family:'DoctorGlitch',cursive;
-  font-size:22px;color:#000;
-  background:#ff2200;
-  border:2px solid #fff;
-  padding:14px 40px;
-  letter-spacing:4px;
+  font-size:26px;
+  color:#ff2200;
+  background:rgba(0,0,0,0.85);
+  border:2px solid #ff2200;
+  padding:18px 60px;
+  letter-spacing:6px;
   cursor:pointer;
-  -webkit-text-stroke:0.5px white;
-  animation:btnPulse 1.5s ease-in-out infinite;
-  text-shadow:none;
+  -webkit-text-stroke:0.5px rgba(255,255,255,0.6);
+  text-shadow:0 0 10px #ff2200,0 0 20px #ff0000;
+  animation:btnPulse 1.8s ease-in-out infinite, btnFlicker 4s steps(1,end) infinite;
+  clip-path:polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  outline:none;
+}}
+
+#vhs-enter-btn::before {{
+  content:'';
+  position:absolute;
+  top:-4px;left:-4px;right:-4px;bottom:-4px;
+  border:1px solid rgba(255,34,0,0.4);
+  clip-path:polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  animation:btnPulse 1.8s ease-in-out infinite reverse;
+}}
+
+#vhs-enter-btn:hover {{
+  background:rgba(255,34,0,0.15);
+  color:#fff;
+  text-shadow:0 0 20px #fff,0 0 40px #ff2200;
+  letter-spacing:10px;
+  transition:all 0.2s ease;
 }}
 </style>
 """
