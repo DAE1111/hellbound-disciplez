@@ -40,37 +40,27 @@ def get_audio_base64(filename):
 
 @st.cache_data(show_spinner=False)
 def get_wav_trimmed_base64(filename):
-    """
-    Reads WAV, trims trailing silence to the last non-silent sample,
-    returns base64. Pure Python stdlib — no extra dependencies.
-    Gives Web Audio API a clean loop point with zero gap.
-    """
     with wave.open(filename, "rb") as wf:
         n_channels = wf.getnchannels()
         sampwidth  = wf.getsampwidth()
         framerate  = wf.getframerate()
         n_frames   = wf.getnframes()
         raw_frames = wf.readframes(n_frames)
-
     fmt = {1: "b", 2: "h", 4: "i"}.get(sampwidth, "h")
     total_samples = n_frames * n_channels
     samples = list(struct.unpack(f"<{total_samples}{fmt}", raw_frames))
-
     threshold = 32 if sampwidth == 1 else 128
     last_nonsilent = len(samples) - 1
     while last_nonsilent > 0 and abs(samples[last_nonsilent]) < threshold:
         last_nonsilent -= 1
-
     trim_to     = ((last_nonsilent // n_channels) + 1) * n_channels
     trimmed_raw = struct.pack(f"<{trim_to}{fmt}", *samples[:trim_to])
-
     buf = io.BytesIO()
     with wave.open(buf, "wb") as out:
         out.setnchannels(n_channels)
         out.setsampwidth(sampwidth)
         out.setframerate(framerate)
         out.writeframes(trimmed_raw)
-
     return base64.b64encode(buf.getvalue()).decode("utf-8")
 
 @st.cache_data(show_spinner=False)
@@ -93,7 +83,7 @@ def get_shuffled_photos():
     random.shuffle(photos)
     return photos
 
-# ─── Load Assets (cached after first run) ─────────────────────────────────────
+# ─── Load Assets ──────────────────────────────────────────────────────────────
 
 bg_data       = get_image_base64("BGSKULLS.png")
 skull         = get_image_base64("SKULL1.png")
@@ -108,7 +98,7 @@ font_glitch   = get_font_base64("DoctorGlitch.otf")
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 
-st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide")
+st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide", initial_sidebar_state="collapsed")
 
 # ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
@@ -349,7 +339,6 @@ components.html(
         shottyAudio = new Audio("data:audio/wav;base64,{shotty_snd}");
         reloadAudio.volume = 0.64;
         shottyAudio.volume = 0.64;
-
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         var b64  = "{web_beat}";
         var bin  = atob(b64);
@@ -387,26 +376,6 @@ components.html(
         }});
       }}
 
-      function collapseSidebar() {{
-        var btn = doc.querySelector(
-          'button[aria-label="Collapse sidebar"],' +
-          'button[aria-label="collapse sidebar"],' +
-          'button[aria-label="Close sidebar"]'
-        );
-        if (btn) btn.click();
-      }}
-
-      function attachSidebarCollapse() {{
-        doc.querySelectorAll('[data-testid="stSidebar"] [role="radio"]').forEach(function(el) {{
-          if (!el.dataset.collapseAttached) {{
-            el.addEventListener('click', function() {{
-              setTimeout(collapseSidebar, 300);
-            }});
-            el.dataset.collapseAttached = 'true';
-          }}
-        }});
-      }}
-
       doc.addEventListener('click', function() {{
         initAudio();
         playShotty();
@@ -414,11 +383,7 @@ components.html(
       }}, {{ passive: true }});
 
       attachHoverSounds();
-      attachSidebarCollapse();
-      setInterval(function() {{
-        attachHoverSounds();
-        attachSidebarCollapse();
-      }}, 1500);
+      setInterval(attachHoverSounds, 1500);
     }})();
     </script>
     """,
@@ -574,10 +539,6 @@ elif menu == "The Catacombs (Photos)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE CATACOMBS</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
     photos = get_shuffled_photos()
-    cols = st.columns(2)
-    for i, photo_path in enumerate(photos):
-        with cols[i % 2]:
-            st.image(photo_path, use_container_width=True)
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
