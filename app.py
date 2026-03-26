@@ -594,7 +594,15 @@ components.html(
       }})();
 
       // ── Main click handler ──
-      doc.addEventListener('click', function() {{
+      doc.addEventListener('click', function(e) {{
+        var collapseBtn = e.target.closest(
+          '[data-testid="stSidebarCollapseButton"],' +
+          '[data-testid="stSidebarNavCollapseButton"],' +
+          'button[aria-label="Collapse sidebar"],' +
+          'button[aria-label="collapse sidebar"],' +
+          'button[aria-label="Close sidebar"]'
+        );
+        if (collapseBtn) return;
         initAudio();
         playShotty();
         triggerVHS();
@@ -790,10 +798,6 @@ elif menu == "The Catacombs (Photos)":
     st.markdown('<div style="text-align:center;"><span class="section-header">THE CATACOMBS</span></div>', unsafe_allow_html=True)
     st.markdown(skull_divider, unsafe_allow_html=True)
     photos = get_shuffled_photos()
-    cols = st.columns(2)
-    for i, photo_path in enumerate(photos):
-        with cols[i % 2]:
-            st.image(photo_path, use_container_width=True)
     cols = st.columns(2)
     for i, photo_path in enumerate(photos):
         with cols[i % 2]:
