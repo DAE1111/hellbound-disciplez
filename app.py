@@ -639,12 +639,6 @@ with col2:
 
 with st.sidebar:
     st.header("THE VOID")
-    st.markdown(
-        '<p style="font-family:DoctorGlitch,cursive !important;font-size:13px;color:#ff2200;'
-        'letter-spacing:2px;text-align:center;margin:0 0 16px 0;'
-        '-webkit-text-stroke:0.3px white;">'
-        unsafe_allow_html=True
-    )
     menu = st.radio("", [
         "The Ritual (Home)",
         "The Grimoires (Discography)",
