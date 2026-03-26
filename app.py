@@ -392,11 +392,27 @@ st.markdown(
 
       drawStatic();
 
-      setTimeout(function() {
-        cancelAnimationFrame(animId);
-        intro.classList.add('fadeout');
-        setTimeout(function() { intro.style.display = 'none'; }, 1000);
-      }, 9000);
+      var startTime = Date.now();
+      var minTime   = 7000;
+
+      function dismissIntro() {
+        var elapsed = Date.now() - startTime;
+        var wait    = Math.max(0, minTime - elapsed);
+        setTimeout(function() {
+          cancelAnimationFrame(animId);
+          intro.classList.add('fadeout');
+          setTimeout(function() { intro.style.display = 'none'; }, 1000);
+        }, wait);
+      }
+
+      // Dismiss when page is interactive
+      if (document.readyState === 'complete') {
+        dismissIntro();
+      } else {
+        window.addEventListener('load', dismissIntro);
+        // Hard fallback at 12 seconds no matter what
+        setTimeout(dismissIntro, 12000);
+      }
     })();
     </script>
     """,
