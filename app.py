@@ -303,6 +303,13 @@ img {{ transform:translateZ(0); }}
   display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
 }}
 
+/* Hide all page content until intro dismisses */
+body.intro-active [data-testid="stAppViewContainer"],
+body.intro-active [data-testid="stHeader"],
+body.intro-active [data-testid="stSidebarCollapsedControl"] {{
+  visibility:hidden !important;
+}}
+
 /* ── VHS Intro ── */
 #vhs-intro {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
@@ -482,12 +489,16 @@ components.html(
       (function() {{
         var canvas = doc.getElementById('vhs-static-canvas');
         if (!canvas) return;
+
+        // Add class to hide page content during intro
+        doc.body.classList.add('intro-active');
+
         var ctx    = canvas.getContext('2d');
         var animId;
         var frame  = 0;
         var lo     = document.createElement('canvas');
         var loctx  = lo.getContext('2d');
-        var SCALE  = 4;
+        var SCALE  = 6; // even lower res = much faster
 
         function resize() {{
           canvas.width  = window.parent.innerWidth;
@@ -500,7 +511,8 @@ components.html(
 
         function drawStatic() {{
           frame++;
-          if (frame % 2 === 0) {{
+          // Only draw every 3 frames = ~20fps, very smooth, low CPU
+          if (frame % 3 !== 0) {{
             animId = window.parent.requestAnimationFrame(drawStatic);
             return;
           }}
@@ -515,9 +527,9 @@ components.html(
             data[i + 3] = 180;
           }}
           for (var y = 0; y < h; y++) {{
-            if (Math.random() < 0.04) {{
-              var barH  = Math.floor(Math.random() * 4) + 1;
-              var shift = Math.floor(Math.random() * 20) - 10;
+            if (Math.random() < 0.03) {{
+              var barH  = Math.floor(Math.random() * 3) + 1;
+              var shift = Math.floor(Math.random() * 10) - 5;
               for (var by = y; by < Math.min(y + barH, h); by++) {{
                 for (var x = 0; x < w; x++) {{
                   var srcX = (x + shift + w) % w;
@@ -543,6 +555,7 @@ components.html(
           if (!intro || intro._dismissed) return;
           intro._dismissed = true;
           window.parent.cancelAnimationFrame(animId);
+          doc.body.classList.remove('intro-active');
           intro.style.transition    = 'opacity 1s ease';
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
