@@ -94,22 +94,22 @@ pistol_r      = f'<img src="data:image/png;base64,{pistol}" width="60" style="ve
 
 # ─── CSS ──────────────────────────────────────────────────────────────────────
 
-st.markdown(
-    """
-    <style>
-    html, body { background:#000 !important; }
-    [data-testid="stAppViewContainer"] > *:not(#vhs-intro),
-    [data-testid="stHeader"],
-    [data-testid="stSidebarCollapsedControl"] {
-      opacity:0 !important;
-      pointer-events:none !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 css = f"""
+<style>
+/* Hide Streamlit framework while intro is active */
+body.intro-active [data-testid="stHeader"],
+body.intro-active [data-testid="stSidebarCollapsedControl"],
+body.intro-active [data-testid="stMain"],
+body.intro-active [data-testid="stBottom"] {{
+  visibility:hidden !important;
+}}
+body.ready [data-testid="stHeader"],
+body.ready [data-testid="stSidebarCollapsedControl"],
+body.ready [data-testid="stMain"],
+body.ready [data-testid="stBottom"] {{
+  opacity:1 !important;
+  transition:opacity 0.5s ease !important;
+}}
 <style>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
@@ -357,7 +357,8 @@ components.html(
     f"""
     <script>
     (function() {{
-      var doc         = window.parent.document;
+      var doc = window.parent.document;
+      doc.body.classList.add('intro-active');
       var reloadAudio = null;
       var shottyAudio = null;
       var audioReady  = false;
@@ -505,13 +506,11 @@ components.html(
           if (!intro || intro._dismissed) return;
           intro._dismissed = true;
           window.parent.cancelAnimationFrame(animId);
-          // Reveal page content
-          var style = doc.createElement('style');
-          style.innerHTML = '[data-testid="stAppViewContainer"],[data-testid="stHeader"],[data-testid="stMain"],[data-testid="stSidebarCollapsedControl"],.stApp{{opacity:1 !important;transition:opacity 0.5s ease;}}';
-          doc.head.appendChild(style);
           intro.style.transition    = 'opacity 1s ease';
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
+          doc.body.classList.remove('intro-active');
+          doc.body.classList.add('ready');
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
         }}
 
