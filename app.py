@@ -300,15 +300,18 @@ img {{ transform:translateZ(0); }}
   display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
 }}
 
-/* ── VHS Intro ── */
+/* ── VHS Intro — sits on top of everything via z-index ── */
 #vhs-intro {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
-  background:#000;z-index:9999999;
+  background:#000 !important;
+  z-index:2147483647;
   display:flex;align-items:center;justify-content:center;
   flex-direction:column;transition:opacity 1s ease;
 }}
 #vhs-intro.fadeout {{ opacity:0;pointer-events:none; }}
-#vhs-intro canvas {{ position:absolute;top:0;left:0;width:100%;height:100%; }}
+#vhs-intro canvas {{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+}}
 #vhs-intro-scanlines {{
   position:absolute;top:0;left:0;width:100%;height:100%;
   background:repeating-linear-gradient(
@@ -346,9 +349,9 @@ img {{ transform:translateZ(0); }}
 }}
 @keyframes btnFlicker {{
   0%,90%,100% {{ opacity:1; }}
-  92%          {{ opacity:0.3; }}
-  95%          {{ opacity:0.8; }}
-  97%          {{ opacity:0.2; }}
+  92%         {{ opacity:0.3; }}
+  95%         {{ opacity:0.8; }}
+  97%         {{ opacity:0.2; }}
 }}
 #vhs-enter-btn {{
   display:none;
@@ -358,8 +361,8 @@ img {{ transform:translateZ(0); }}
   font-size:26px;color:#ff2200;
   background:rgba(0,0,0,0.85);
   border:2px solid #ff2200;
-  padding:18px 60px;
-  letter-spacing:6px;cursor:pointer;
+  padding:18px 60px;letter-spacing:6px;
+  cursor:pointer;
   -webkit-text-stroke:0.5px rgba(255,255,255,0.6);
   text-shadow:0 0 10px #ff2200,0 0 20px #ff0000;
   animation:btnPulse 1.8s ease-in-out infinite,btnFlicker 4s steps(1,end) infinite;
@@ -367,27 +370,9 @@ img {{ transform:translateZ(0); }}
   outline:none;
 }}
 #vhs-enter-btn:hover {{
-  background:rgba(255,34,0,0.15);
-  color:#fff;
+  background:rgba(255,34,0,0.15);color:#fff;
   text-shadow:0 0 20px #fff,0 0 40px #ff2200;
   transition:all 0.2s ease;
-}}
-
-/* Hide everything instantly until intro dismisses */
-body {{
-  background:#000 !important;
-}}
-body.intro-active [data-testid="stAppViewContainer"],
-body.intro-active [data-testid="stHeader"],
-body.intro-active [data-testid="stSidebarCollapsedControl"],
-body.intro-active [data-testid="stSidebar"],
-body.intro-active [data-testid="stMain"],
-body.intro-active .stApp > * {{
-  visibility:hidden !important;
-  opacity:0 !important;
-}}
-body.intro-active {{
-  overflow:hidden !important;
 }}
 </style>
 """
@@ -397,7 +382,7 @@ st.markdown(css, unsafe_allow_html=True)
 # ─── VHS Intro HTML ───────────────────────────────────────────────────────────
 
 st.markdown(
-    '<div id="vhs-intro" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9999999;display:flex;align-items:center;justify-content:center;flex-direction:column;">'
+    '<div id="vhs-intro">'
     '<canvas id="vhs-static-canvas"></canvas>'
     '<div id="vhs-intro-scanlines"></div>'
     '<div id="vhs-intro-text">HELLBOUND DISCIPLEZ</div>'
@@ -424,10 +409,6 @@ components.html(
     <script>
     (function() {{
       var doc         = window.parent.document;
-
-      // Add immediately to hide all content before anything renders
-      doc.body.classList.add('intro-active');
-
       var reloadAudio = null;
       var shottyAudio = null;
       var audioReady  = false;
@@ -554,7 +535,6 @@ components.html(
           if (!intro || intro._dismissed) return;
           intro._dismissed = true;
           window.parent.cancelAnimationFrame(animId);
-          doc.body.classList.remove('intro-active');
           intro.style.transition    = 'opacity 1s ease';
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
