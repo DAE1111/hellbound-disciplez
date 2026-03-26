@@ -109,13 +109,6 @@ st.set_page_config(
 
 if "menu" not in st.session_state:
     st.session_state.menu = "The Ritual (Home)"
-if "prev_menu" not in st.session_state:
-    st.session_state.prev_menu = "The Ritual (Home)"
-if "do_collapse" not in st.session_state:
-    st.session_state.do_collapse = False
-if "first_load" not in st.session_state:
-    st.session_state.first_load = True
-    st.session_state["sidebar_state"] = "collapsed"
 
 # ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
@@ -179,26 +172,25 @@ button[aria-label="Expand sidebar"] span {{
 }}
 
 @keyframes navPulse {{
-  0%,100% {{ opacity:1;box-shadow:0 0 10px rgba(255,34,0,0.5); }}
-  50%      {{ opacity:0.8;box-shadow:0 0 25px rgba(255,34,0,0.9); }}
+  0%,100% {{ opacity:1; transform:translateX(0); }}
+  50%      {{ opacity:0.6; transform:translateX(3px); }}
 }}
 
-#nav-hint-open {{
+#nav-hint {{
   position:fixed;top:70px;left:8px;z-index:9999;
-  display:flex;align-items:center;
-  background:rgba(0,0,0,0.85);border:1px solid #ff2200;
-  padding:6px 10px;width:80px;
-  animation:navPulse 1.5s ease-in-out infinite;
-  box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
-  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,0.75);border:1px solid #ff2200;
+  border-radius:4px;padding:5px 10px;
+  animation:navPulse 2s ease-in-out infinite;
+  box-shadow:0 0 8px rgba(255,34,0,0.4);pointer-events:none;
 }}
-#nav-hint-open .nh-text {{
+#nav-hint .nh-text {{
   font-family:'DoctorGlitch',cursive !important;
-  font-size:11px;color:#ff2200;letter-spacing:2px;
+  font-size:11px;color:#ff2200;letter-spacing:1px;
   white-space:normal;word-break:break-word;
+  width:70px;text-align:center;
   -webkit-text-stroke:0.3px white;
-  text-shadow:0 0 8px #ff2200;
-  text-align:center;line-height:1.4;
+  line-height:1.4;
 }}
 
 ::-webkit-scrollbar       {{ width:8px; }}
@@ -214,11 +206,6 @@ button[aria-label="Expand sidebar"] span {{
 [data-testid="stSidebar"] {{
   background-image:{BG_URL};
   background-size:cover;background-repeat:repeat;
-  transform:translateX(-110%);
-  transition:transform 0.3s ease;
-}}
-[data-testid="stSidebar"][aria-expanded="true"] {{
-  transform:translateX(0%);
 }}
 
 img {{ transform:translateZ(0); }}
@@ -308,19 +295,9 @@ img {{ transform:translateZ(0); }}
 #vhs-rgb-r,#vhs-rgb-b {{
   position:fixed;top:0;left:0;width:100vw;height:100vh;
   pointer-events:none;z-index:999997;display:none;
-  mix-blend-mode:screen;opacity:0;
 }}
-#vhs-rgb-r {{ background:rgba(255,0,0,0.15); }}
-#vhs-rgb-b {{ background:rgba(0,0,255,0.15); }}
 #vhs-rgb-r.active,#vhs-rgb-b.active {{
-  display:block;opacity:1;animation:scanline-flash 0.5s steps(1,end) forwards;
-}}
-
-/* Hide all page content until intro dismisses */
-body.intro-active [data-testid="stAppViewContainer"],
-body.intro-active [data-testid="stHeader"],
-body.intro-active [data-testid="stSidebarCollapsedControl"] {{
-  visibility:hidden !important;
+  display:block;animation:scanline-flash 0.5s steps(1,end) forwards;
 }}
 
 /* ── VHS Intro ── */
@@ -395,6 +372,13 @@ body.intro-active [data-testid="stSidebarCollapsedControl"] {{
   text-shadow:0 0 20px #fff,0 0 40px #ff2200;
   transition:all 0.2s ease;
 }}
+
+/* Hide page content during intro */
+body.intro-active [data-testid="stAppViewContainer"],
+body.intro-active [data-testid="stHeader"],
+body.intro-active [data-testid="stSidebarCollapsedControl"] {{
+  visibility:hidden !important;
+}}
 </style>
 """
 
@@ -413,19 +397,17 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ─── Overlays + nav hint ──────────────────────────────────────────────────────
+# ─── Nav hint + overlays ──────────────────────────────────────────────────────
 
 st.markdown(
-    '<div id="nav-hint-open">'
-    '<span class="nh-text">TAP THE ARROW TO OPEN MENU</span>'
-    '</div>'
+    '<div id="nav-hint"><span class="nh-text">TAP THE ARROW TO NAVIGATE</span></div>'
     '<div id="vhs-overlay"></div>'
     '<div id="vhs-rgb-r"></div>'
     '<div id="vhs-rgb-b"></div>',
     unsafe_allow_html=True
 )
 
-# ─── All JS in components.html (has window.parent.document access) ────────────
+# ─── All JS ───────────────────────────────────────────────────────────────────
 
 components.html(
     f"""
@@ -440,7 +422,6 @@ components.html(
       var bgSource    = null;
       var bgGain      = null;
 
-      // ── Gapless background music ──
       function startGaplessLoop() {{
         if (!audioCtx || !bgBuffer) return;
         if (bgSource) {{ try {{ bgSource.stop(); }} catch(e) {{}} }}
@@ -475,7 +456,6 @@ components.html(
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
       function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
 
-      // ── VHS click glitch ──
       function triggerVHS() {{
         var app     = doc.querySelector('.stApp');
         var overlay = doc.getElementById('vhs-overlay');
@@ -490,7 +470,6 @@ components.html(
         }});
       }}
 
-      // ── Hover sounds ──
       function attachHoverSounds() {{
         doc.querySelectorAll('a,button,[role="radio"],[role="button"],label').forEach(function(el) {{
           if (!el.dataset.soundAttached) {{
@@ -500,17 +479,16 @@ components.html(
         }});
       }}
 
-      // ── VHS Intro: grainy low res static ──
+      // ── VHS Intro ──
       (function() {{
         var canvas = doc.getElementById('vhs-static-canvas');
         if (!canvas) return;
         doc.body.classList.add('intro-active');
         var ctx   = canvas.getContext('2d');
-        var animId;
-        var frame = 0;
+        var animId, frame = 0;
         var lo    = document.createElement('canvas');
         var loctx = lo.getContext('2d');
-        var SCALE = 8; // very low res = grainy VHS look
+        var SCALE = 8;
 
         function resize() {{
           canvas.width  = window.parent.innerWidth;
@@ -523,10 +501,7 @@ components.html(
 
         function drawStatic() {{
           frame++;
-          if (frame % 4 !== 0) {{ // ~15fps
-            animId = window.parent.requestAnimationFrame(drawStatic);
-            return;
-          }}
+          if (frame % 4 !== 0) {{ animId = window.parent.requestAnimationFrame(drawStatic); return; }}
           var w = lo.width, h = lo.height;
           var imageData = loctx.createImageData(w, h);
           var data = imageData.data;
@@ -567,25 +542,12 @@ components.html(
           intro._dismissed = true;
           window.parent.cancelAnimationFrame(animId);
           doc.body.classList.remove('intro-active');
-          // Collapse sidebar on entry
-          var selectors = [
-            '[data-testid="stSidebarCollapseButton"] button',
-            '[data-testid="stSidebarNavCollapseButton"]',
-            'button[aria-label="Collapse sidebar"]',
-            'button[aria-label="collapse sidebar"]',
-            'button[aria-label="Close sidebar"]'
-          ];
-          for (var i = 0; i < selectors.length; i++) {{
-            var btn = doc.querySelector(selectors[i]);
-            if (btn) {{ btn.click(); break; }}
-          }}
           intro.style.transition    = 'opacity 1s ease';
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
         }}
 
-        // Show enter button after 7 seconds
         setTimeout(function() {{
           var btn = doc.getElementById('vhs-enter-btn');
           if (btn) {{
@@ -597,29 +559,17 @@ components.html(
           }}
         }}, 7000);
 
-        // Hard fallback at 15 seconds
         setTimeout(dismissIntro, 15000);
       }})();
 
-      // ── Main click handler ──
-      doc.addEventListener('click', function(e) {{
-        var collapseBtn = e.target.closest(
-          '[data-testid="stSidebarCollapseButton"],' +
-          '[data-testid="stSidebarNavCollapseButton"],' +
-          'button[aria-label="Collapse sidebar"],' +
-          'button[aria-label="collapse sidebar"],' +
-          'button[aria-label="Close sidebar"]'
-        );
-        if (collapseBtn) return;
+      doc.addEventListener('click', function() {{
         initAudio();
         playShotty();
         triggerVHS();
       }}, {{ passive: true }});
 
       attachHoverSounds();
-      setInterval(function() {{
-        attachHoverSounds();
-      }}, 1500);
+      setInterval(attachHoverSounds, 1500);
     }})();
     </script>
     """,
