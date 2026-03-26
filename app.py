@@ -188,18 +188,19 @@ button[aria-label="Expand sidebar"] span {{
 }}
 
 #nav-hint-open, #nav-hint-close {{
-  position:fixed;top:72px;left:8px;z-index:9999;
-  display:flex;align-items:center;gap:8px;
+  position:fixed;top:6px;left:52px;z-index:9999;
+  display:flex;align-items:center;
   background:rgba(0,0,0,0.85);border:1px solid #ff2200;
-  border-radius:6px;padding:8px 14px;
+  padding:6px 14px;
   animation:navPulse 1.5s ease-in-out infinite;
   box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
 }}
 #nav-hint-open .nh-text, #nav-hint-close .nh-text {{
   font-family:'DoctorGlitch',cursive !important;
-  font-size:13px;color:#ff2200;letter-spacing:2px;
+  font-size:11px;color:#ff2200;letter-spacing:2px;
   white-space:nowrap;-webkit-text-stroke:0.3px white;
-  line-height:1.4;
+  text-shadow:0 0 8px #ff2200;
 }}
 
 ::-webkit-scrollbar       {{ width:8px; }}
@@ -648,9 +649,10 @@ with col2:
 with st.sidebar:
     st.header("THE VOID")
     st.markdown(
-        '<p style="font-family:DoctorGlitch,cursive;font-size:14px;color:#ff2200;'
-        'letter-spacing:2px;text-align:center;margin-bottom:16px;opacity:0.8;">'
-        'TAP THE ARROW TO CLOSE AFTER SELECTION</p>',
+        '<p style="font-family:DoctorGlitch,cursive !important;font-size:13px;color:#ff2200;'
+        'letter-spacing:2px;text-align:center;margin:0 0 16px 0;'
+        '-webkit-text-stroke:0.3px white;">'
+        '— TAP THE ARROW TO CLOSE —</p>',
         unsafe_allow_html=True
     )
     menu = st.radio("", [
