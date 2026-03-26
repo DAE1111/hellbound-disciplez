@@ -42,8 +42,8 @@ def get_audio_base64(filename):
 def get_wav_trimmed_base64(filename):
     """
     Reads WAV, trims trailing silence to the last non-silent sample,
-    and returns base64. Uses only Python stdlib — no extra dependencies.
-    This gives the Web Audio API a clean loop point with zero gap.
+    returns base64. Pure Python stdlib — no extra dependencies.
+    Gives Web Audio API a clean loop point with zero gap.
     """
     with wave.open(filename, "rb") as wf:
         n_channels = wf.getnchannels()
@@ -261,14 +261,18 @@ img {{ transform:translateZ(0); }}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   max-width:100%;
 }}
+
 .glitch-tape-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
   -webkit-text-stroke:0.5px white;
   display:block;text-align:center;margin:10px 0;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  white-space:normal;word-break:break-word;
   max-width:100%;
 }}
+
+/* mobile-br hidden on desktop, visible on mobile */
+br.mobile-br {{ display:none; }}
 
 @media (max-width:600px) {{
   .announce-text {{
@@ -276,7 +280,8 @@ img {{ transform:translateZ(0); }}
     animation:announcePulseMobile 2s ease-in-out infinite;
   }}
   .section-header   {{ font-size:20px !important; }}
-  .glitch-tape-text {{ font-size:20px !important; }}
+  .glitch-tape-text {{ font-size:18px !important; white-space:normal; word-break:break-word; }}
+  br.mobile-br      {{ display:block; }}
 }}
 
 @keyframes vhs-shake {{
@@ -469,7 +474,10 @@ if menu == "The Ritual (Home)":
     )
     st.markdown(skull_divider, unsafe_allow_html=True)
     st.markdown(
-        '<div style="text-align:center;"><span class="glitch-tape-text">Glitch Tape Vol. 2 — Coming Soon</span></div>',
+        '<div style="text-align:center;">'
+        '<span class="glitch-tape-text">'
+        'Glitch Tape Vol. 2 <br class="mobile-br">— Coming Soon'
+        '</span></div>',
         unsafe_allow_html=True
     )
 
