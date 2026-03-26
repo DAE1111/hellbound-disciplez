@@ -342,7 +342,7 @@ st.markdown(
       <canvas id="vhs-static-canvas"></canvas>
       <div id="vhs-intro-scanlines"></div>
       <div id="vhs-intro-text">HELLBOUND DISCIPLEZ</div>
-      <div id="vhs-intro-sub">&#9654; LOADING...</div>
+      <div id="vhs-intro-sub">&#9654; LOADING... TAP TO ENTER</div>
     </div>
     <script>
     (function() {
@@ -392,27 +392,23 @@ st.markdown(
 
       drawStatic();
 
-      var startTime = Date.now();
-      var minTime   = 7000;
-
       function dismissIntro() {
-        var elapsed = Date.now() - startTime;
-        var wait    = Math.max(0, minTime - elapsed);
-        setTimeout(function() {
-          cancelAnimationFrame(animId);
-          intro.classList.add('fadeout');
-          setTimeout(function() { intro.style.display = 'none'; }, 1000);
-        }, wait);
+        if (intro._dismissed) return;
+        intro._dismissed = true;
+        cancelAnimationFrame(animId);
+        intro.classList.add('fadeout');
+        setTimeout(function() { intro.style.display = 'none'; }, 1000);
       }
 
-      // Dismiss when page is interactive
-      if (document.readyState === 'complete') {
-        dismissIntro();
-      } else {
-        window.addEventListener('load', dismissIntro);
-        // Hard fallback at 12 seconds no matter what
-        setTimeout(dismissIntro, 12000);
-      }
+      // Auto dismiss after 9 seconds
+      setTimeout(dismissIntro, 9000);
+
+      // Click anywhere to dismiss after 3 seconds minimum
+      var clickReady = false;
+      setTimeout(function() { clickReady = true; }, 3000);
+      intro.addEventListener('click', function() {
+        if (clickReady) dismissIntro();
+      });
     })();
     </script>
     """,
