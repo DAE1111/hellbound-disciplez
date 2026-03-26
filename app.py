@@ -549,9 +549,20 @@ components.html(
               var enterBtn = doc.getElementById('vhs-enter-btn');
               if (enterBtn) {{
                 enterBtn.style.display = 'block';
-                enterBtn.addEventListener('click', function() {{
+                enterBtn.addEventListener('click', function(e) {{
+                  e.stopPropagation();
+                  // Start all site audio now
                   initAudio();
                   dismissIntro();
+                  // Activate all sounds and interactions after intro gone
+                  setTimeout(function() {{
+                    doc.addEventListener('click', function() {{
+                      playShotty();
+                      triggerVHS();
+                    }}, {{ passive: true }});
+                    attachHoverSounds();
+                    setInterval(attachHoverSounds, 1500);
+                  }}, 1000);
                 }});
               }}
             }}, 7000);
@@ -561,18 +572,6 @@ components.html(
         }}
       }})();
 
-      doc.addEventListener('click', function(e) {{
-        var loadBtn  = doc.getElementById('vhs-load-btn');
-        var enterBtn = doc.getElementById('vhs-enter-btn');
-        var onIntroBtn = (loadBtn && loadBtn.contains(e.target)) ||
-                         (enterBtn && enterBtn.contains(e.target));
-        initAudio();
-        playShotty();
-        if (!onIntroBtn) triggerVHS();
-      }}, {{ passive: true }});
-
-      attachHoverSounds();
-      setInterval(attachHoverSounds, 1500);
     }})();
     </script>
     """,
