@@ -96,21 +96,6 @@ pistol_r      = f'<img src="data:image/png;base64,{pistol}" width="60" style="ve
 
 css = f"""
 <style>
-/* Hide Streamlit framework while intro is active */
-body.intro-active [data-testid="stHeader"],
-body.intro-active [data-testid="stSidebarCollapsedControl"],
-body.intro-active [data-testid="stMain"],
-body.intro-active [data-testid="stBottom"] {{
-  visibility:hidden !important;
-}}
-body.ready [data-testid="stHeader"],
-body.ready [data-testid="stSidebarCollapsedControl"],
-body.ready [data-testid="stMain"],
-body.ready [data-testid="stBottom"] {{
-  opacity:1 !important;
-  transition:opacity 0.5s ease !important;
-}}
-<style>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 @font-face {{
@@ -358,7 +343,6 @@ components.html(
     <script>
     (function() {{
       var doc = window.parent.document;
-      doc.body.classList.add('intro-active');
       var reloadAudio = null;
       var shottyAudio = null;
       var audioReady  = false;
@@ -509,8 +493,6 @@ components.html(
           intro.style.transition    = 'opacity 1s ease';
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
-          doc.body.classList.remove('intro-active');
-          doc.body.classList.add('ready');
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
         }}
 
