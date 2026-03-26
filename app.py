@@ -391,10 +391,10 @@ components.html(
       }}
 
       function attachSidebarRadioCollapse() {{
-        doc.querySelectorAll('[data-testid="stSidebar"] [role="radio"]').forEach(function(el) {{
+        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
           if (!el.dataset.collapseAttached) {{
-            el.addEventListener('click', function() {{
-              setTimeout(clickCollapseArrow, 400);
+            el.addEventListener('mousedown', function() {{
+              clickCollapseArrow();
             }});
             el.dataset.collapseAttached = 'true';
           }}
@@ -445,36 +445,34 @@ with st.sidebar:
         "The Catacombs (Photos)"
     ], key="menu")
 
-# Detect a new selection and inject JS to click the collapse button
+# Detect a new selection and inject collapse JS directly into main page context
 if st.session_state.menu != st.session_state.prev_menu:
     st.session_state.prev_menu = st.session_state.menu
-    components.html(
+    st.markdown(
         """
         <script>
         (function() {
           var attempts = 0;
           function tryCollapse() {
-            var doc = window.parent.document;
-            var btn = doc.querySelector(
-              'button[aria-label="Collapse sidebar"], ' +
-              'button[aria-label="collapse sidebar"], ' +
-              'button[aria-label="Close sidebar"], ' +
-              '[data-testid="stSidebarNavCollapseButton"]'
-            );
-            if (btn) {
-              btn.click();
-            } else if (attempts < 10) {
-              attempts++;
-              setTimeout(tryCollapse, 100);
+            var selectors = [
+              '[data-testid="stSidebarCollapseButton"] button',
+              '[data-testid="stSidebarNavCollapseButton"]',
+              'button[aria-label="Collapse sidebar"]',
+              'button[aria-label="collapse sidebar"]',
+              'button[aria-label="Close sidebar"]'
+            ];
+            for (var i = 0; i < selectors.length; i++) {
+              var btn = document.querySelector(selectors[i]);
+              if (btn) { btn.click(); return; }
             }
+            if (attempts < 15) { attempts++; setTimeout(tryCollapse, 100); }
           }
-          setTimeout(tryCollapse, 200);
+          setTimeout(tryCollapse, 150);
         })();
         </script>
         """,
-        height=0
+        unsafe_allow_html=True
     )
-
 menu = st.session_state.menu
 
 # ─── Pages ────────────────────────────────────────────────────────────────────
