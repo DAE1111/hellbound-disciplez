@@ -488,34 +488,30 @@ components.html(
         }});
       }}
 
-      // ── VHS Intro: optimized static canvas ──
+      // ── VHS Intro: grainy low res static ──
       (function() {{
         var canvas = doc.getElementById('vhs-static-canvas');
         if (!canvas) return;
-
-        // Add class to hide page content during intro
         doc.body.classList.add('intro-active');
-
-        var ctx    = canvas.getContext('2d');
+        var ctx   = canvas.getContext('2d');
         var animId;
-        var frame  = 0;
-        var lo     = document.createElement('canvas');
-        var loctx  = lo.getContext('2d');
-        var SCALE  = 6; // even lower res = much faster
+        var frame = 0;
+        var lo    = document.createElement('canvas');
+        var loctx = lo.getContext('2d');
+        var SCALE = 8; // very low res = grainy VHS look
 
         function resize() {{
           canvas.width  = window.parent.innerWidth;
           canvas.height = window.parent.innerHeight;
-          lo.width      = Math.floor(canvas.width  / SCALE);
-          lo.height     = Math.floor(canvas.height / SCALE);
+          lo.width      = Math.ceil(canvas.width  / SCALE);
+          lo.height     = Math.ceil(canvas.height / SCALE);
         }}
         resize();
         window.parent.addEventListener('resize', resize);
 
         function drawStatic() {{
           frame++;
-          // Only draw every 3 frames = ~20fps, very smooth, low CPU
-          if (frame % 3 !== 0) {{
+          if (frame % 4 !== 0) {{ // ~15fps
             animId = window.parent.requestAnimationFrame(drawStatic);
             return;
           }}
@@ -523,25 +519,25 @@ components.html(
           var imageData = loctx.createImageData(w, h);
           var data = imageData.data;
           for (var i = 0; i < data.length; i += 4) {{
-            var v = Math.random() > 0.5 ? Math.floor(Math.random() * 80) : 0;
-            data[i]     = v + Math.floor(Math.random() * 40);
-            data[i + 1] = Math.floor(v * 0.1);
-            data[i + 2] = Math.floor(v * 0.1);
-            data[i + 3] = 180;
+            var v = Math.random() > 0.4 ? Math.floor(Math.random() * 100) : 0;
+            data[i]     = v + Math.floor(Math.random() * 60);
+            data[i + 1] = Math.floor(v * 0.08);
+            data[i + 2] = Math.floor(v * 0.08);
+            data[i + 3] = 200;
           }}
           for (var y = 0; y < h; y++) {{
-            if (Math.random() < 0.03) {{
+            if (Math.random() < 0.05) {{
               var barH  = Math.floor(Math.random() * 3) + 1;
-              var shift = Math.floor(Math.random() * 10) - 5;
+              var shift = Math.floor(Math.random() * 8) - 4;
               for (var by = y; by < Math.min(y + barH, h); by++) {{
                 for (var x = 0; x < w; x++) {{
                   var srcX = (x + shift + w) % w;
                   var si = (by * w + srcX) * 4;
                   var di = (by * w + x) * 4;
-                  data[di]     = data[si] + 80;
+                  data[di]     = Math.min(255, data[si] + 100);
                   data[di + 1] = 0;
                   data[di + 2] = 0;
-                  data[di + 3] = 220;
+                  data[di + 3] = 255;
                 }}
               }}
             }}
@@ -615,25 +611,27 @@ components.html(
 
       // ── Sidebar collapse ──
       function collapseSidebar() {{
-        // Try button click first
+        // Try every possible selector
         var selectors = [
           '[data-testid="stSidebarCollapseButton"] button',
           '[data-testid="stSidebarNavCollapseButton"]',
           'button[aria-label="Collapse sidebar"]',
           'button[aria-label="collapse sidebar"]',
           'button[aria-label="Close sidebar"]',
+          'button[kind="header"]',
           '[data-testid="stSidebar"] button'
         ];
         for (var i = 0; i < selectors.length; i++) {{
           var btn = doc.querySelector(selectors[i]);
-          if (btn) {{ btn.click(); return; }}
+          if (btn) {{
+            btn.dispatchEvent(new MouseEvent('click', {{bubbles:true, cancelable:true}}));
+            return;
+          }}
         }}
-        // Fallback: simulate keyboard shortcut
-        var evt = new KeyboardEvent('keydown', {{
-          key: '[', code: 'BracketLeft', keyCode: 219,
-          bubbles: true, cancelable: true
-        }});
-        doc.dispatchEvent(evt);
+        // Last resort: keyboard shortcut
+        doc.dispatchEvent(new KeyboardEvent('keydown', {{
+          key:'[', code:'BracketLeft', keyCode:219, bubbles:true
+        }}));
       }}
 
       function attachSidebarCollapse() {{
