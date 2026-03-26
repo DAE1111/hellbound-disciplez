@@ -579,10 +579,13 @@ components.html(
       }})();
 
       // ── Main click handler ──
-      doc.addEventListener('click', function() {{
+      doc.addEventListener('click', function(e) {{
+        var inSidebar = e.target.closest('[data-testid="stSidebar"]');
         initAudio();
-        playShotty();
-        triggerVHS();
+        if (!inSidebar) {{
+          playShotty();
+          triggerVHS();
+        }}
       }}, {{ passive: true }});
 
       attachHoverSounds();
@@ -608,8 +611,9 @@ components.html(
       function attachSidebarCollapse() {{
         doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
           if (!el.dataset.collapseAttached) {{
-            el.addEventListener('mousedown', function() {{
-              setTimeout(clickCollapseArrow, 800);
+            el.addEventListener('mousedown', function(e) {{
+              e.stopPropagation();
+              setTimeout(clickCollapseArrow, 300);
             }});
             el.dataset.collapseAttached = 'true';
           }}
