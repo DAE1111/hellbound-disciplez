@@ -328,6 +328,27 @@ img {{ transform:translateZ(0); }}
   94%     {{ opacity:0.4; }}
   95%     {{ opacity:1; }}
 }}
+
+@keyframes btnPulse {{
+  0%,100% {{ box-shadow:0 0 10px #ff2200,0 0 20px #ff2200;letter-spacing:4px; }}
+  50%     {{ box-shadow:0 0 25px #ff5500,0 0 50px #ff2200;letter-spacing:6px; }}
+}}
+
+#vhs-enter-btn {{
+  display:none;
+  position:relative;z-index:3;
+  margin-top:40px;
+  font-family:'DoctorGlitch',cursive;
+  font-size:22px;color:#000;
+  background:#ff2200;
+  border:2px solid #fff;
+  padding:14px 40px;
+  letter-spacing:4px;
+  cursor:pointer;
+  -webkit-text-stroke:0.5px white;
+  animation:btnPulse 1.5s ease-in-out infinite;
+  text-shadow:none;
+}}
 </style>
 """
 
@@ -341,6 +362,7 @@ st.markdown(
     '<div id="vhs-intro-scanlines"></div>'
     '<div id="vhs-intro-text">HELLBOUND DISCIPLEZ</div>'
     '<div id="vhs-intro-sub">&#9654; LOADING...</div>'
+    '<button id="vhs-enter-btn">&#9760; ENTER THE VOID &#9760;</button>'
     '</div>',
     unsafe_allow_html=True
 )
@@ -489,7 +511,18 @@ components.html(
           intro.style.pointerEvents = 'none';
           setTimeout(function() {{ intro.style.display = 'none'; }}, 1000);
         }}
-        setTimeout(dismissIntro, 9000);
+
+        // Show enter button after 7 seconds
+        setTimeout(function() {{
+          var btn = doc.getElementById('vhs-enter-btn');
+          if (btn) {{
+            btn.style.display = 'block';
+            btn.addEventListener('click', dismissIntro);
+          }}
+        }}, 7000);
+
+        // Hard fallback dismiss at 15 seconds
+        setTimeout(dismissIntro, 15000);
       }})();
 
       function attachHoverSounds() {{
