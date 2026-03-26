@@ -46,14 +46,14 @@ def get_wav_trimmed_base64(filename):
         framerate  = wf.getframerate()
         n_frames   = wf.getnframes()
         raw_frames = wf.readframes(n_frames)
-    fmt = {1: "b", 2: "h", 4: "i"}.get(sampwidth, "h")
+    fmt           = {1: "b", 2: "h", 4: "i"}.get(sampwidth, "h")
     total_samples = n_frames * n_channels
-    samples = list(struct.unpack(f"<{total_samples}{fmt}", raw_frames))
-    threshold = 32 if sampwidth == 1 else 128
-    last_nonsilent = len(samples) - 1
-    while last_nonsilent > 0 and abs(samples[last_nonsilent]) < threshold:
-        last_nonsilent -= 1
-    trim_to     = ((last_nonsilent // n_channels) + 1) * n_channels
+    samples       = list(struct.unpack(f"<{total_samples}{fmt}", raw_frames))
+    threshold     = 32 if sampwidth == 1 else 128
+    last          = len(samples) - 1
+    while last > 0 and abs(samples[last]) < threshold:
+        last -= 1
+    trim_to     = ((last // n_channels) + 1) * n_channels
     trimmed_raw = struct.pack(f"<{trim_to}{fmt}", *samples[:trim_to])
     buf = io.BytesIO()
     with wave.open(buf, "wb") as out:
@@ -83,7 +83,7 @@ def get_shuffled_photos():
     random.shuffle(photos)
     return photos
 
-# ─── Load Assets ──────────────────────────────────────────────────────────────
+# ─── Load Assets (cached after first run) ─────────────────────────────────────
 
 bg_data       = get_image_base64("BGSKULLS.png")
 skull         = get_image_base64("SKULL1.png")
@@ -98,7 +98,19 @@ font_glitch   = get_font_base64("DoctorGlitch.otf")
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 
-st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(
+    page_title="HELLBOUND DISCIPLEZ",
+    page_icon="🤘",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# ─── Session State ────────────────────────────────────────────────────────────
+
+if "menu" not in st.session_state:
+    st.session_state.menu = "The Ritual (Home)"
+if "prev_menu" not in st.session_state:
+    st.session_state.prev_menu = "The Ritual (Home)"
 
 # ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
@@ -242,7 +254,6 @@ img {{ transform:translateZ(0); }}
   animation:announcePulse 2s ease-in-out infinite;
   display:block;text-align:center;margin:10px 0;
 }}
-
 .glitch-tape-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
@@ -294,7 +305,7 @@ img {{ transform:translateZ(0); }}
 
 st.markdown(css, unsafe_allow_html=True)
 
-# ─── Persistent overlays & nav hint ──────────────────────────────────────────
+# ─── Overlays + nav hint ──────────────────────────────────────────────────────
 
 st.markdown(
     '<div id="nav-hint"><span class="nh-text">TAP ARROW TO NAVIGATE</span></div>'
@@ -376,31 +387,6 @@ components.html(
         }});
       }}
 
-      function clickCollapseArrow() {{
-        var selectors = [
-          '[data-testid="stSidebarCollapseButton"] button',
-          '[data-testid="stSidebarNavCollapseButton"]',
-          'button[aria-label="Collapse sidebar"]',
-          'button[aria-label="collapse sidebar"]',
-          'button[aria-label="Close sidebar"]'
-        ];
-        for (var i = 0; i < selectors.length; i++) {{
-          var btn = doc.querySelector(selectors[i]);
-          if (btn) {{ btn.click(); return; }}
-        }}
-      }}
-
-      function attachSidebarRadioCollapse() {{
-        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
-          if (!el.dataset.collapseAttached) {{
-            el.addEventListener('mousedown', function() {{
-              clickCollapseArrow();
-            }});
-            el.dataset.collapseAttached = 'true';
-          }}
-        }});
-      }}
-
       doc.addEventListener('click', function() {{
         initAudio();
         playShotty();
@@ -408,11 +394,7 @@ components.html(
       }}, {{ passive: true }});
 
       attachHoverSounds();
-      attachSidebarRadioCollapse();
-      setInterval(function() {{
-        attachHoverSounds();
-        attachSidebarRadioCollapse();
-      }}, 1000);
+      setInterval(attachHoverSounds, 1500);
     }})();
     </script>
     """,
@@ -431,11 +413,6 @@ with col2:
 
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
 
-if "menu" not in st.session_state:
-    st.session_state.menu = "The Ritual (Home)"
-if "prev_menu" not in st.session_state:
-    st.session_state.prev_menu = "The Ritual (Home)"
-
 with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("", [
@@ -445,34 +422,33 @@ with st.sidebar:
         "The Catacombs (Photos)"
     ], key="menu")
 
-# Detect a new selection and inject collapse JS directly into main page context
+# Inject collapse JS directly into main page context on menu change
 if st.session_state.menu != st.session_state.prev_menu:
     st.session_state.prev_menu = st.session_state.menu
     st.markdown(
-        """
-        <script>
+        """<script>
         (function() {
-          var attempts = 0;
+          var tries = 0;
           function tryCollapse() {
-            var selectors = [
+            var btns = [
               '[data-testid="stSidebarCollapseButton"] button',
               '[data-testid="stSidebarNavCollapseButton"]',
               'button[aria-label="Collapse sidebar"]',
               'button[aria-label="collapse sidebar"]',
               'button[aria-label="Close sidebar"]'
             ];
-            for (var i = 0; i < selectors.length; i++) {
-              var btn = document.querySelector(selectors[i]);
-              if (btn) { btn.click(); return; }
+            for (var i = 0; i < btns.length; i++) {
+              var b = document.querySelector(btns[i]);
+              if (b) { b.click(); return; }
             }
-            if (attempts < 15) { attempts++; setTimeout(tryCollapse, 100); }
+            if (tries++ < 20) setTimeout(tryCollapse, 50);
           }
-          setTimeout(tryCollapse, 150);
+          tryCollapse();
         })();
-        </script>
-        """,
+        </script>""",
         unsafe_allow_html=True
     )
+
 menu = st.session_state.menu
 
 # ─── Pages ────────────────────────────────────────────────────────────────────
