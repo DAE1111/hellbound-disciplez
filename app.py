@@ -113,6 +113,9 @@ if "prev_menu" not in st.session_state:
     st.session_state.prev_menu = "The Ritual (Home)"
 if "do_collapse" not in st.session_state:
     st.session_state.do_collapse = False
+if "first_load" not in st.session_state:
+    st.session_state.first_load = True
+    st.session_state["sidebar_state"] = "collapsed"
 
 # ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
@@ -556,6 +559,18 @@ components.html(
           intro._dismissed = true;
           window.parent.cancelAnimationFrame(animId);
           doc.body.classList.remove('intro-active');
+          // Collapse sidebar on entry
+          var selectors = [
+            '[data-testid="stSidebarCollapseButton"] button',
+            '[data-testid="stSidebarNavCollapseButton"]',
+            'button[aria-label="Collapse sidebar"]',
+            'button[aria-label="collapse sidebar"]',
+            'button[aria-label="Close sidebar"]'
+          ];
+          for (var i = 0; i < selectors.length; i++) {{
+            var btn = doc.querySelector(selectors[i]);
+            if (btn) {{ btn.click(); break; }}
+          }}
           intro.style.transition    = 'opacity 1s ease';
           intro.style.opacity       = '0';
           intro.style.pointerEvents = 'none';
@@ -579,13 +594,10 @@ components.html(
       }})();
 
       // ── Main click handler ──
-      doc.addEventListener('click', function(e) {{
-        var inSidebar = e.target.closest('[data-testid="stSidebar"]');
+      doc.addEventListener('click', function() {{
         initAudio();
-        if (!inSidebar) {{
-          playShotty();
-          triggerVHS();
-        }}
+        playShotty();
+        triggerVHS();
       }}, {{ passive: true }});
 
       attachHoverSounds();
