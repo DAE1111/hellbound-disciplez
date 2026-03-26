@@ -100,11 +100,6 @@ font_glitch   = get_font_base64("DoctorGlitch.otf")
 
 st.set_page_config(page_title="HELLBOUND DISCIPLEZ", page_icon="🤘", layout="wide", initial_sidebar_state="collapsed")
 
-# ─── Session State ────────────────────────────────────────────────────────────
-
-if "menu" not in st.session_state:
-    st.session_state.menu = "The Ritual (Home)"
-
 # ─── Prebuilt reusable strings ────────────────────────────────────────────────
 
 BG_URL     = f'url("data:image/png;base64,{bg_data}")'
@@ -133,10 +128,56 @@ css = f"""
   font-display:swap;
 }}
 
-*,html,body,.stApp,.stApp * {{
+*,html,body,.stApp,[data-testid="stSidebar"],.stApp * {{
   cursor:{CURSOR_URL} !important;
   -webkit-font-smoothing:antialiased;
   box-sizing:border-box;
+}}
+
+[data-testid="stSidebarCollapsedControl"] span,
+[data-testid="stSidebarCollapsedControl"] button span,
+[data-testid="stSidebarNavCollapseButton"] span,
+[data-testid="collapsedControl"] span,
+button[aria-label="Close sidebar"] span,
+button[aria-label="Open sidebar"] span,
+button[aria-label="collapse sidebar"] span,
+button[aria-label="expand sidebar"] span,
+button[aria-label="Collapse sidebar"] span,
+button[aria-label="Expand sidebar"] span {{
+  font-family:'Material Icons' !important;
+  font-size:24px !important;
+  font-style:normal !important;
+  font-weight:normal !important;
+  line-height:1 !important;
+  letter-spacing:normal !important;
+  text-transform:none !important;
+  display:inline-block !important;
+  white-space:nowrap !important;
+  word-wrap:normal !important;
+  direction:ltr !important;
+  color:#ff2200 !important;
+  -webkit-font-feature-settings:'liga' !important;
+  font-feature-settings:'liga' !important;
+  -webkit-font-smoothing:antialiased !important;
+}}
+
+@keyframes navPulse {{
+  0%,100% {{ opacity:1; transform:translateX(0); }}
+  50%      {{ opacity:0.6; transform:translateX(3px); }}
+}}
+
+#nav-hint {{
+  position:fixed;top:80px;left:8px;z-index:9999;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,0.75);border:1px solid #ff2200;
+  border-radius:6px;padding:6px 12px;
+  animation:navPulse 2s ease-in-out infinite;
+  box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
+}}
+#nav-hint .nh-text {{
+  font-family:'DoctorGlitch',cursive !important;
+  font-size:16px;color:#ff2200;letter-spacing:1px;
+  white-space:nowrap;-webkit-text-stroke:0.3px white;
 }}
 
 ::-webkit-scrollbar       {{ width:8px; }}
@@ -149,25 +190,28 @@ css = f"""
   background-size:cover;background-repeat:repeat;
   background-attachment:fixed;color:#ff2200;
 }}
-
-/* Hide default Streamlit sidebar toggle */
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"] {{
-  display:none !important;
+[data-testid="stSidebar"] {{
+  background-image:{BG_URL};
+  background-size:cover;background-repeat:repeat;
 }}
 
 img {{ transform:translateZ(0); }}
 
 [data-testid="stMain"] p,
 [data-testid="stMain"] li,
-[data-testid="stMain"] a {{
+[data-testid="stMain"] a,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] li,
+[data-testid="stSidebar"] label {{
   font-family:'BaronessKuffner',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
 }}
 
 [data-testid="stMain"] h1,[data-testid="stMain"] h2,
 [data-testid="stMain"] h3,[data-testid="stMain"] h4,
-[data-testid="stMain"] h5,[data-testid="stMain"] h6 {{
+[data-testid="stMain"] h5,[data-testid="stMain"] h6,
+[data-testid="stSidebar"] h1,[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {{
   font-family:'DoctorGlitch',cursive !important;color:#ff2200 !important;
 }}
 
@@ -198,78 +242,12 @@ img {{ transform:translateZ(0); }}
   animation:announcePulse 2s ease-in-out infinite;
   display:block;text-align:center;margin:10px 0;
 }}
+
 .glitch-tape-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:28px !important;color:#ff2200 !important;
   -webkit-text-stroke:0.5px white;
   display:block;text-align:center;margin:10px 0;
-}}
-
-/* ── Custom Nav ── */
-#hbd-nav {{
-  position:fixed;top:0;left:0;width:100vw;z-index:99999;
-  background-image:{BG_URL};
-  background-size:cover;
-  border-bottom:2px solid #ff2200;
-  box-shadow:0 0 18px rgba(255,34,0,0.6);
-  display:flex;align-items:center;justify-content:center;
-  padding:0;
-}}
-
-#hbd-nav-toggle {{
-  display:none;
-  background:none;border:none;
-  font-family:'DoctorGlitch',cursive;
-  font-size:22px;color:#ff2200;
-  padding:12px 20px;
-  -webkit-text-stroke:0.3px white;
-  letter-spacing:2px;
-}}
-
-#hbd-nav-links {{
-  display:flex;flex-direction:row;align-items:center;
-  gap:0;margin:0;padding:0;list-style:none;
-}}
-
-#hbd-nav-links li a {{
-  font-family:'DoctorGlitch',cursive !important;
-  font-size:16px !important;color:#ff2200 !important;
-  -webkit-text-stroke:0.3px white;
-  text-decoration:none;
-  display:block;padding:14px 22px;
-  letter-spacing:1px;
-  transition:background 0.2s,color 0.2s,text-shadow 0.2s;
-  white-space:nowrap;
-  border-right:1px solid rgba(255,34,0,0.3);
-}}
-
-#hbd-nav-links li:first-child a {{ border-left:1px solid rgba(255,34,0,0.3); }}
-
-#hbd-nav-links li a:hover,
-#hbd-nav-links li a.active {{
-  background:rgba(255,34,0,0.15) !important;
-  color:#ff5500 !important;
-  text-shadow:0 0 10px #ff2200,0 0 20px #ff5500;
-}}
-
-/* Push page content below fixed nav */
-[data-testid="stAppViewContainer"] > [data-testid="stMain"] {{
-  padding-top:60px !important;
-}}
-
-/* Mobile nav */
-@media (max-width:768px) {{
-  #hbd-nav {{ flex-direction:column;align-items:flex-start; }}
-  #hbd-nav-toggle {{ display:block;width:100%; }}
-  #hbd-nav-links {{
-    display:none;flex-direction:column;width:100%;
-  }}
-  #hbd-nav-links.open {{ display:flex; }}
-  #hbd-nav-links li a {{
-    border-right:none;border-bottom:1px solid rgba(255,34,0,0.3);
-    padding:14px 24px;font-size:18px !important;
-  }}
-  #hbd-nav-links li:first-child a {{ border-left:none; }}
 }}
 
 @keyframes vhs-shake {{
@@ -316,34 +294,17 @@ img {{ transform:translateZ(0); }}
 
 st.markdown(css, unsafe_allow_html=True)
 
-# ─── Custom Nav HTML ──────────────────────────────────────────────────────────
-
-menu = st.session_state.menu
-
-nav_items = [
-    ("The Ritual (Home)",         "Home"),
-    ("The Grimoires (Discography)", "Discography"),
-    ("The Cult (Members)",        "Members"),
-    ("The Catacombs (Photos)",    "Photos"),
-]
-
-nav_links = ""
-for key, label in nav_items:
-    active = "active" if menu == key else ""
-    nav_links += f'<li><a href="#" class="{active}" data-page="{key}">{label}</a></li>'
+# ─── Persistent overlays & nav hint ──────────────────────────────────────────
 
 st.markdown(
-    f'<nav id="hbd-nav">'
-    f'<button id="hbd-nav-toggle">☰ THE VOID</button>'
-    f'<ul id="hbd-nav-links">{nav_links}</ul>'
-    f'</nav>'
-    f'<div id="vhs-overlay"></div>'
-    f'<div id="vhs-rgb-r"></div>'
-    f'<div id="vhs-rgb-b"></div>',
+    '<div id="nav-hint"><span class="nh-text">TAP ARROW TO NAVIGATE</span></div>'
+    '<div id="vhs-overlay"></div>'
+    '<div id="vhs-rgb-r"></div>'
+    '<div id="vhs-rgb-b"></div>',
     unsafe_allow_html=True
 )
 
-# ─── Audio + Nav JS ───────────────────────────────────────────────────────────
+# ─── Audio + interaction JS ───────────────────────────────────────────────────
 
 components.html(
     f"""
@@ -415,47 +376,6 @@ components.html(
         }});
       }}
 
-      // Nav toggle for mobile
-      function setupNav() {{
-        var toggle = doc.getElementById('hbd-nav-toggle');
-        var links  = doc.getElementById('hbd-nav-links');
-        if (toggle && !toggle.dataset.navAttached) {{
-          toggle.addEventListener('click', function(e) {{
-            e.stopPropagation();
-            links.classList.toggle('open');
-          }});
-          toggle.dataset.navAttached = 'true';
-        }}
-
-        // Nav link clicks — send page selection to Streamlit via query param
-        doc.querySelectorAll('#hbd-nav-links a').forEach(function(el) {{
-          if (!el.dataset.navClickAttached) {{
-            el.addEventListener('click', function(e) {{
-              e.preventDefault();
-              var page = el.getAttribute('data-page');
-
-              // Close mobile nav
-              if (links) links.classList.remove('open');
-
-              // Update active state immediately
-              doc.querySelectorAll('#hbd-nav-links a').forEach(function(a) {{
-                a.classList.remove('active');
-              }});
-              el.classList.add('active');
-
-              // Find and click the matching Streamlit radio button
-              var radios = doc.querySelectorAll('[data-testid="stSidebar"] [role="radio"]');
-              radios.forEach(function(r) {{
-                if (r.textContent.trim() === page) {{
-                  r.click();
-                }}
-              }});
-            }});
-            el.dataset.navClickAttached = 'true';
-          }}
-        }});
-      }}
-
       doc.addEventListener('click', function() {{
         initAudio();
         playShotty();
@@ -463,11 +383,7 @@ components.html(
       }}, {{ passive: true }});
 
       attachHoverSounds();
-      setupNav();
-      setInterval(function() {{
-        attachHoverSounds();
-        setupNav();
-      }}, 1500);
+      setInterval(attachHoverSounds, 1500);
     }})();
     </script>
     """,
@@ -484,15 +400,51 @@ with col2:
         unsafe_allow_html=True
     )
 
-# ─── Hidden Sidebar (still needed for Streamlit state) ────────────────────────
+# ─── Sidebar ──────────────────────────────────────────────────────────────────
+
+if "menu" not in st.session_state:
+    st.session_state.menu = "The Ritual (Home)"
+if "prev_menu" not in st.session_state:
+    st.session_state.prev_menu = "The Ritual (Home)"
 
 with st.sidebar:
+    st.header("THE VOID")
     menu = st.radio("", [
         "The Ritual (Home)",
         "The Grimoires (Discography)",
         "The Cult (Members)",
         "The Catacombs (Photos)"
     ], key="menu")
+
+# Detect a new selection and inject JS to click the collapse button
+if st.session_state.menu != st.session_state.prev_menu:
+    st.session_state.prev_menu = st.session_state.menu
+    components.html(
+        """
+        <script>
+        (function() {
+          var attempts = 0;
+          function tryCollapse() {
+            var doc = window.parent.document;
+            var btn = doc.querySelector(
+              'button[aria-label="Collapse sidebar"], ' +
+              'button[aria-label="collapse sidebar"], ' +
+              'button[aria-label="Close sidebar"], ' +
+              '[data-testid="stSidebarNavCollapseButton"]'
+            );
+            if (btn) {
+              btn.click();
+            } else if (attempts < 10) {
+              attempts++;
+              setTimeout(tryCollapse, 100);
+            }
+          }
+          setTimeout(tryCollapse, 200);
+        })();
+        </script>
+        """,
+        height=0
+    )
 
 menu = st.session_state.menu
 
