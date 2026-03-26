@@ -402,6 +402,12 @@ with col2:
 
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
 
+if "menu" not in st.session_state:
+    st.session_state.menu = "The Ritual (Home)"
+
+def on_menu_change():
+    st.session_state.sidebar_open = False
+
 with st.sidebar:
     st.header("THE VOID")
     menu = st.radio("", [
@@ -409,7 +415,17 @@ with st.sidebar:
         "The Grimoires (Discography)",
         "The Cult (Members)",
         "The Catacombs (Photos)"
-    ])
+    ], key="menu", on_change=on_menu_change)
+
+if not st.session_state.get("sidebar_open", True):
+    st.session_state.sidebar_open = True
+    st.markdown(
+        "<script>window.parent.document.querySelector('[data-testid=\"stSidebar\"]')"
+        ".setAttribute('aria-expanded','false');</script>",
+        unsafe_allow_html=True
+    )
+
+menu = st.session_state.menu
 
 # ─── Pages ────────────────────────────────────────────────────────────────────
 
