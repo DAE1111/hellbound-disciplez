@@ -460,17 +460,31 @@ components.html(
         if (!canvas) return;
         var ctx    = canvas.getContext('2d');
         var animId;
+        var frame  = 0;
+
+        // Offscreen low-res canvas for performance
+        var lo     = document.createElement('canvas');
+        var loctx  = lo.getContext('2d');
+        var SCALE  = 4; // draw at 1/4 res, scale up = way faster
 
         function resize() {{
           canvas.width  = window.parent.innerWidth;
           canvas.height = window.parent.innerHeight;
+          lo.width      = Math.floor(canvas.width  / SCALE);
+          lo.height     = Math.floor(canvas.height / SCALE);
         }}
         resize();
         window.parent.addEventListener('resize', resize);
 
         function drawStatic() {{
-          var w = canvas.width, h = canvas.height;
-          var imageData = ctx.createImageData(w, h);
+          frame++;
+          // Only redraw every 2 frames for smoother feel
+          if (frame % 2 === 0) {{
+            animId = window.parent.requestAnimationFrame(drawStatic);
+            return;
+          }}
+          var w = lo.width, h = lo.height;
+          var imageData = loctx.createImageData(w, h);
           var data = imageData.data;
           for (var i = 0; i < data.length; i += 4) {{
             var v = Math.random() > 0.5 ? Math.floor(Math.random() * 80) : 0;
@@ -479,10 +493,11 @@ components.html(
             data[i + 2] = Math.floor(v * 0.1);
             data[i + 3] = 180;
           }}
+          // Glitch bars — fewer iterations at low res
           for (var y = 0; y < h; y++) {{
             if (Math.random() < 0.04) {{
-              var barH  = Math.floor(Math.random() * 6) + 1;
-              var shift = Math.floor(Math.random() * 40) - 20;
+              var barH  = Math.floor(Math.random() * 4) + 1;
+              var shift = Math.floor(Math.random() * 20) - 10;
               for (var by = y; by < Math.min(y + barH, h); by++) {{
                 for (var x = 0; x < w; x++) {{
                   var srcX = (x + shift + w) % w;
@@ -496,7 +511,10 @@ components.html(
               }}
             }}
           }}
-          ctx.putImageData(imageData, 0, 0);
+          loctx.putImageData(imageData, 0, 0);
+          // Scale up to full canvas with pixelated look
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(lo, 0, 0, canvas.width, canvas.height);
           animId = window.parent.requestAnimationFrame(drawStatic);
         }}
         drawStatic();
