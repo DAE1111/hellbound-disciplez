@@ -192,7 +192,6 @@ button[aria-label="Expand sidebar"] span {{
   box-shadow:0 0 10px rgba(255,34,0,0.5);pointer-events:none;
   clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
 }}
-#nav-hint-close {{ display:none !important; }}
 #nav-hint-open .nh-text {{
   font-family:'DoctorGlitch',cursive !important;
   font-size:11px;color:#ff2200;letter-spacing:2px;
@@ -412,8 +411,6 @@ st.markdown(
     '<div id="nav-hint-open">'
     '<span class="nh-text">TAP THE ARROW TO OPEN MENU</span>'
     '</div>'
-    '<div id="nav-hint-close" style="display:none;">'
-    '<span class="nh-text">TAP THE ARROW TO CLOSE MENU</span>'
     '</div>'
     '<div id="vhs-overlay"></div>'
     '<div id="vhs-rgb-r"></div>'
@@ -618,12 +615,9 @@ components.html(
         // Toggle hints based on sidebar state
         var sidebar = doc.querySelector('[data-testid="stSidebar"]');
         var hintOpen  = doc.getElementById('nav-hint-open');
-        var hintClose = doc.getElementById('nav-hint-close');
-        if (!sidebar || !hintOpen || !hintClose) return;
         var rect = sidebar.getBoundingClientRect();
         var isOpen = rect.left > -50;
         hintOpen.style.display  = isOpen ? 'none' : 'flex';
-        hintClose.style.display = isOpen ? 'flex' : 'none';
       }}, 500);
     }})();
     </script>
@@ -649,7 +643,6 @@ with st.sidebar:
         '<p style="font-family:DoctorGlitch,cursive !important;font-size:13px;color:#ff2200;'
         'letter-spacing:2px;text-align:center;margin:0 0 16px 0;'
         '-webkit-text-stroke:0.3px white;">'
-        '— TAP THE ARROW TO CLOSE —</p>',
         unsafe_allow_html=True
     )
     menu = st.radio("", [
