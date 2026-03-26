@@ -212,6 +212,11 @@ button[aria-label="Expand sidebar"] span {{
 [data-testid="stSidebar"] {{
   background-image:{BG_URL};
   background-size:cover;background-repeat:repeat;
+  transform:translateX(-110%);
+  transition:transform 0.3s ease;
+}}
+[data-testid="stSidebar"][aria-expanded="true"] {{
+  transform:translateX(0%);
 }}
 
 img {{ transform:translateZ(0); }}
