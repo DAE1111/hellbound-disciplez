@@ -485,7 +485,7 @@ components.html(
         var loctx = lo.getContext('2d');
         var SCALE = 8;
 
-        // Generate white noise via Web Audio API — no file, no autoplay block
+        // White noise in iframe context — not blocked by browser autoplay policy
         var noiseCtx  = new (window.AudioContext || window.webkitAudioContext)();
         var bufSize   = noiseCtx.sampleRate * 2;
         var noiseBuf  = noiseCtx.createBuffer(1, bufSize, noiseCtx.sampleRate);
@@ -493,11 +493,11 @@ components.html(
         for (var n = 0; n < bufSize; n++) {{
           noiseData[n] = Math.random() * 2 - 1;
         }}
-        var noiseSource = noiseCtx.createBufferSource();
-        noiseSource.buffer = noiseBuf;
-        noiseSource.loop   = true;
-        var noiseGain      = noiseCtx.createGain();
-        noiseGain.gain.value = 0.15;
+        var noiseSource     = noiseCtx.createBufferSource();
+        noiseSource.buffer  = noiseBuf;
+        noiseSource.loop    = true;
+        var noiseGain       = noiseCtx.createGain();
+        noiseGain.gain.value = 0.2;
         noiseSource.connect(noiseGain);
         noiseGain.connect(noiseCtx.destination);
         noiseSource.start(0);
