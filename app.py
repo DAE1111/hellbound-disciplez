@@ -614,24 +614,33 @@ components.html(
       }}, 1500);
 
       // ── Sidebar collapse ──
+      function collapseSidebar() {{
+        // Try button click first
+        var selectors = [
+          '[data-testid="stSidebarCollapseButton"] button',
+          '[data-testid="stSidebarNavCollapseButton"]',
+          'button[aria-label="Collapse sidebar"]',
+          'button[aria-label="collapse sidebar"]',
+          'button[aria-label="Close sidebar"]',
+          '[data-testid="stSidebar"] button'
+        ];
+        for (var i = 0; i < selectors.length; i++) {{
+          var btn = doc.querySelector(selectors[i]);
+          if (btn) {{ btn.click(); return; }}
+        }}
+        // Fallback: simulate keyboard shortcut
+        var evt = new KeyboardEvent('keydown', {{
+          key: '[', code: 'BracketLeft', keyCode: 219,
+          bubbles: true, cancelable: true
+        }});
+        doc.dispatchEvent(evt);
+      }}
+
       function attachSidebarCollapse() {{
         doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
           if (!el.dataset.collapseAttached) {{
             el.addEventListener('click', function() {{
-              setTimeout(function() {{
-                var selectors = [
-                  '[data-testid="stSidebarCollapseButton"] button',
-                  '[data-testid="stSidebarNavCollapseButton"]',
-                  'button[aria-label="Collapse sidebar"]',
-                  'button[aria-label="collapse sidebar"]',
-                  'button[aria-label="Close sidebar"]',
-                  '[data-testid="stSidebar"] button'
-                ];
-                for (var i = 0; i < selectors.length; i++) {{
-                  var btn = doc.querySelector(selectors[i]);
-                  if (btn) {{ btn.click(); return; }}
-                }}
-              }}, 500);
+              setTimeout(collapseSidebar, 500);
             }});
             el.dataset.collapseAttached = 'true';
           }}
