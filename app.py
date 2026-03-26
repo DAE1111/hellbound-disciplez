@@ -609,18 +609,13 @@ components.html(
         attachHoverSounds();
       }}, 1500);
 
-      // ── Sidebar collapse ──
+      // ── Sidebar collapse — direct CSS manipulation, no React needed ──
       function collapseSidebar() {{
-        var btn = doc.querySelector('[data-testid="stSidebarCollapseButton"] button');
-        if (!btn) return;
-        // Fire full sequence of events React needs to register a click
-        ['mousedown','mouseup','click'].forEach(function(evtType) {{
-          btn.dispatchEvent(new MouseEvent(evtType, {{
-            bubbles: true,
-            cancelable: true,
-            view: window.parent
-          }}));
-        }});
+        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
+        if (!sidebar) return;
+        sidebar.style.transform = 'translateX(-110%)';
+        sidebar.style.transition = 'transform 0.3s ease';
+        sidebar.style.position = 'fixed';
       }}
 
       function attachSidebarCollapse() {{
