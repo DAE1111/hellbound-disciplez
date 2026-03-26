@@ -416,7 +416,6 @@ st.markdown(
     '<div id="nav-hint-open">'
     '<span class="nh-text">TAP THE ARROW TO OPEN MENU</span>'
     '</div>'
-    '</div>'
     '<div id="vhs-overlay"></div>'
     '<div id="vhs-rgb-r"></div>'
     '<div id="vhs-rgb-b"></div>',
@@ -617,13 +616,7 @@ components.html(
       attachHoverSounds();
       setInterval(function() {{
         attachHoverSounds();
-        // Toggle hints based on sidebar state
-        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        var hintOpen  = doc.getElementById('nav-hint-open');
-        var rect = sidebar.getBoundingClientRect();
-        var isOpen = rect.left > -50;
-        hintOpen.style.display  = isOpen ? 'none' : 'flex';
-      }}, 500);
+      }}, 1500);
     }})();
     </script>
     """,
