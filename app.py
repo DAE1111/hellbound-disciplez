@@ -93,6 +93,7 @@ logo          = get_image_base64_transparent("HBDLOGO1.png", opacity=0.5)
 reload_snd    = get_audio_base64("reload.wav")
 shotty_snd    = get_audio_base64("shottyblast.wav")
 web_beat      = get_wav_trimmed_base64("WEB_BEAT_001.wav")
+glitch_snd    = get_audio_base64("glitch.mp3")
 font_baroness = get_font_base64("BaronessKuffner.ttf")
 font_glitch   = get_font_base64("DoctorGlitch.otf")
 
@@ -484,6 +485,18 @@ components.html(
         var loctx = lo.getContext('2d');
         var SCALE = 8;
 
+        // Muted autoplay is allowed by all browsers
+        // We unmute immediately after — seamless audio from load
+        var glitchAudio = doc.createElement('audio');
+        glitchAudio.src    = "data:audio/mp3;base64,{glitch_snd}";
+        glitchAudio.loop   = true;
+        glitchAudio.muted  = true;
+        glitchAudio.volume = 0.7;
+        doc.body.appendChild(glitchAudio);
+        glitchAudio.play().then(function() {{
+          glitchAudio.muted = false;
+        }}).catch(function() {{}});
+
         function resize() {{
           canvas.width  = window.parent.innerWidth;
           canvas.height = window.parent.innerHeight;
@@ -544,6 +557,9 @@ components.html(
         setTimeout(function() {{
           var btn = doc.getElementById('vhs-enter-btn');
           if (btn) {{
+            // Stop glitch sound when button appears
+            glitchAudio.pause();
+            glitchAudio.currentTime = 0;
             btn.style.display = 'block';
             btn.addEventListener('click', function() {{
               initAudio();
