@@ -373,11 +373,21 @@ img {{ transform:translateZ(0); }}
   transition:all 0.2s ease;
 }}
 
-/* Hide page content during intro */
+/* Hide everything instantly until intro dismisses */
+body {{
+  background:#000 !important;
+}}
 body.intro-active [data-testid="stAppViewContainer"],
 body.intro-active [data-testid="stHeader"],
-body.intro-active [data-testid="stSidebarCollapsedControl"] {{
+body.intro-active [data-testid="stSidebarCollapsedControl"],
+body.intro-active [data-testid="stSidebar"],
+body.intro-active [data-testid="stMain"],
+body.intro-active .stApp > * {{
   visibility:hidden !important;
+  opacity:0 !important;
+}}
+body.intro-active {{
+  overflow:hidden !important;
 }}
 </style>
 """
@@ -387,7 +397,7 @@ st.markdown(css, unsafe_allow_html=True)
 # ─── VHS Intro HTML ───────────────────────────────────────────────────────────
 
 st.markdown(
-    '<div id="vhs-intro">'
+    '<div id="vhs-intro" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9999999;display:flex;align-items:center;justify-content:center;flex-direction:column;">'
     '<canvas id="vhs-static-canvas"></canvas>'
     '<div id="vhs-intro-scanlines"></div>'
     '<div id="vhs-intro-text">HELLBOUND DISCIPLEZ</div>'
@@ -414,6 +424,10 @@ components.html(
     <script>
     (function() {{
       var doc         = window.parent.document;
+
+      // Add immediately to hide all content before anything renders
+      doc.body.classList.add('intro-active');
+
       var reloadAudio = null;
       var shottyAudio = null;
       var audioReady  = false;
@@ -483,7 +497,6 @@ components.html(
       (function() {{
         var canvas = doc.getElementById('vhs-static-canvas');
         if (!canvas) return;
-        doc.body.classList.add('intro-active');
         var ctx   = canvas.getContext('2d');
         var animId, frame = 0;
         var lo    = document.createElement('canvas');
