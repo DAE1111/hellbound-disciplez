@@ -476,32 +476,6 @@ components.html(
         }});
       }}
 
-      // ── Sidebar collapse ──
-      function clickCollapseArrow() {{
-        var selectors = [
-          '[data-testid="stSidebarCollapseButton"] button',
-          '[data-testid="stSidebarNavCollapseButton"]',
-          'button[aria-label="Collapse sidebar"]',
-          'button[aria-label="collapse sidebar"]',
-          'button[aria-label="Close sidebar"]'
-        ];
-        for (var i = 0; i < selectors.length; i++) {{
-          var btn = doc.querySelector(selectors[i]);
-          if (btn) {{ btn.click(); return; }}
-        }}
-      }}
-
-      function attachSidebarCollapse() {{
-        doc.querySelectorAll('[data-testid="stSidebar"] label').forEach(function(el) {{
-          if (!el.dataset.collapseAttached) {{
-            el.addEventListener('click', function() {{
-              setTimeout(clickCollapseArrow, 600);
-            }});
-            el.dataset.collapseAttached = 'true';
-          }}
-        }});
-      }}
-
       // ── VHS Intro: optimized static canvas ──
       (function() {{
         var canvas = doc.getElementById('vhs-static-canvas');
@@ -597,10 +571,8 @@ components.html(
       }}, {{ passive: true }});
 
       attachHoverSounds();
-      attachSidebarCollapse();
       setInterval(function() {{
         attachHoverSounds();
-        attachSidebarCollapse();
       }}, 1500);
     }})();
     </script>
@@ -628,6 +600,33 @@ with st.sidebar:
         "The Cult (Members)",
         "The Catacombs (Photos)"
     ], key="menu")
+
+# After navigation rerun, inject collapse JS into main page context
+if st.session_state.menu != st.session_state.prev_menu:
+    st.session_state.prev_menu = st.session_state.menu
+    st.markdown(
+        """<script>
+        (function() {
+          var tries = 0;
+          var selectors = [
+            '[data-testid="stSidebarCollapseButton"] button',
+            '[data-testid="stSidebarNavCollapseButton"]',
+            'button[aria-label="Collapse sidebar"]',
+            'button[aria-label="collapse sidebar"]',
+            'button[aria-label="Close sidebar"]'
+          ];
+          function tryCollapse() {
+            for (var i = 0; i < selectors.length; i++) {
+              var b = document.querySelector(selectors[i]);
+              if (b) { b.click(); return; }
+            }
+            if (tries++ < 20) setTimeout(tryCollapse, 50);
+          }
+          tryCollapse();
+        })();
+        </script>""",
+        unsafe_allow_html=True
+    )
 
 menu = st.session_state.menu
 
