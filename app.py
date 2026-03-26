@@ -46,12 +46,12 @@ def get_shuffled_photos():
     photos = [
         "pic1.png","pic2.png","pic3.png","pic4.png","pic5.jpg","pic6.png","pic7.jpg","pic8.jpeg",
         "pic9.jpeg","pic10.png","pic11.jpeg","pic12.jpeg","pic13.jpeg","pic14.jpeg","pic15.jpeg",
-        "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic20.png","pic21.png","pic22.png","pic23.jpg",
+        "pic16.jpeg","pic17.jpeg","pic18.jpeg","pic19.png","pic20.png","pic21.png","pic22.png","pic23.jpg",
         "pic24.png","pic25.jpg","pic26.jpg","pic27.jpg","pic28.jpg","pic29.jpg","pic30.jpg",
         "pic31.jpg","pic32.jpg","pic33.jpg","pic34.jpg","pic35.jpg","pic36.jpg","pic37.jpg",
         "pic39.jpg","pic40.jpg","pic41.jpg",
         "img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg","img6.jpg",
-        "img7.jpg","img8.jpg","img9.jpg","img10.jpg","img11.jpg","img12.jpg",
+        "img7.jpg","img8.jpg","img9 - Copy.jpg","img10.jpg","img11.jpg","img12.jpg",
     ]
     random.shuffle(photos)
     return photos
