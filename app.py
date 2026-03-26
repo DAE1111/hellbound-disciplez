@@ -609,13 +609,57 @@ components.html(
         attachHoverSounds();
       }}, 1500);
 
-      // ── Sidebar collapse — direct CSS manipulation, no React needed ──
-      function collapseSidebar() {{
+      // ── Sidebar collapse — CSS slide + custom toggle button ──
+      var sidebarOpen = true;
+
+      function createToggleBtn() {{
+        if (doc.getElementById('hbd-sidebar-toggle')) return;
+        var btn = doc.createElement('button');
+        btn.id = 'hbd-sidebar-toggle';
+        btn.innerHTML = '&#9776;';
+        btn.style.cssText = [
+          'position:fixed',
+          'top:12px',
+          'left:12px',
+          'z-index:9999998',
+          'background:rgba(0,0,0,0.8)',
+          'border:1px solid #ff2200',
+          'color:#ff2200',
+          'font-size:22px',
+          'width:40px',
+          'height:40px',
+          'cursor:pointer',
+          'border-radius:4px',
+          'display:flex',
+          'align-items:center',
+          'justify-content:center',
+          'box-shadow:0 0 10px rgba(255,34,0,0.5)'
+        ].join(';');
+        btn.addEventListener('click', function(e) {{
+          e.stopPropagation();
+          toggleSidebar();
+        }});
+        doc.body.appendChild(btn);
+      }}
+
+      function toggleSidebar() {{
         var sidebar = doc.querySelector('[data-testid="stSidebar"]');
         if (!sidebar) return;
-        sidebar.style.transform = 'translateX(-110%)';
+        sidebarOpen = !sidebarOpen;
         sidebar.style.transition = 'transform 0.3s ease';
-        sidebar.style.position = 'fixed';
+        sidebar.style.transform = sidebarOpen ? 'translateX(0%)' : 'translateX(-110%)';
+        var btn = doc.getElementById('hbd-sidebar-toggle');
+        if (btn) btn.innerHTML = sidebarOpen ? '&#x2716;' : '&#9776;';
+      }}
+
+      function collapseSidebar() {{
+        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
+        if (!sidebar || !sidebarOpen) return;
+        sidebarOpen = false;
+        sidebar.style.transition = 'transform 0.3s ease';
+        sidebar.style.transform = 'translateX(-110%)';
+        var btn = doc.getElementById('hbd-sidebar-toggle');
+        if (btn) btn.innerHTML = '&#9776;';
       }}
 
       function attachSidebarCollapse() {{
@@ -629,8 +673,12 @@ components.html(
         }});
       }}
 
+      createToggleBtn();
       attachSidebarCollapse();
-      setInterval(attachSidebarCollapse, 1500);
+      setInterval(function() {{
+        createToggleBtn();
+        attachSidebarCollapse();
+      }}, 1500);
     }})();
     </script>
     """,
