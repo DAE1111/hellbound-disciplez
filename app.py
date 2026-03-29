@@ -921,11 +921,13 @@ elif menu == "The Cult (Members)":
     with col1:
         st.image("img12.jpg", width=150)
     with col2:
-        st.subheader("🔥 Crazy8 The Snap Case")
+        st.markdown(
+            '<h3 style="font-family:DoctorGlitch,cursive;color:#ff2200;">🔥 <a href="https://crazy8thesnapcase-site.onrender.com" target="_blank" style="color:#ff2200;text-decoration:none;">Crazy8 The Snap Case</a></h3>',
+            unsafe_allow_html=True
+        )
         st.markdown(
             '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
-            '<a href="https://crazy8thesnapcase-site.onrender.com" target="_blank">Crazy8 The Snap Case</a> '
-            '— MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. '
+            'MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. '
             'Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft '
             'the sonic backbone of the group alongside Osomane.</p>',
             unsafe_allow_html=True
