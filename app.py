@@ -922,7 +922,7 @@ elif menu == "The Cult (Members)":
         st.image("img12.jpg", width=150)
     with col2:
         st.markdown(
-            '<p style="font-family:DoctorGlitch,cursive !important;color:#ff2200 !important;font-size:42px !important;font-weight:600;margin:0.5rem 0;line-height:1.2;">🔥 <a href="https://crazy8thesnapcase-site.onrender.com" target="_blank" style="color:#ff2200 !important;text-decoration:none;font-size:42px !important;font-family:DoctorGlitch,cursive !important;">Crazy8 The Snap Case</a></p>',
+            '<div style="font-family:DoctorGlitch,cursive;color:#ff2200;font-size:42px;font-weight:600;margin:0.5rem 0;line-height:1.2;">🔥 <a href="https://crazy8thesnapcase-site.onrender.com" target="_blank" style="color:#ff2200;text-decoration:none;"><span style="font-family:DoctorGlitch,cursive;font-size:42px;color:#ff2200;">Crazy8 The Snap Case</span></a></div>',
             unsafe_allow_html=True
         )
         st.markdown(
