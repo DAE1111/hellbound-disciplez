@@ -909,7 +909,7 @@ elif menu == "The Cult (Members)":
     with col1:
         st.image("pic5.jpg", width=150)
     with col2:
-        st.subheader("🔥 Lord-K-Haos")
+        st.markdown('<div style="font-family:DoctorGlitch,cursive;color:#ff2200;font-size:1.75rem;margin:0.5rem 0;">🔥 Lord-K-Haos</div>', unsafe_allow_html=True)
         st.markdown(
             '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
             'MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness '
@@ -921,7 +921,7 @@ elif menu == "The Cult (Members)":
     with col1:
         st.image("img12.jpg", width=150)
     with col2:
-        st.subheader("🔥 [Crazy8 The Snap Case](https://crazy8thesnapcase-site.onrender.com)")
+        st.markdown('<div style="font-family:DoctorGlitch,cursive;color:#ff2200;font-size:1.75rem;margin:0.5rem 0;">🔥 <a href="https://crazy8thesnapcase-site.onrender.com" target="_blank" style="color:#ff2200;text-decoration:none;font-family:DoctorGlitch,cursive;font-size:1.75rem;">Crazy8 The Snap Case</a></div>', unsafe_allow_html=True)
         st.markdown(
             '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
             'MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. '
@@ -934,7 +934,7 @@ elif menu == "The Cult (Members)":
     with col1:
         st.image("img11.jpg", width=150)
     with col2:
-        st.subheader("🔥 Osomane")
+        st.markdown('<div style="font-family:DoctorGlitch,cursive;color:#ff2200;font-size:1.75rem;margin:0.5rem 0;">🔥 Osomane</div>', unsafe_allow_html=True)
         st.markdown(
             '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
             'Producer | Member — The architect of the sound. Osomane works hand in hand with '
