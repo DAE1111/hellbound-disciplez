@@ -409,6 +409,16 @@ components.html(
       function playReload() {{ if (!reloadAudio) return; reloadAudio.currentTime = 0; reloadAudio.play(); }}
       function playShotty() {{ if (!shottyAudio) return; shottyAudio.currentTime = 0; shottyAudio.play(); }}
 
+      // ── Pause beat when tab is hidden, resume when visible ──
+      window.parent.document.addEventListener('visibilitychange', function() {{
+        if (!audioCtx || !bgGain) return;
+        if (window.parent.document.hidden) {{
+          bgGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.3);
+        }} else {{
+          bgGain.gain.setTargetAtTime(0.35, audioCtx.currentTime, 0.3);
+        }}
+      }});
+
       // ── Concentrated spiderweb shatter at click point ──
       function drawCracks(canvas, cx, cy) {{
         var W = window.parent.innerWidth;
