@@ -909,7 +909,7 @@ elif menu == "The Cult (Members)":
     with col1:
         st.image("pic5.jpg", width=150)
     with col2:
-        st.markdown('<div style="font-family:DoctorGlitch,cursive;color:#ff2200;font-size:1.75rem;margin:0.5rem 0;">🔥 Lord-K-Haos</div>', unsafe_allow_html=True)
+        st.markdown('<p style="font-family:DoctorGlitch,cursive;color:#ff2200;">🔥 Lord-K-Haos</p>', unsafe_allow_html=True)
         st.markdown(
             '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
             'MC | Lyricist | Co-Founder — The chaos incarnate. Lord-K-Haos brings the darkness '
@@ -934,7 +934,7 @@ elif menu == "The Cult (Members)":
     with col1:
         st.image("img11.jpg", width=150)
     with col2:
-        st.markdown('<div style="font-family:DoctorGlitch,cursive;color:#ff2200;font-size:1.75rem;margin:0.5rem 0;">🔥 Osomane</div>', unsafe_allow_html=True)
+        st.markdown('<p style="font-family:DoctorGlitch,cursive;color:#ff2200;">🔥 Osomane</p>', unsafe_allow_html=True)
         st.markdown(
             '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
             'Producer | Member — The architect of the sound. Osomane works hand in hand with '
