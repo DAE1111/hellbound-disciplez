@@ -924,7 +924,8 @@ elif menu == "The Cult (Members)":
         st.subheader("🔥 Crazy8 The Snap Case")
         st.markdown(
             '<p style="font-family:BaronessKuffner,cursive;font-size:28px;">'
-            'MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. '
+            '<a href="https://crazy8thesnapcase-site.onrender.com" target="_blank">Crazy8 The Snap Case</a> '
+            '— MC | Lyricist | Producer | Co-Founder — Raw, unfiltered, and unpredictable. '
             'Crazy8 The Snap Case delivers horrorcore at its most visceral while helping craft '
             'the sonic backbone of the group alongside Osomane.</p>',
             unsafe_allow_html=True
